@@ -1,6 +1,6 @@
 # ⚡ HyperCraft: The Spec-Verified Frontend, 3D WebGPU PBR, Streaming ML & AI Builder Knowledge Base
 
-[![CI Verification](https://img.shields.io/badge/CI-Python%203.12%20%2B%20Node%2022-0D9488?style=for-the-badge&logo=githubactions&logoColor=white)](.github/workflows/ci.yml)
+[![CI Verification](https://img.shields.io/badge/CI-Python%203.12%20%2B%20Node%2022-0D9488?style=for-the-badge&logo=githubactions&logoColor=white)](.github/ci/ci.yml)
 [![Standards](https://img.shields.io/badge/Specs-WCAG%202.1%2FA%20%7C%20APCA%20%7C%20RFC%206962%20%7C%20RFC%209849-1E4FD6?style=for-the-badge)](REFERENCES.md)
 [![Tests](https://img.shields.io/badge/Tests-Zero--Dependency%20Unit%20%2B%20Adversarial%20Merkle-117750?style=for-the-badge)](tests/)
 [![Benchmarks](https://img.shields.io/badge/Benchmarks-20--Seed%20ML%20%2B%20Conformal%2095%25%20CI-8B5CF6?style=for-the-badge)](benchmarks/BENCHMARK_REPORT.md)
@@ -341,8 +341,8 @@ frontend-hypercraft/
 ├── CLAIMS_VERIFICATION.md                               # Per-claim audit ledger with 24 verified claims
 ├── REFERENCES.md                                        # Authoritative bibliography (42 primary citations)
 ├── github.md                                            # GitHub upload & Actions CI verification guide
-├── .github/workflows/
-│   ├── ci.yml                                           # Python 3.12 + Node 22 automated CI
+├── .github/ci/
+│   ├── ci.yml                                           # Python 3.12 + Node 22 automated CI template
 │   └── screenshots.yml                                  # Playwright headless browser capture workflow
 ├── 01-visual-and-optical-craft/                         # OKLCH color science, Bringhurst typography, bevels
 │   ├── color-science-oklch-apca-cvd.md

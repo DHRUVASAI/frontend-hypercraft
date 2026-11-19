@@ -47,7 +47,7 @@ git push -u origin main
 
 ## Step 3: Verify GitHub Actions CI Automatically
 As soon as you push to `main`, open the **Actions** tab on your GitHub repository:
-- **`Knowledge Base Verification CI`** (`.github/workflows/ci.yml`) will automatically run:
+- **`Knowledge Base Verification CI`** (`.github/ci/ci.yml`) will automatically run:
   1. Python 3.12 unit tests (`tests/test_domain_algorithms.py`)
   2. Node 22 unit tests (`tests/frontend_math.test.mjs`)
   3. Automated link & SHA-256 evidence validation (`scripts/validate_links_and_refs.py`)

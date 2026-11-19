@@ -1,5 +1,5 @@
 {
   "status": "PENDING_LOCAL_OR_CI_CAPTURE",
   "command": "npx playwright install chromium && node scripts/capture-screenshots.mjs",
-  "ci_workflow": ".github/workflows/screenshots.yml"
+  "ci_workflow": ".github/ci/screenshots.yml"
 }
