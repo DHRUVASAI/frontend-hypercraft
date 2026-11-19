@@ -137,7 +137,9 @@ HyperCraft is not a theoretical whitepaper—it is the exact engineering specifi
 ### 3. GARUDA — Autonomous Urban Cyber Safety & Transparency Ledger
 > **Kernel Telemetry & Cryptographic Incident Transparency** · Repository: [DHRUVASAI/GARUDA-](https://github.com/DHRUVASAI/GARUDA-)
 
-[![GARUDA Autonomous Urban Cyber Safety](docs/screenshots/garuda-desktop.png)](https://github.com/DHRUVASAI/GARUDA-)
+<a href="https://github.com/DHRUVASAI/GARUDA-">
+  <img src="https://raw.githubusercontent.com/DHRUVASAI/frontend-hypercraft/main/docs/screenshots/garuda-dashboard.png" alt="GARUDA Autonomous Urban Cyber Safety Production Dashboard" width="100%">
+</a>
 
 <details>
 <summary>📱 <b>View Mobile Viewport (390×844 Retina)</b></summary>
