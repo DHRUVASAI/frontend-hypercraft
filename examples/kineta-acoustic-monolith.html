@@ -1,0 +1,4105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KINETA — Model 04 Acoustic Monolith | 12-Layer Engineering Teardown</title>
+
+  <!-- Architectural Editorial Typography: Newsreader, DM Sans, IBM Plex Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            limestone: '#F2EFEA',
+            alabaster: '#FAF8F5',
+            sandstone: '#E7E2D9',
+            charcoal: '#161412',
+            stone: '#5B554E',
+            obsidian: '#131110',
+            'obsidian-raised': '#1D1A18',
+            bone: '#ECE8E1',
+            vermilion: '#C6441C',
+            'vermilion-dark': '#D65E38',
+          },
+          fontFamily: {
+            serif: ['Newsreader', 'Georgia', 'serif'],
+            sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Three.js v0.170.0 via jsDelivr ES Module Import Map -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      /* Perceptual Warm Tinted Neutrals (Gallery Daylight System) */
+      --bg-limestone: #F2EFEA;
+      --bg-alabaster: #FAF8F5;
+      --bg-sandstone: #E7E2D9;
+      --ink-primary: #161412;
+      --ink-secondary: #5B554E;
+      --hairline: rgba(22, 20, 18, 0.11);
+      --hairline-strong: rgba(22, 20, 18, 0.20);
+
+      /* Calibrated Warm Obsidian (Acoustic Chamber) */
+      --bg-obsidian: #131110;
+      --bg-obsidian-raised: #1D1A18;
+      --ink-bone: #ECE8E1;
+      --ink-bone-muted: #A49D94;
+      --hairline-dark: rgba(236, 232, 225, 0.11);
+
+      /* Single Hue-Shifted Accent (Braun International Vermilion) */
+      --accent-light: #C6441C;
+      --accent-dark: #D65E38;
+
+      /* Concentric Border Radii: outer = inner + padding */
+      --r-btn: 9px;
+      --r-inner: 11px;
+      --r-gap: 6px;
+      --r-outer: calc(var(--r-inner) + var(--r-gap));
+      --r-card-in: 14px;
+      --r-card-gap: 7px;
+      --r-card-out: calc(var(--r-card-in) + var(--r-card-gap));
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-limestone);
+      color: var(--ink-primary);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      background-color: var(--bg-limestone);
+      color: var(--ink-primary);
+    }
+
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .editorial-serif {
+      font-family: 'Newsreader', Georgia, serif;
+      font-optical-sizing: auto;
+      letter-spacing: -0.025em;
+    }
+
+    /* Subtle Procedural Paper-Grain Overlay */
+    #paper-grain {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      pointer-events: none;
+      opacity: 0.024;
+      background-repeat: repeat;
+      background-size: 160px 160px;
+      mix-blend-mode: multiply;
+    }
+
+    /* Sticky 3D Teardown Viewport */
+    #teardown-stage {
+      position: relative;
+      height: 540vh;
+      width: 100%;
+    }
+
+    #sticky-viewport {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+      background-color: var(--bg-limestone);
+    }
+
+    #studio-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    #studio-canvas.inspect-active {
+      pointer-events: auto;
+      cursor: grab;
+    }
+
+    #studio-canvas.inspect-active:active {
+      cursor: grabbing;
+    }
+
+    /* Studio Gallery Plates (Calm Warm Paper Glass) */
+    .gallery-plate {
+      background: rgba(250, 248, 245, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--hairline);
+      border-radius: var(--r-card-out);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.90),
+        0 1px 2px rgba(22, 20, 18, 0.06),
+        0 16px 36px -14px rgba(34, 28, 22, 0.13);
+    }
+
+    .recessed-tray {
+      background: var(--bg-sandstone);
+      border: 1px solid rgba(22, 20, 18, 0.09);
+      border-radius: var(--r-outer);
+      padding: var(--r-gap);
+      box-shadow:
+        inset 0 1.5px 3px rgba(22, 20, 18, 0.08),
+        0 1px 0 rgba(255, 255, 255, 0.72);
+    }
+
+    /* =====================================================================
+       4-LAYER TACTILE HARDWARE BUTTONS (Consistent 4-Slot Shadow Ordering)
+       ===================================================================== */
+    .hw-btn-primary {
+      background: linear-gradient(180deg, #CF4A21 0%, #C6441C 100%);
+      color: #FAF8F5;
+      border: 1px solid rgba(118, 32, 8, 0.36);
+      border-radius: var(--r-btn);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 232, 222, 0.36),
+        inset 0 -1.5px 0 rgba(82, 20, 4, 0.32),
+        0 1px 2px rgba(22, 20, 18, 0.16),
+        0 8px 18px -6px rgba(198, 68, 28, 0.34);
+      transition: transform 0.12s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.14s ease-out, filter 0.14s ease-out;
+      will-change: transform;
+    }
+
+    .hw-btn-primary:hover {
+      filter: brightness(1.03);
+    }
+
+    .hw-btn-primary:active {
+      transform: translateY(1px);
+      box-shadow:
+        inset 0 1.5px 2px rgba(82, 20, 4, 0.32),
+        inset 0 0 0 rgba(82, 20, 4, 0.12),
+        0 0.5px 1px rgba(22, 20, 18, 0.18),
+        0 2px 5px -2px rgba(198, 68, 28, 0.24);
+    }
+
+    .hw-btn-surface {
+      background: linear-gradient(180deg, #FCFBF8 0%, #F3EFE9 100%);
+      color: var(--ink-primary);
+      border: 1px solid rgba(22, 20, 18, 0.12);
+      border-radius: var(--r-btn);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.92),
+        inset 0 -1.5px 0 rgba(22, 20, 18, 0.08),
+        0 1px 2px rgba(22, 20, 18, 0.08),
+        0 6px 14px -6px rgba(34, 28, 22, 0.13);
+      transition: transform 0.12s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.14s ease-out, border-color 0.15s ease-out, background 0.15s ease-out;
+      will-change: transform;
+    }
+
+    .hw-btn-surface:hover {
+      border-color: rgba(22, 20, 18, 0.24);
+    }
+
+    .hw-btn-surface:active {
+      transform: translateY(1px);
+      box-shadow:
+        inset 0 1.5px 2px rgba(22, 20, 18, 0.12),
+        inset 0 0 0 rgba(22, 20, 18, 0.04),
+        0 0.5px 1px rgba(22, 20, 18, 0.10),
+        0 1px 3px -1px rgba(34, 28, 22, 0.08);
+    }
+
+    .hw-btn-surface[aria-pressed='true'],
+    .hw-btn-surface.is-selected {
+      background: linear-gradient(180deg, #FAF8F5 0%, #EBE6DE 100%);
+      border-color: rgba(22, 20, 18, 0.34);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.95),
+        inset 0 -1px 0 rgba(22, 20, 18, 0.08),
+        0 1px 2px rgba(22, 20, 18, 0.10),
+        0 3px 8px -3px rgba(34, 28, 22, 0.12);
+    }
+
+    /* Dark Obsidian Hardware Buttons */
+    .hw-btn-dark {
+      background: linear-gradient(180deg, #25221E 0%, #1C1916 100%);
+      color: var(--ink-bone);
+      border: 1px solid rgba(236, 232, 225, 0.12);
+      border-radius: var(--r-btn);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 250, 244, 0.10),
+        inset 0 -1.5px 0 rgba(0, 0, 0, 0.50),
+        0 1px 2px rgba(0, 0, 0, 0.45),
+        0 8px 18px -6px rgba(0, 0, 0, 0.55);
+      transition: transform 0.12s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.14s ease-out, border-color 0.15s ease-out;
+      will-change: transform;
+    }
+
+    .hw-btn-dark:hover {
+      border-color: rgba(236, 232, 225, 0.25);
+    }
+
+    .hw-btn-dark:active {
+      transform: translateY(1px);
+      box-shadow:
+        inset 0 1.5px 2px rgba(0, 0, 0, 0.55),
+        inset 0 0 0 rgba(0, 0, 0, 0.2),
+        0 0.5px 1px rgba(0, 0, 0, 0.45),
+        0 2px 5px -2px rgba(0, 0, 0, 0.45);
+    }
+
+    .hw-btn-dark.is-selected {
+      background: linear-gradient(180deg, #2D2824 0%, #221E1B 100%);
+      border-color: rgba(214, 94, 56, 0.65);
+    }
+
+    /* Tactile Physical Power Switch */
+    .power-switch {
+      position: relative;
+      width: 56px;
+      height: 30px;
+      border-radius: 999px;
+      background: #0E0C0B;
+      border: 1px solid rgba(236, 232, 225, 0.14);
+      box-shadow:
+        inset 0 2px 4px rgba(0, 0, 0, 0.78),
+        0 1px 0 rgba(255, 250, 244, 0.08);
+      transition: background 0.2s ease-out, border-color 0.2s ease-out;
+      cursor: pointer;
+    }
+
+    .power-switch-knob {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #E2DDD4 0%, #B7B0A5 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.8),
+        inset 0 -1px 0 rgba(22, 20, 18, 0.26),
+        0 2px 4px rgba(0, 0, 0, 0.55);
+      transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease-out;
+    }
+
+    .power-switch[aria-checked='true'] {
+      border-color: rgba(214, 94, 56, 0.58);
+      background: #221713;
+    }
+
+    .power-switch[aria-checked='true'] .power-switch-knob {
+      transform: translateX(26px);
+      background: linear-gradient(180deg, #E2714C 0%, #D65E38 100%);
+    }
+
+    /* Precision Linear Sliders (Light Studio Bench & Dark Chamber) */
+    input[type='range'].bench-fader {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 5px;
+      border-radius: 999px;
+      background: #D8D2C8;
+      border: 1px solid rgba(22, 20, 18, 0.12);
+      box-shadow: inset 0 1px 2px rgba(22, 20, 18, 0.16);
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type='range'].bench-fader::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 22px;
+      border-radius: 4px;
+      background: linear-gradient(180deg, #FAF8F5 0%, #DDD7CE 100%);
+      border: 1px solid rgba(22, 20, 18, 0.34);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        0 2px 5px rgba(22, 20, 18, 0.20);
+      transition: transform 0.1s ease-out;
+    }
+
+    input[type='range'].bench-fader::-webkit-slider-thumb:hover {
+      transform: scale(1.06);
+    }
+
+    input[type='range'].bench-fader::-moz-range-thumb {
+      width: 16px;
+      height: 22px;
+      border-radius: 4px;
+      background: linear-gradient(180deg, #FAF8F5 0%, #DDD7CE 100%);
+      border: 1px solid rgba(22, 20, 18, 0.34);
+      box-shadow: 0 2px 5px rgba(22, 20, 18, 0.20);
+    }
+
+    input[type='range'].chamber-fader {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: #0D0B0A;
+      border: 1px solid rgba(236, 232, 225, 0.11);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.85);
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type='range'].chamber-fader::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 30px;
+      border-radius: 5px;
+      background: linear-gradient(180deg, #DED9CF 0%, #B8B1A5 60%, #A69E91 100%);
+      border: 1px solid rgba(22, 20, 18, 0.55);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.85),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.30),
+        0 3px 8px rgba(0, 0, 0, 0.60);
+    }
+
+    input[type='range'].chamber-fader::-moz-range-thumb {
+      width: 22px;
+      height: 30px;
+      border-radius: 5px;
+      background: linear-gradient(180deg, #DED9CF 0%, #B0A99C 100%);
+      border: 1px solid rgba(22, 20, 18, 0.55);
+    }
+
+    /* Editorial Chapter Cards (Smooth GPU Fade/Translate inside Sticky Left Margin) */
+    .chapter-card {
+      position: absolute;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      transform: translate3d(0, 18px, 0);
+      pointer-events: none;
+      transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: opacity, transform;
+    }
+
+    .chapter-card.is-active {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+      pointer-events: auto;
+    }
+
+    .inspect-dimmed {
+      opacity: 0.14 !important;
+      pointer-events: none !important;
+      transition: opacity 0.28s ease-out;
+    }
+
+    /* Projected 3D-to-2D Swiss Engineering Callouts */
+    #callout-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 6;
+      pointer-events: none;
+      overflow: hidden;
+      transition: opacity 0.25s ease-out;
+    }
+
+    #callout-layer.callouts-hidden {
+      opacity: 0;
+    }
+
+    .callout-label {
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      will-change: transform, opacity;
+      transition: opacity 0.28s ease-out;
+    }
+
+    /* Reservation Slide-Over Drawer */
+    #reserve-drawer {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.26s ease-out, visibility 0.26s ease-out;
+    }
+
+    #reserve-drawer.drawer-open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    #reserve-panel {
+      transform: translateX(100%);
+      transition: transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #reserve-drawer.drawer-open #reserve-panel {
+      transform: translateX(0);
+    }
+
+    /* Navigation Bar Adaptive Dark State */
+    #top-nav {
+      transition: background-color 0.35s ease, border-color 0.35s ease, color 0.35s ease;
+    }
+
+    #top-nav.nav-dark {
+      background-color: rgba(19, 17, 16, 0.88);
+      border-color: rgba(236, 232, 225, 0.11);
+      color: #ECE8E1;
+    }
+
+    #top-nav.nav-dark .nav-link {
+      color: #A49D94;
+    }
+
+    #top-nav.nav-dark .nav-link:hover {
+      color: #ECE8E1;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+      .chapter-card {
+        transition: opacity 0.15s linear;
+        transform: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="selection:bg-vermilion selection:text-alabaster">
+  <!-- Subtle Procedural Paper-Grain Overlay -->
+  <div id="paper-grain" aria-hidden="true"></div>
+
+  <!-- =====================================================================
+       MINIMAL ARCHITECTURAL TOP NAVIGATION
+       ===================================================================== -->
+  <header
+    id="top-nav"
+    class="fixed top-0 left-0 right-0 z-40 border-b border-[rgba(22,20,18,0.11)] bg-[#F2EFEA]/85 backdrop-blur-md"
+  >
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-10 h-16 flex items-center justify-between gap-4">
+      <a href="#teardown-stage" class="flex items-center gap-2.5 focus:outline-none">
+        <span class="w-2 h-2 rounded-full bg-vermilion inline-block" aria-hidden="true"></span>
+        <span class="font-sans font-semibold tracking-[0.22em] text-xs sm:text-[13px] uppercase">
+          KINETA
+        </span>
+        <span class="hidden sm:inline-block font-mono text-[10px] tracking-[0.1em] uppercase opacity-55 pl-1 border-l border-current">
+          Model 04
+        </span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-8 text-[13px] font-medium" aria-label="Primary Navigation">
+        <a href="#teardown-stage" class="nav-link text-stone hover:text-charcoal transition-colors">12-Layer Teardown</a>
+        <a href="#ledger" class="nav-link text-stone hover:text-charcoal transition-colors">Tolerance Ledger</a>
+        <a href="#acoustics" class="nav-link text-stone hover:text-charcoal transition-colors">Acoustic Chamber</a>
+        <a href="#allocation" class="nav-link text-stone hover:text-charcoal transition-colors">Edition 04</a>
+      </nav>
+
+      <button
+        id="nav-reserve-btn"
+        type="button"
+        class="hw-btn-primary px-4 py-2 text-xs sm:text-[13px] font-medium tracking-tight"
+      >
+        Reserve Edition 04
+      </button>
+    </div>
+  </header>
+
+  <!-- =====================================================================
+       SECTION 1: 540VH STICKY 12-LAYER EXPLODED ENGINEERING TEARDOWN STAGE
+       ===================================================================== -->
+  <section id="teardown-stage" aria-label="12-Layer Exploded Engineering Teardown">
+    <div id="sticky-viewport">
+      <!-- Photorealistic Three.js v0.170.0 AgX Studio Canvas -->
+      <canvas
+        id="studio-canvas"
+        aria-label="Interactive 12-layer 3D CAD teardown of KINETA Model 04 Acoustic Monolith"
+      ></canvas>
+
+      <!-- WebGL Graceful Fallback Drawing -->
+      <div
+        id="webgl-fallback"
+        class="hidden absolute inset-0 z-10 flex items-center justify-center bg-limestone p-8"
+      >
+        <div class="gallery-plate p-8 max-w-md text-center">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-stone mb-2">Model 04 · 12-Layer Elevation</p>
+          <p class="editorial-serif text-2xl text-charcoal mb-2">WebGL Studio Context Unavailable</p>
+          <p class="text-sm text-stone">
+            Hardware acceleration is disabled in this browser. Explore the 12-layer tolerance ledger
+            and live Web Audio acoustic chamber below.
+          </p>
+        </div>
+      </div>
+
+      <!-- =================================================================
+           PROJECTED 3D-TO-2D SWISS ENGINEERING CALLOUT LAYER (Desktop >= 1024px)
+           ================================================================= -->
+      <div id="callout-layer" class="hidden lg:block" aria-hidden="true">
+        <svg id="callout-svg" class="w-full h-full block">
+          <!-- Hairline leaders & anchor dots dynamically updated at 60fps -->
+        </svg>
+        <div id="callout-labels" class="absolute inset-0"></div>
+      </div>
+
+      <!-- =================================================================
+           LEFT GALLERY MARGIN: 5 SCROLL-SYNCED EDITORIAL CHAPTER CARDS
+           ================================================================= -->
+      <div
+        id="editorial-rail"
+        class="absolute inset-0 z-10 pointer-events-none max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-10 flex items-start lg:items-center pt-20 lg:pt-0 pb-28 lg:pb-16"
+      >
+        <div class="relative w-full max-w-[385px] lg:max-w-[405px] min-h-[260px] lg:min-h-[340px]">
+          <!-- Chapter 01 (0% – 15%): Monolith Assembled -->
+          <article data-chapter="0" class="chapter-card is-active">
+            <div class="lg:bg-transparent bg-[#FAF8F5]/88 lg:backdrop-blur-none backdrop-blur-md lg:border-0 border border-[rgba(22,20,18,0.10)] rounded-[18px] p-5 lg:p-0">
+              <p class="font-mono text-[11px] tracking-[0.14em] uppercase text-stone mb-4 flex items-center gap-2.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-vermilion inline-block"></span>
+                01 / Monolith Assembled · Stockholm
+              </p>
+
+              <h1 class="editorial-serif text-[clamp(2.25rem,4.2vw,3.9rem)] leading-[1.03] font-normal text-charcoal mb-4">
+                Model 04 —
+                <span class="italic font-light block text-charcoal/90">
+                  Acoustic Monolith
+                </span>
+              </h1>
+
+              <p class="text-[14px] sm:text-[15px] leading-relaxed text-stone max-w-[38ch] mb-6">
+                Twelve precision-machined mechanical assemblies turned from 6061-T6 aluminum,
+                solid brass, beryllium, and OFC copper. Scroll down to unscrew the crown and
+                inspect every internal layer.
+              </p>
+
+              <div class="flex flex-wrap items-center gap-3 mb-6">
+                <button
+                  type="button"
+                  data-jump-chapter="1"
+                  class="hw-btn-surface inline-flex items-center gap-2 px-4 py-2.5 text-[13px] font-medium text-charcoal"
+                >
+                  Begin 12-Layer Teardown
+                  <span aria-hidden="true" class="text-stone">↓</span>
+                </button>
+                <button
+                  id="hero-reserve-btn"
+                  type="button"
+                  class="hw-btn-primary px-4 py-2.5 text-[13px] font-medium"
+                >
+                  Reserve — $4,200
+                </button>
+              </div>
+
+              <div class="pt-4 border-t border-[rgba(22,20,18,0.11)] flex flex-wrap gap-x-6 gap-y-1.5 font-mono text-[11px] text-stone tabular-nums">
+                <span>168 × 312 mm</span>
+                <span>12 Sub-Assemblies</span>
+                <span>24 Hz – 28 kHz</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Chapter 02 (15% – 36%): Crown, Fasteners & Waveguide Release -->
+          <article data-chapter="1" class="chapter-card">
+            <div class="gallery-plate p-5 sm:p-7">
+              <div class="flex items-center justify-between font-mono text-[11px] text-stone mb-3.5">
+                <span class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-vermilion"></span>
+                  02 / UPPER DECK RELEASE
+                </span>
+                <span class="tabular-nums">LAYERS 12 → 08</span>
+              </div>
+              <h2 class="editorial-serif text-2xl sm:text-[29px] font-normal text-charcoal leading-[1.12] mb-3">
+                Fasteners, Knurled Crown &amp; <span class="italic">Beryllium Waveguide</span>
+              </h2>
+              <p class="text-[13.5px] sm:text-sm leading-relaxed text-stone mb-5">
+                Twelve M2.5 stainless Torx fasteners thread cleanly out of the chamfered top
+                collar as the 96-flute rotary crown and stepped brass optical encoder rise
+                clear—exposing the hyperbolic beryllium tweeter horn, titanium phase plug,
+                and Viton elastomeric isolation ring.
+              </p>
+              <div class="pt-3.5 border-t border-[rgba(22,20,18,0.10)] grid grid-cols-2 gap-3 font-mono text-[10.5px] text-stone tabular-nums">
+                <div>
+                  <span class="block opacity-65">ROTARY CROWN</span>
+                  <span class="text-charcoal font-medium">96-Tooth CNC · Brass Shaft</span>
+                </div>
+                <div>
+                  <span class="block opacity-65">HF TRANSDUCER</span>
+                  <span class="text-charcoal font-medium">Beryllium · 28 kHz Horn</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Chapter 03 (36% – 62%): Acoustic Driver & Copper Voice Coil Extraction -->
+          <article data-chapter="2" class="chapter-card">
+            <div class="gallery-plate p-5 sm:p-7">
+              <div class="flex items-center justify-between font-mono text-[11px] text-stone mb-3.5">
+                <span class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-vermilion"></span>
+                  03 / TRANSDUCER &amp; MOTOR GAP
+                </span>
+                <span class="tabular-nums">LAYERS 07 → 04</span>
+              </div>
+              <h2 class="editorial-serif text-2xl sm:text-[29px] font-normal text-charcoal leading-[1.12] mb-3">
+                Voice Coil Extraction &amp; <span class="italic">Dual N52 Neodymium</span>
+              </h2>
+              <p class="text-[13.5px] sm:text-sm leading-relaxed text-stone mb-5">
+                With the 3,840-port CNC acoustic sleeve lifted clear, the long-throw woofer
+                cone, 6-spoke cast basket, and amber Nomex spider draw the helical-wound
+                99.99% OFC copper voice coil directly out of the dual-stacked N52 neodymium
+                motor and vented T-yoke.
+              </p>
+              <div class="pt-3.5 border-t border-[rgba(22,20,18,0.10)] grid grid-cols-2 gap-3 font-mono text-[10.5px] text-stone tabular-nums">
+                <div>
+                  <span class="block opacity-65">VOICE COIL</span>
+                  <span class="text-charcoal font-medium">OFC Copper · 1.68 T Gap</span>
+                </div>
+                <div>
+                  <span class="block opacity-65">ENCLOSURE BAFFLE</span>
+                  <span class="text-charcoal font-medium">CNC Helmholtz · 6 Ribs</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Chapter 04 (62% – 86%): Full 12-Layer Exploded CAD Architecture -->
+          <article data-chapter="3" class="chapter-card">
+            <div class="gallery-plate p-5 sm:p-7">
+              <div class="flex items-center justify-between font-mono text-[11px] text-stone mb-3.5">
+                <span class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-vermilion"></span>
+                  04 / FULL 12-LAYER ARCHITECTURE
+                </span>
+                <span class="tabular-nums">LAYERS 03 → 01</span>
+              </div>
+              <h2 class="editorial-serif text-2xl sm:text-[29px] font-normal text-charcoal leading-[1.12] mb-3">
+                ENIG Gold-Trace DSP &amp; <span class="italic">Weighted Brass Plinth</span>
+              </h2>
+              <p class="text-[13.5px] sm:text-sm leading-relaxed text-stone mb-5">
+                Beneath the Helmholtz chamber sits the 4-layer matte-black immersion-gold
+                <span class="font-mono text-[12px] text-charcoal">KNT-DSP-04</span> amplifier board
+                with dual copper toroids and micro-fin copper heatsink, a 6-cell milled
+                energy cradle with brass I/O bus, and a 4.8 kg Sorbothane-isolated plinth.
+              </p>
+              <div class="pt-3.5 border-t border-[rgba(22,20,18,0.10)] grid grid-cols-2 gap-3 font-mono text-[10.5px] text-stone tabular-nums">
+                <div>
+                  <span class="block opacity-65">SIGNAL STAGE</span>
+                  <span class="text-charcoal font-medium">4-Layer ENIG · Dual 180W</span>
+                </div>
+                <div>
+                  <span class="block opacity-65">DATUM BASE</span>
+                  <span class="text-charcoal font-medium">Solid Brass + Sorbothane</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Chapter 05 (86% – 100%): Full-Stack Inspection & Settling -->
+          <article data-chapter="4" class="chapter-card">
+            <div class="gallery-plate p-5 sm:p-7">
+              <div class="flex items-center justify-between font-mono text-[11px] text-stone mb-3.5">
+                <span class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-vermilion"></span>
+                  05 / FULL-STACK INSPECTION
+                </span>
+                <span class="tabular-nums">100% EXPANDED</span>
+              </div>
+              <h2 class="editorial-serif text-2xl sm:text-[29px] font-normal text-charcoal leading-[1.12] mb-3">
+                Zero Adhesive. <span class="italic">Fully Serviceable.</span>
+              </h2>
+              <p class="text-[13.5px] sm:text-sm leading-relaxed text-stone mb-5">
+                Every single assembly—from the optical encoder crown to the 6-cell battery
+                cradle—fastens mechanically to ±0.02 mm tolerances. Engage 360° Free Inspect
+                below to orbit around all twelve layers, or continue down to the tolerance
+                ledger and live acoustic chamber.
+              </p>
+              <div class="flex flex-wrap gap-2.5">
+                <button
+                  type="button"
+                  id="chapter5-inspect-btn"
+                  class="hw-btn-surface px-3.5 py-2 text-xs font-medium text-charcoal"
+                >
+                  Orbit 360° Stack
+                </button>
+                <a
+                  href="#acoustics"
+                  class="hw-btn-primary px-3.5 py-2 text-xs font-medium inline-flex items-center gap-1.5"
+                >
+                  Enter Acoustic Chamber →
+                </a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- =================================================================
+           QUIET SWISS CHAPTER PROGRESS RAIL (Fixed Right Edge of Sticky Stage)
+           ================================================================= -->
+      <aside
+        id="chapter-rail"
+        aria-label="Teardown Chapter Progress"
+        class="hidden md:flex fixed-inside absolute right-4 sm:right-7 top-1/2 -translate-y-1/2 z-20 flex-col items-end gap-3"
+      >
+        <div class="gallery-plate px-3 py-3.5 flex flex-col items-end gap-2.5">
+          <div class="text-right font-mono text-[10px] leading-tight text-stone tabular-nums pb-2 border-b border-[rgba(22,20,18,0.10)] w-full">
+            <span class="block text-charcoal font-medium" id="rail-expansion-readout">EXP 0%</span>
+            <span class="block opacity-70 mt-0.5">12 LAYERS</span>
+          </div>
+
+          <div class="flex flex-col gap-1.5 w-full" role="navigation" aria-label="Jump to teardown chapter">
+            <button type="button" data-jump-chapter="0" class="rail-step flex items-center justify-end gap-2 py-0.5 text-right group">
+              <span class="font-mono text-[10px] text-charcoal font-medium transition-colors">01</span>
+              <span class="rail-pip w-4 h-[2px] rounded-full bg-vermilion transition-all"></span>
+            </button>
+            <button type="button" data-jump-chapter="1" class="rail-step flex items-center justify-end gap-2 py-0.5 text-right group">
+              <span class="font-mono text-[10px] text-stone group-hover:text-charcoal transition-colors">02</span>
+              <span class="rail-pip w-2 h-[2px] rounded-full bg-[rgba(22,20,18,0.22)] transition-all"></span>
+            </button>
+            <button type="button" data-jump-chapter="2" class="rail-step flex items-center justify-end gap-2 py-0.5 text-right group">
+              <span class="font-mono text-[10px] text-stone group-hover:text-charcoal transition-colors">03</span>
+              <span class="rail-pip w-2 h-[2px] rounded-full bg-[rgba(22,20,18,0.22)] transition-all"></span>
+            </button>
+            <button type="button" data-jump-chapter="3" class="rail-step flex items-center justify-end gap-2 py-0.5 text-right group">
+              <span class="font-mono text-[10px] text-stone group-hover:text-charcoal transition-colors">04</span>
+              <span class="rail-pip w-2 h-[2px] rounded-full bg-[rgba(22,20,18,0.22)] transition-all"></span>
+            </button>
+            <button type="button" data-jump-chapter="4" class="rail-step flex items-center justify-end gap-2 py-0.5 text-right group">
+              <span class="font-mono text-[10px] text-stone group-hover:text-charcoal transition-colors">05</span>
+              <span class="rail-pip w-2 h-[2px] rounded-full bg-[rgba(22,20,18,0.22)] transition-all"></span>
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- =================================================================
+           FLOATING STUDIO BENCH CONTROL BAR (Bottom Dock, Collapsible)
+           Finishes | Lighting | 360° Inspect | Manual Explode Scrub | Labels
+           ================================================================= -->
+      <div class="absolute bottom-4 sm:bottom-5 left-0 right-0 z-20 px-3 sm:px-6 flex flex-col items-center pointer-events-none">
+        <!-- Helper hint during 360° Inspect Mode -->
+        <div
+          id="inspect-banner"
+          class="opacity-0 translate-y-1 pointer-events-none transition-all duration-200 mb-2 px-3 py-1 rounded-[9px] bg-alabaster/92 border border-[rgba(22,20,18,0.14)] font-mono text-[10.5px] text-stone shadow-sm"
+        >
+          360° Free Inspect Active — Drag to orbit · Pinch/Wheel to zoom · Scrub explode slider freely
+        </div>
+
+        <div class="gallery-plate pointer-events-auto max-w-[960px] w-auto px-2.5 py-2 sm:px-3.5 sm:py-2.5">
+          <!-- Bench Header Row (always visible, compact) -->
+          <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+            <!-- 1. Finish Swatches -->
+            <div class="recessed-tray flex items-center gap-1" style="padding: 4px; border-radius: 12px;" role="radiogroup" aria-label="Chassis Finish">
+              <button
+                type="button"
+                data-finish="aluminum"
+                aria-pressed="true"
+                title="Raw Bead-Blasted Aluminum"
+                class="finish-btn hw-btn-surface is-selected px-2.5 py-1.5 flex items-center gap-1.5 text-[11px] font-medium"
+                style="border-radius: 8px;"
+              >
+                <span class="w-3 h-3 rounded-full border border-[rgba(22,20,18,0.24)] shrink-0" style="background: linear-gradient(135deg, #E2DFD9 0%, #B4B0A8 100%);"></span>
+                <span class="hidden sm:inline">Aluminum</span>
+              </button>
+              <button
+                type="button"
+                data-finish="graphite"
+                aria-pressed="false"
+                title="Anodized Warm Graphite"
+                class="finish-btn hw-btn-surface px-2.5 py-1.5 flex items-center gap-1.5 text-[11px] font-medium text-stone"
+                style="border-radius: 8px;"
+              >
+                <span class="w-3 h-3 rounded-full border border-[rgba(22,20,18,0.34)] shrink-0" style="background: linear-gradient(135deg, #4B4743 0%, #22201E 100%);"></span>
+                <span class="hidden sm:inline">Graphite</span>
+              </button>
+              <button
+                type="button"
+                data-finish="chalk"
+                aria-pressed="false"
+                title="Kiln Ceramic Chalk"
+                class="finish-btn hw-btn-surface px-2.5 py-1.5 flex items-center gap-1.5 text-[11px] font-medium text-stone"
+                style="border-radius: 8px;"
+              >
+                <span class="w-3 h-3 rounded-full border border-[rgba(22,20,18,0.18)] shrink-0" style="background: linear-gradient(135deg, #F6F3EC 0%, #DFD9CE 100%);"></span>
+                <span class="hidden sm:inline">Chalk</span>
+              </button>
+            </div>
+
+            <!-- 2. Studio Lighting Rig Toggle -->
+            <div class="recessed-tray flex items-center gap-1" style="padding: 4px; border-radius: 12px;" role="group" aria-label="Studio Lighting Rig">
+              <button
+                type="button"
+                data-lighting="daylight"
+                aria-pressed="true"
+                class="lighting-btn hw-btn-surface is-selected px-2.5 py-1.5 text-[11px] font-medium"
+                style="border-radius: 8px;"
+              >
+                Daylight
+              </button>
+              <button
+                type="button"
+                data-lighting="evening"
+                aria-pressed="false"
+                class="lighting-btn hw-btn-surface px-2.5 py-1.5 text-[11px] font-medium text-stone"
+                style="border-radius: 8px;"
+              >
+                Evening
+              </button>
+            </div>
+
+            <!-- 3. Manual Explode Scrub Slider (0% - 100%) -->
+            <div class="flex items-center gap-2.5 px-2.5 py-1 rounded-[10px] bg-sandstone/75 border border-[rgba(22,20,18,0.08)]">
+              <label for="explode-scrub-slider" class="font-mono text-[10px] uppercase tracking-wider text-stone whitespace-nowrap">
+                Explode
+              </label>
+              <input
+                id="explode-scrub-slider"
+                type="range"
+                min="0"
+                max="100"
+                step="0.5"
+                value="0"
+                class="bench-fader w-24 sm:w-32"
+                aria-label="Manual 12-layer explode scrub slider"
+              />
+              <span id="explode-scrub-value" class="font-mono text-[10.5px] font-medium text-charcoal w-8 text-right tabular-nums">
+                0%
+              </span>
+              <button
+                id="sync-scroll-btn"
+                type="button"
+                class="hidden hw-btn-surface px-2 py-1 font-mono text-[10px] text-vermilion font-medium whitespace-nowrap"
+                style="border-radius: 6px;"
+              >
+                Sync Scroll
+              </button>
+            </div>
+
+            <!-- 4. 360° Free Inspect & Callout Labels Toggles -->
+            <div class="flex items-center gap-1.5">
+              <button
+                id="inspect-toggle-btn"
+                type="button"
+                aria-pressed="false"
+                class="hw-btn-surface px-3 py-1.5 flex items-center gap-1.5 text-[11px] font-medium text-charcoal"
+              >
+                <svg class="w-3.5 h-3.5 text-stone shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 12a9 9 0 1 1-9-9" />
+                  <polyline points="21 3 21 9 15 9" />
+                </svg>
+                <span id="inspect-toggle-label">360° Inspect</span>
+              </button>
+
+              <button
+                id="callouts-toggle-btn"
+                type="button"
+                aria-pressed="true"
+                class="hidden lg:inline-flex hw-btn-surface is-selected px-2.5 py-1.5 items-center gap-1.5 text-[11px] font-medium text-charcoal"
+              >
+                <span id="callouts-dot" class="w-1.5 h-1.5 rounded-full bg-vermilion"></span>
+                Labels
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       SECTION 2: ARCHITECTURAL MATERIAL & 12-LAYER TOLERANCE LEDGER
+       ===================================================================== -->
+  <section
+    id="ledger"
+    class="relative z-20 bg-alabaster border-t border-[rgba(22,20,18,0.11)] py-24 sm:py-32 px-5 sm:px-10"
+  >
+    <div class="max-w-[1380px] mx-auto">
+      <!-- Asymmetric Swiss Header -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-12 border-b border-[rgba(22,20,18,0.12)] items-end">
+        <div class="lg:col-span-7">
+          <p class="font-mono text-[11px] uppercase tracking-[0.14em] text-stone mb-3">
+            Material &amp; Tolerance Ledger · 12 Assemblies
+          </p>
+          <h2 class="editorial-serif text-3xl sm:text-5xl font-normal text-charcoal leading-[1.06]">
+            Every Layer Accounted For. <span class="italic">Nothing Glued.</span>
+          </h2>
+        </div>
+        <div class="lg:col-span-5 space-y-4">
+          <p class="text-sm leading-relaxed text-stone">
+            Each Model 04 monolith is hand-assembled in Stockholm using mechanical fasteners,
+            machined acoustic datums, and replaceable energy cells—individually measured in our
+            anechoic chamber before engraving.
+          </p>
+          <div class="grid grid-cols-3 gap-3 pt-3 border-t border-[rgba(22,20,18,0.10)] font-mono text-[11px] tabular-nums">
+            <div>
+              <span class="block text-stone text-[10px]">TOLERANCE</span>
+              <span class="text-charcoal font-medium">±0.02 mm</span>
+            </div>
+            <div>
+              <span class="block text-stone text-[10px]">BANDWIDTH</span>
+              <span class="text-charcoal font-medium">24 Hz – 28 kHz</span>
+            </div>
+            <div>
+              <span class="block text-stone text-[10px]">SYSTEM MASS</span>
+              <span class="text-charcoal font-medium">6.40 kg</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Complete 12-Layer Mechanical Breakdown Table -->
+      <div class="mt-8 overflow-x-auto">
+        <table class="w-full text-left border-collapse min-w-[680px]">
+          <thead>
+            <tr class="border-b border-[rgba(22,20,18,0.16)] font-mono text-[10.5px] uppercase tracking-wider text-stone">
+              <th class="py-3.5 pr-4 font-medium w-20">Layer</th>
+              <th class="py-3.5 px-4 font-medium">Sub-Assembly</th>
+              <th class="py-3.5 px-4 font-medium">Material &amp; Process</th>
+              <th class="py-3.5 px-4 font-medium">Specification</th>
+              <th class="py-3.5 pl-4 font-medium text-right w-24">Mass</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[rgba(22,20,18,0.09)] text-[13.5px]">
+            <tr class="hover:bg-limestone/70 transition-colors">
+              <td class="py-3.5 pr-4 font-mono text-xs text-vermilion tabular-nums">L12</td>
+              <td class="py-3.5 px-4 font-medium text-charcoal">Knurled Rotary Volume Crown</td>
+              <td class="py-3.5 px-4 text-stone">6061-T6 aluminum + stepped C36000 brass shaft</td>
+              <td class="py-3.5 px-4 font-mono text-xs text-stone tabular-nums">96 CNC flutes · 0.25° optical encoder</td>
+              <td class="py-3.5 pl-4 font-mono text-xs text-charcoal text-right tabular-nums">185 g</td>
+            </tr>
+            <tr class="hover:bg-limestone/70 transition-colors">
+              <td class="py-3.5 pr-4 font-mono text-xs text-stone tabular-nums">L11</td>
+              <td class="py-3.5 px-4 font-medium text-charcoal">12× Torx Collar Fasteners</td>
+              <td class="py-3.5 px-4 text-stone">316L passivated stainless steel</td>
+              <td class="py-3.5 px-4 font-mono text-xs text-stone tabular-nums">M2.5 × 8 mm · T8 star drive</td>
+              <td class="py-3.5 pl-4 font-mono text-xs text-charcoal text-right tabular-nums">18 g</td>
+            </tr>
+            <tr class="hover:bg-limestone/70 transition-colors">
+              <td class="py-3.5 pr-4 font-mono text-xs text-stone tabular-nums">L10</td>
+              <td class="py-3.5 px-4 font-medium text-charcoal">Laser-Etched Top Deck &amp; Bezel</td>
+              <td class="py-3.5 px-4 text-stone">5-axis turned aluminum · 2 mm optical chamfer</td>
+              <td class="py-3.5 px-4 font-mono text-xs text-stone tabular-nums">±0.02 mm concentricity · recessed LED</td>
+              <td class="py-3.5 pl-4 font-mono text-xs text-charcoal text-right tabular-nums">290 g</td>
+            </tr>
+            <tr class="hover:bg-limestone/70 transition-colors">
+              <td class="py-3.5 pr-4 font-mono text-xs text-vermilion tabular-nums">L09</td>
+              <td class="py-3.5 px-4 font-medium text-charcoal">Hyperbolic Tweeter Waveguide</td>
+              <td class="py-3.5 px-4 text-stone">CNC aluminum horn · beryllium dome · Ti plug</td>
+              <td class="py-3.5 px-4 font-mono text-xs text-stone tabular-nums">360° dispersion · 2.4 kHz – 28 kHz</td>
+              <td class="py-3.5 pl-4 font-mono text-xs text-charcoal text-right tabular-nums">240 g</td>
+            </tr>
+            <tr class="hover:bg-limestone/70 transition-colors">
+              <td class="py-3.5 pr-4 font-mono text-xs text-stone tabular-nums">L08</td>
+              <td class="py-3.5 px-4 font-medium text-charcoal">Upper Elastomeric Isolation Ring</td>
+              <td class="py-3.5 px-4 text-stone">Molded Viton FKM fluoroelastomer</td>
+              <td class="py-3.5 px-4 font-mono text-xs text-stone tabular-nums">70 Shore A · -24 dB structural decoupling</td>
+              <td class="py-3.5 pl-4 font-mono text-xs text-charcoal text-right tabular-nums">32 g</td>
+            </tr>
+            <tr class="hover:bg-limestone/70 transition-colors">
+              <td class="py-3.5 pr-4 font-mono text-xs text-stone tabular-nums">L07</td>
+              <td class="py-3.5 px-4 font-medium text-charcoal">Micro-Perforated Grille Sleeve</td>
+              <td class="py-3.5 px-4 text-stone">Extruded &amp; CNC-drilled 6061 aluminum cylinder</td>
+              <td class="py-3.5 px-4 font-mono text-xs text-stone tabular-nums">3,840 staggered ports · 64% open area</td>
+              <td class="py-3.5 pl-4 font-mono text-xs text-charcoal text-right tabular-nums">410 g</td>
+            </tr>
+            <tr class="hover:bg-limestone/70 transition-colors">
+              <td class="py-3.5 pr-4 font-mono text-xs text-vermilion tabular-nums">L06</td>
+              <td class="py-3.5 px-4 font-medium text-charcoal">Woofer Cone, Basket &amp; Voice Coil</td>
+              <td class="py-3.5 px-4 text-stone">Carbon-aluminum cone · Nomex spider · 99.99% OFC</td>
+              <td class="py-3.5 px-4 font-mono text-xs text-stone tabular-nums">±6.8 mm Xmax · 6-spoke cast chassis</td>
+              <td class="py-3.5 pl-4 font-mono text-xs text-charcoal text-right tabular-nums">345 g</td>
+            </tr>
+            <tr class="hover:bg-limestone/70 transition-colors">
+              <td class="py-3.5 pr-4 font-mono text-xs text-vermilion tabular-nums">L05</td>
+              <td class="py-3.5 px-4 font-medium text-charcoal">Dual N52 Neodymium Motor &amp; Yoke</td>
+              <td class="py-3.5 px-4 text-stone">Twin N52 rings · copper shorting ring · steel T-yoke</td>
+              <td class="py-3.5 px-4 font-mono text-xs text-stone tabular-nums">1.68 Tesla flux · THD &lt; 0.008%</td>
+              <td class="py-3.5 pl-4 font-mono text-xs text-charcoal text-right tabular-nums">860 g</td>
+            </tr>
+            <tr class="hover:bg-limestone/70 transition-colors">
+              <td class="py-3.5 pr-4 font-mono text-xs text-stone tabular-nums">L04</td>
+              <td class="py-3.5 px-4 font-medium text-charcoal">Helmholtz Acoustic Baffle &amp; Shell</td>
+              <td class="py-3.5 px-4 text-stone">Turned monoblock aluminum + 6 internal ribs</td>
+              <td class="py-3.5 px-4 font-mono text-xs text-stone tabular-nums">Tuned 34 Hz cavity · zero standing waves</td>
+              <td class="py-3.5 pl-4 font-mono text-xs text-charcoal text-right tabular-nums">780 g</td>
+            </tr>
+            <tr class="hover:bg-limestone/70 transition-colors">
+              <td class="py-3.5 pr-4 font-mono text-xs text-vermilion tabular-nums">L03</td>
+              <td class="py-3.5 px-4 font-medium text-charcoal">4-Layer ENIG DSP &amp; Class-D PCB</td>
+              <td class="py-3.5 px-4 text-stone">Matte-black FR-4 · 2oz immersion gold · Cu heatsink</td>
+              <td class="py-3.5 px-4 font-mono text-xs text-stone tabular-nums">KNT-DSP-04 · Dual 180W · 32-bit/384 kHz</td>
+              <td class="py-3.5 pl-4 font-mono text-xs text-charcoal text-right tabular-nums">210 g</td>
+            </tr>
+            <tr class="hover:bg-limestone/70 transition-colors">
+              <td class="py-3.5 pr-4 font-mono text-xs text-stone tabular-nums">L02</td>
+              <td class="py-3.5 px-4 font-medium text-charcoal">Power Cell Cradle &amp; Gold I/O Bus</td>
+              <td class="py-3.5 px-4 text-stone">6× 21700 cells · milled carrier · brass shield</td>
+              <td class="py-3.5 px-4 font-mono text-xs text-stone tabular-nums">108 Wh array · USB-C &amp; Optical TOSLINK</td>
+              <td class="py-3.5 pl-4 font-mono text-xs text-charcoal text-right tabular-nums">490 g</td>
+            </tr>
+            <tr class="hover:bg-limestone/70 transition-colors">
+              <td class="py-3.5 pr-4 font-mono text-xs text-vermilion tabular-nums">L01</td>
+              <td class="py-3.5 px-4 font-medium text-charcoal">Weighted Brass &amp; Sorbothane Plinth</td>
+              <td class="py-3.5 px-4 text-stone">Solid machined C36000 brass + Sorbothane pad</td>
+              <td class="py-3.5 px-4 font-mono text-xs text-stone tabular-nums">4.8 kg system-ballasted datum isolation</td>
+              <td class="py-3.5 pl-4 font-mono text-xs text-charcoal text-right tabular-nums">2,540 g</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       SECTION 3: THE OBSIDIAN ACOUSTIC CHAMBER (Calibrated Warm Dark Mode)
+       ===================================================================== -->
+  <section
+    id="acoustics"
+    class="relative z-20 bg-obsidian text-bone border-t border-[rgba(236,232,225,0.10)] py-24 sm:py-32 px-5 sm:px-10"
+  >
+    <div class="max-w-[1380px] mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+        <!-- Left Column: Live Acoustic Synthesizer Controls -->
+        <div class="lg:col-span-5">
+          <div class="flex items-center justify-between gap-4 mb-6">
+            <div>
+              <p class="font-mono text-[11px] uppercase tracking-[0.14em] text-[#A49D94]">
+                Anechoic Reference Chamber
+              </p>
+              <h2 class="editorial-serif text-3xl sm:text-4xl font-normal text-bone leading-tight mt-1">
+                Live Acoustic <span class="italic">Excursion</span>
+              </h2>
+            </div>
+
+            <!-- Physical Braun-Inspired Power Toggle (role="switch") -->
+            <div class="flex flex-col items-end gap-1.5">
+              <button
+                id="chamber-power-switch"
+                type="button"
+                role="switch"
+                aria-checked="false"
+                aria-label="Toggle Web Audio Acoustic Reference Engine"
+                class="power-switch"
+              >
+                <span class="power-switch-knob"></span>
+              </button>
+              <span id="chamber-power-label" class="font-mono text-[10px] uppercase tracking-wider text-[#A49D94]">
+                Standby
+              </span>
+            </div>
+          </div>
+
+          <p class="text-sm leading-relaxed text-[#A49D94] mb-8">
+            Engage the browser Web Audio synthesizer to test low-frequency excursion and
+            harmonic dispersion. The live <span class="font-mono text-xs text-bone">AnalyserNode</span>
+            simultaneously drives the cross-section driver telemetry here and physically
+            vibrates Layer 06 (the 3D woofer cone) in the teardown viewport above.
+          </p>
+
+          <!-- Logarithmic Frequency Sweep Fader (28 Hz – 18 kHz) -->
+          <div
+            class="p-5 bg-obsidian-raised border border-[rgba(236,232,225,0.10)] mb-5"
+            style="border-radius: var(--r-card-out); box-shadow: inset 0 1px 0 rgba(255,250,244,0.06);"
+          >
+            <div class="flex items-baseline justify-between mb-3.5">
+              <label for="chamber-freq-slider" class="font-mono text-[11px] uppercase tracking-wider text-[#A49D94]">
+                Logarithmic Frequency
+              </label>
+              <span id="chamber-freq-readout" class="font-mono text-base font-medium text-bone tabular-nums">
+                110 Hz
+              </span>
+            </div>
+
+            <input
+              id="chamber-freq-slider"
+              type="range"
+              min="0"
+              max="1000"
+              value="212"
+              class="chamber-fader"
+              aria-label="Logarithmic frequency control from 28 Hz to 18 kHz"
+            />
+
+            <div class="flex justify-between font-mono text-[10px] text-[#A49D94] mt-3 tabular-nums">
+              <span>28 Hz</span>
+              <span>220 Hz</span>
+              <span>1.8 kHz</span>
+              <span>18 kHz</span>
+            </div>
+          </div>
+
+          <!-- 4 Acoustic Presets -->
+          <div
+            class="p-2 bg-[#0E0C0B] border border-[rgba(236,232,225,0.09)] grid grid-cols-2 gap-2"
+            style="border-radius: var(--r-outer);"
+            role="radiogroup"
+            aria-label="Acoustic Test Presets"
+          >
+            <button
+              type="button"
+              data-preset="sub42"
+              aria-pressed="false"
+              class="preset-btn hw-btn-dark py-3 px-3 text-left"
+              style="border-radius: var(--r-inner);"
+            >
+              <span class="block text-xs font-medium text-bone">Sub-Bass 42 Hz</span>
+              <span class="block font-mono text-[10px] text-[#A49D94] mt-0.5">Peak Cone Excursion</span>
+            </button>
+
+            <button
+              type="button"
+              data-preset="ref110"
+              aria-pressed="true"
+              class="preset-btn hw-btn-dark is-selected py-3 px-3 text-left"
+              style="border-radius: var(--r-inner);"
+            >
+              <span class="block text-xs font-medium text-bone">Reference 110 Hz</span>
+              <span class="block font-mono text-[10px] text-[#A49D94] mt-0.5">Pure A2 Calibration</span>
+            </button>
+
+            <button
+              type="button"
+              data-preset="chord"
+              aria-pressed="false"
+              class="preset-btn hw-btn-dark py-3 px-3 text-left"
+              style="border-radius: var(--r-inner);"
+            >
+              <span class="block text-xs font-medium text-bone">Harmonic Chord</span>
+              <span class="block font-mono text-[10px] text-[#A49D94] mt-0.5">Warm Analog Triad</span>
+            </button>
+
+            <button
+              type="button"
+              data-preset="sweep"
+              aria-pressed="false"
+              class="preset-btn hw-btn-dark py-3 px-3 text-left"
+              style="border-radius: var(--r-inner);"
+            >
+              <span class="block text-xs font-medium text-bone">Acoustic Sweep</span>
+              <span class="block font-mono text-[10px] text-[#A49D94] mt-0.5">Auto 28 Hz → 8 kHz</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Column: High-DPI Oscilloscope + Live Transducer Cross-Section -->
+        <div class="lg:col-span-7 space-y-5">
+          <!-- Primary Oscilloscope & Harmonic Analyzer -->
+          <div
+            class="p-5 sm:p-6 bg-obsidian-raised border border-[rgba(236,232,225,0.10)]"
+            style="border-radius: var(--r-card-out); box-shadow: inset 0 1px 0 rgba(255,250,244,0.06);"
+          >
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-3.5 mb-4 border-b border-[rgba(236,232,225,0.09)] font-mono text-[11px] tabular-nums">
+              <span class="flex items-center gap-2 text-[#A49D94]">
+                <span id="chamber-led" class="w-2 h-2 rounded-full bg-[#5B554E] transition-colors"></span>
+                ANALYSER // TIME-DOMAIN &amp; FFT HARMONICS
+              </span>
+              <span id="chamber-telemetry" class="text-bone">-∞ dBFS · 0.00 mm Xmax</span>
+            </div>
+
+            <div
+              class="bg-[#0D0B0A] border border-[rgba(236,232,225,0.08)] p-2"
+              style="border-radius: var(--r-card-in); box-shadow: inset 0 2px 8px rgba(0,0,0,0.75);"
+            >
+              <canvas
+                id="chamber-osc-canvas"
+                class="w-full h-[185px] sm:h-[210px] block"
+                aria-label="Live high-DPI audio oscilloscope and harmonic bar spectrum"
+              ></canvas>
+            </div>
+          </div>
+
+          <!-- Synchronized Layer 06 Woofer Cross-Section & Excursion Meter -->
+          <div
+            class="p-5 sm:p-6 bg-obsidian-raised border border-[rgba(236,232,225,0.10)] grid grid-cols-1 sm:grid-cols-12 gap-6 items-center"
+            style="border-radius: var(--r-card-out);"
+          >
+            <div class="sm:col-span-7">
+              <div class="flex items-center justify-between font-mono text-[10.5px] text-[#A49D94] mb-2">
+                <span>L06 / L05 TRANSDUCER CROSS-SECTION</span>
+                <span class="text-vermilion-dark">COUPLED TO 3D</span>
+              </div>
+              <div
+                class="bg-[#0D0B0A] border border-[rgba(236,232,225,0.08)] p-2"
+                style="border-radius: var(--r-inner);"
+              >
+                <canvas
+                  id="driver-cross-canvas"
+                  class="w-full h-[126px] block"
+                  aria-label="Real-time animated woofer cone and copper voice coil displacement diagram"
+                ></canvas>
+              </div>
+            </div>
+
+            <div class="sm:col-span-5 space-y-3 font-mono text-[11px] tabular-nums">
+              <div class="pb-2.5 border-b border-[rgba(236,232,225,0.09)] flex justify-between">
+                <span class="text-[#A49D94]">COIL EXCURSION</span>
+                <span id="driver-mm-val" class="text-bone">0.00 mm</span>
+              </div>
+              <div class="pb-2.5 border-b border-[rgba(236,232,225,0.09)] flex justify-between">
+                <span class="text-[#A49D94]">FLUX DENSITY</span>
+                <span class="text-bone">1.68 Tesla</span>
+              </div>
+              <div class="pb-2.5 border-b border-[rgba(236,232,225,0.09)] flex justify-between">
+                <span class="text-[#A49D94]">ACTIVE PROFILE</span>
+                <span id="driver-preset-val" class="text-vermilion-dark">Reference 110 Hz</span>
+              </div>
+              <a
+                href="#teardown-stage"
+                id="watch-3d-driver-link"
+                class="hw-btn-dark w-full py-2.5 px-3 text-center text-[11px] font-sans font-medium block text-bone"
+              >
+                View Live 3D Coil Vibration ↑
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       SECTION 4: COLLECTOR'S EDITION 04 ALLOCATION & QUIET FOOTER
+       ===================================================================== -->
+  <section
+    id="allocation"
+    class="relative z-20 bg-limestone border-t border-[rgba(22,20,18,0.11)] py-24 sm:py-28 px-5 sm:px-10"
+  >
+    <div class="max-w-[1380px] mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center pb-16 border-b border-[rgba(22,20,18,0.11)]">
+        <div class="lg:col-span-7">
+          <p class="font-mono text-[11px] uppercase tracking-[0.14em] text-stone mb-3">
+            Batch 04 · 250 Individually Numbered Units
+          </p>
+          <h2 class="editorial-serif text-3xl sm:text-5xl font-normal text-charcoal leading-[1.06] mb-4">
+            Built to Be Opened, <span class="italic">Repaired, and Kept.</span>
+          </h2>
+          <p class="text-sm sm:text-[15px] leading-relaxed text-stone max-w-[54ch]">
+            Delivered in a fitted birch flight case with a torque-calibrated T8 driver,
+            individual anechoic frequency plot, and five-year Stockholm acoustic calibration
+            coverage.
+          </p>
+        </div>
+
+        <div class="lg:col-span-5">
+          <div class="recessed-tray" style="border-radius: var(--r-card-out); padding: 7px;">
+            <div
+              class="bg-alabaster p-6 border border-[rgba(22,20,18,0.09)]"
+              style="border-radius: var(--r-card-in); box-shadow: inset 0 1px 0 rgba(255,255,255,0.92), 0 10px 24px -12px rgba(34,28,22,0.12);"
+            >
+              <div class="space-y-2.5 pb-5 mb-5 border-b border-[rgba(22,20,18,0.09)] font-mono text-[11px] tabular-nums">
+                <div class="flex justify-between gap-4">
+                  <span class="text-stone">STUDIO FINISH</span>
+                  <span id="alloc-finish-name" class="text-charcoal font-medium text-right">Raw Bead-Blasted Aluminum</span>
+                </div>
+                <div class="flex justify-between gap-4">
+                  <span class="text-stone">NEXT SERIAL</span>
+                  <span class="text-charcoal font-medium">No. 213 / 250</span>
+                </div>
+                <div class="flex justify-between gap-4">
+                  <span class="text-stone">ALLOCATION PRICE</span>
+                  <span class="text-charcoal font-medium">$4,200 USD</span>
+                </div>
+              </div>
+
+              <button
+                id="alloc-reserve-btn"
+                type="button"
+                class="hw-btn-primary w-full py-3.5 text-[13px] font-medium"
+              >
+                Request Serial Allocation
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-mono text-[11px] text-stone">
+        <span>© 2026 KINETA Acoustic Instruments AB · Stockholm</span>
+        <span class="tabular-nums">Model 04 · 12-Layer Modular Architecture · Series 001–250</span>
+      </footer>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       EDITION 04 RESERVATION SLIDE-OVER DRAWER (Concentric Corners)
+       ===================================================================== -->
+  <div
+    id="reserve-drawer"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="drawer-heading"
+    class="fixed inset-0 z-50 flex justify-end bg-[#161412]/45 backdrop-blur-sm p-0 sm:p-3"
+  >
+    <div id="drawer-backdrop" class="flex-1 h-full"></div>
+
+    <div
+      id="reserve-panel"
+      class="w-full max-w-md h-full bg-alabaster border border-[rgba(22,20,18,0.12)] p-6 sm:p-8 overflow-y-auto flex flex-col justify-between shadow-2xl sm:rounded-[22px]"
+      style="box-shadow: inset 0 1px 0 rgba(255,255,255,0.92), -16px 0 42px -12px rgba(22,20,18,0.22);"
+    >
+      <div>
+        <div class="flex items-start justify-between gap-4 pb-5 border-b border-[rgba(22,20,18,0.10)] mb-6">
+          <div>
+            <p class="font-mono text-[11px] uppercase tracking-wider text-stone">
+              Edition 04 · Serial 213–250
+            </p>
+            <h3 id="drawer-heading" class="editorial-serif text-2xl font-normal text-charcoal mt-1">
+              Reserve Model 04
+            </h3>
+          </div>
+          <button
+            id="drawer-close-btn"
+            type="button"
+            aria-label="Close Reservation Drawer"
+            class="hw-btn-surface px-3 py-1.5 font-mono text-[11px] text-stone"
+          >
+            Close
+          </button>
+        </div>
+
+        <form id="reserve-form" class="space-y-4">
+          <div class="p-3.5 bg-sandstone/70 border border-[rgba(22,20,18,0.09)] rounded-[12px] flex items-center justify-between font-mono text-[11px] tabular-nums">
+            <span class="text-stone">SERIAL PREVIEW</span>
+            <span class="text-charcoal font-medium">KNT-04-213 / 250</span>
+          </div>
+
+          <div>
+            <label for="input-name" class="block font-mono text-[11px] uppercase tracking-wider text-stone mb-1.5">
+              Full Name or Studio
+            </label>
+            <input
+              id="input-name"
+              type="text"
+              required
+              placeholder="Henrik Lindholm"
+              class="w-full px-3.5 py-2.5 bg-limestone border border-[rgba(22,20,18,0.14)] rounded-[9px] text-sm text-charcoal placeholder:text-stone/55 focus:outline-none focus:border-vermilion transition-colors"
+            />
+          </div>
+
+          <div>
+            <label for="input-email" class="block font-mono text-[11px] uppercase tracking-wider text-stone mb-1.5">
+              Email Address
+            </label>
+            <input
+              id="input-email"
+              type="email"
+              required
+              placeholder="henrik@nordicatelier.se"
+              class="w-full px-3.5 py-2.5 bg-limestone border border-[rgba(22,20,18,0.14)] rounded-[9px] text-sm text-charcoal placeholder:text-stone/55 focus:outline-none focus:border-vermilion transition-colors"
+            />
+          </div>
+
+          <div>
+            <label for="input-finish" class="block font-mono text-[11px] uppercase tracking-wider text-stone mb-1.5">
+              Chassis Finish
+            </label>
+            <select
+              id="input-finish"
+              class="w-full px-3.5 py-2.5 bg-limestone border border-[rgba(22,20,18,0.14)] rounded-[9px] text-sm text-charcoal focus:outline-none focus:border-vermilion transition-colors"
+            >
+              <option value="aluminum">Raw Bead-Blasted Aluminum</option>
+              <option value="graphite">Anodized Warm Graphite</option>
+              <option value="chalk">Kiln Ceramic Chalk</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="input-config" class="block font-mono text-[11px] uppercase tracking-wider text-stone mb-1.5">
+                Configuration
+              </label>
+              <select
+                id="input-config"
+                class="w-full px-3 py-2.5 bg-limestone border border-[rgba(22,20,18,0.14)] rounded-[9px] text-xs font-medium text-charcoal focus:outline-none focus:border-vermilion"
+              >
+                <option value="Single Unit — $4,200">Single — $4,200</option>
+                <option value="Matched Stereo Pair — $8,100">Stereo Pair — $8,100</option>
+              </select>
+            </div>
+            <div>
+              <label for="input-voltage" class="block font-mono text-[11px] uppercase tracking-wider text-stone mb-1.5">
+                Mains Spec
+              </label>
+              <select
+                id="input-voltage"
+                class="w-full px-3 py-2.5 bg-limestone border border-[rgba(22,20,18,0.14)] rounded-[9px] text-xs font-medium text-charcoal focus:outline-none focus:border-vermilion"
+              >
+                <option value="230V EU / UK">230V EU / UK</option>
+                <option value="120V North America">120V North America</option>
+                <option value="100V Japan">100V Japan</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="hw-btn-primary w-full py-3.5 text-[13px] font-medium mt-2">
+            Confirm Edition 04 Allocation
+          </button>
+
+          <p class="text-[12px] leading-relaxed text-stone">
+            No deposit collected today. Your sequential serial number is held for 72 hours while
+            our Stockholm studio shares placement &amp; acoustic documentation.
+          </p>
+        </form>
+
+        <!-- Tactile Confirmation State (Zero alert/confirm) -->
+        <div id="reserve-confirmation" class="hidden space-y-6">
+          <div class="recessed-tray" style="border-radius: var(--r-outer); padding: 6px;">
+            <div class="bg-alabaster p-5 border border-[rgba(22,20,18,0.08)]" style="border-radius: var(--r-inner);">
+              <p class="font-mono text-[11px] uppercase tracking-wider text-vermilion mb-1.5">
+                Serial Allocation Held
+              </p>
+              <div id="conf-serial" class="editorial-serif text-3xl text-charcoal tabular-nums">
+                KNT-04-213
+              </div>
+              <p class="font-mono text-[11px] text-stone mt-1">
+                Model 04 · 12-Layer Studio Edition
+              </p>
+            </div>
+          </div>
+
+          <div class="divide-y divide-[rgba(22,20,18,0.09)] border-y border-[rgba(22,20,18,0.09)] font-mono text-[11px] tabular-nums">
+            <div class="py-2.5 flex justify-between gap-4">
+              <span class="text-stone">COLLECTOR</span>
+              <span id="conf-name" class="text-charcoal text-right">—</span>
+            </div>
+            <div class="py-2.5 flex justify-between gap-4">
+              <span class="text-stone">FINISH</span>
+              <span id="conf-finish" class="text-charcoal text-right">—</span>
+            </div>
+            <div class="py-2.5 flex justify-between gap-4">
+              <span class="text-stone">CONFIGURATION</span>
+              <span id="conf-config" class="text-charcoal text-right">—</span>
+            </div>
+            <div class="py-2.5 flex justify-between gap-4">
+              <span class="text-stone">DISPATCH</span>
+              <span class="text-charcoal text-right">Q1 2027 · Stockholm</span>
+            </div>
+          </div>
+
+          <button id="drawer-done-btn" type="button" class="hw-btn-surface w-full py-3 text-[13px] font-medium text-charcoal">
+            Return to Teardown
+          </button>
+        </div>
+      </div>
+
+      <div class="pt-5 mt-8 border-t border-[rgba(22,20,18,0.10)] flex justify-between font-mono text-[11px] text-stone tabular-nums">
+        <span>Edition 04</span>
+        <span>38 / 250 Open</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       MODULE SCRIPT: THREE.JS v0.170.0 12-LAYER STUDIO CAD ENGINE + WEB AUDIO
+       ===================================================================== -->
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* ---------------------------------------------------------------------
+       1. PROCEDURAL PAPER-GRAIN TEXTURE FOR GALLERY CANVAS
+       --------------------------------------------------------------------- */
+    function initPaperGrain() {
+      const el = document.getElementById('paper-grain');
+      if (!el) return;
+      const c = document.createElement('canvas');
+      c.width = 160;
+      c.height = 160;
+      const ctx = c.getContext('2d');
+      const img = ctx.createImageData(160, 160);
+      for (let i = 0; i < img.data.length; i += 4) {
+        const v = 118 + Math.floor(Math.random() * 62);
+        img.data[i] = v;
+        img.data[i + 1] = v - 2;
+        img.data[i + 2] = v - 5;
+        img.data[i + 3] = 255;
+      }
+      ctx.putImageData(img, 0, 0);
+      el.style.backgroundImage = `url(${c.toDataURL('image/png')})`;
+    }
+
+    /* ---------------------------------------------------------------------
+       2. STUDIO FINISHES, LIGHTING RIGS & CENTRALIZED 5-SHOT CHOREOGRAPHY
+       --------------------------------------------------------------------- */
+    const FINISHES = {
+      aluminum: {
+        name: 'Raw Bead-Blasted Aluminum',
+        chassisColor: 0xd4d0c8,
+        crownColor: 0xdad6ce,
+        sleeveColor: 0xc8c3ba,
+        metalness: 0.90,
+        roughness: 0.27,
+        clearcoat: 0.08,
+        clearcoatRoughness: 0.30,
+        envIntensity: 1.20,
+      },
+      graphite: {
+        name: 'Anodized Warm Graphite',
+        chassisColor: 0x2c2926,
+        crownColor: 0x35312d,
+        sleeveColor: 0x24211f,
+        metalness: 0.86,
+        roughness: 0.29,
+        clearcoat: 0.14,
+        clearcoatRoughness: 0.28,
+        envIntensity: 1.30,
+      },
+      chalk: {
+        name: 'Kiln Ceramic Chalk',
+        chassisColor: 0xe9e4da,
+        crownColor: 0xd9d3c7,
+        sleeveColor: 0xd6d0c4,
+        metalness: 0.06,
+        roughness: 0.44,
+        clearcoat: 0.34,
+        clearcoatRoughness: 0.26,
+        envIntensity: 0.98,
+      },
+    };
+
+    const LIGHTING_MODES = {
+      daylight: {
+        bgHex: 0xf2efea,
+        floorHex: 0xebe6de,
+        keyColor: 0xfffaf2,
+        keyIntensity: 2.40,
+        keyPos: [-5.5, 8.2, 6.2],
+        rimColor: 0xe6edf6,
+        rimIntensity: 1.20,
+        rimPos: [6.4, 4.8, -4.4],
+        exposure: 1.08,
+      },
+      evening: {
+        bgHex: 0xe2dbd0,
+        floorHex: 0xd9d1c4,
+        keyColor: 0xffd5ab,
+        keyIntensity: 2.75,
+        keyPos: [5.8, 5.6, 5.2],
+        rimColor: 0xc7d5ea,
+        rimIntensity: 1.45,
+        rimPos: [-6.0, 4.0, -4.6],
+        exposure: 1.04,
+      },
+    };
+
+    // Centralized Camera & Mechanical Keyframes across normalized progress p in [0, 1]
+    // World coordinates: floor is at y = 0.0; assembled monolith spans y = 0.0 .. 3.13;
+    // fully expanded 12-layer stack spans y = 0.0 .. 8.58 (center y ≈ 4.30).
+    const SHOTS = [
+      {
+        p: 0.00,
+        name: 'Monolith Assembled',
+        camPos: [0.45, 2.05, 6.35],
+        lookAt: [-0.88, 1.58, 0.0],
+        rotY: -0.30,
+        explode: 0.00,
+      },
+      {
+        p: 0.15,
+        name: 'Release Begins',
+        camPos: [0.80, 2.65, 6.10],
+        lookAt: [-0.82, 2.05, 0.0],
+        rotY: 0.12,
+        explode: 0.12,
+      },
+      {
+        p: 0.32,
+        name: 'Crown, Fasteners & Waveguide',
+        camPos: [1.95, 5.85, 5.25],
+        lookAt: [-0.55, 4.10, 0.0],
+        rotY: 0.78,
+        explode: 0.40,
+      },
+      {
+        p: 0.54,
+        name: 'Driver & Copper Coil Extraction',
+        camPos: [-3.25, 4.15, 7.65],
+        lookAt: [-0.75, 3.20, 0.0],
+        rotY: 1.78,
+        explode: 0.68,
+      },
+      {
+        p: 0.78,
+        name: 'Full 12-Layer CAD Elevation',
+        camPos: [0.85, 4.55, 19.8],
+        lookAt: [-1.15, 4.22, 0.0],
+        rotY: 2.62,
+        explode: 1.00,
+      },
+      {
+        p: 1.00,
+        name: 'Full-Stack Inspection',
+        camPos: [1.55, 4.70, 19.6],
+        lookAt: [-1.10, 4.24, 0.0],
+        rotY: 3.35,
+        explode: 1.00,
+      },
+    ];
+
+    // Chapter scroll progress targets for the quiet right-edge Swiss progress rail
+    const CHAPTER_TARGETS = [0.00, 0.28, 0.52, 0.78, 0.95];
+
+    const state = {
+      activeFinish: 'aluminum',
+      activeLighting: 'daylight',
+      inspectMode: false,
+      calloutsEnabled: true,
+      manualExplodeOverride: false,
+      manualExplodeValue: 0,
+      targetScrollProgress: 0,
+      currentScrollProgress: 0,
+      activeChapter: 0,
+      pointerX: 0,
+      pointerY: 0,
+      smoothPointerX: 0,
+      smoothPointerY: 0,
+      // Smooth camera & mechanical interpolation state
+      curCamPos: new THREE.Vector3(0.45, 2.05, 6.35),
+      curLookAt: new THREE.Vector3(-0.88, 1.58, 0.0),
+      curRotY: -0.30,
+      curExplode: 0.0,
+      // Target PBR values
+      targetChassisColor: new THREE.Color(FINISHES.aluminum.chassisColor),
+      targetCrownColor: new THREE.Color(FINISHES.aluminum.crownColor),
+      targetSleeveColor: new THREE.Color(FINISHES.aluminum.sleeveColor),
+      targetMetalness: FINISHES.aluminum.metalness,
+      targetRoughness: FINISHES.aluminum.roughness,
+      targetClearcoat: FINISHES.aluminum.clearcoat,
+      targetClearcoatRoughness: FINISHES.aluminum.clearcoatRoughness,
+      targetEnvIntensity: FINISHES.aluminum.envIntensity,
+      // Live Web Audio state
+      audioOn: false,
+      audioPreset: 'ref110',
+      freqHz: 110,
+      audioAmp: 0,
+      audioPeak: 0,
+      sweepPhase: 0,
+    };
+
+    /* ---------------------------------------------------------------------
+       3. 7 PROCEDURAL HIGH-RES CANVAS TEXTURES (1024px / 2048px, ZERO URLS)
+       --------------------------------------------------------------------- */
+    function createRadialBrushedMaps() {
+      const size = 1024;
+      const bumpC = document.createElement('canvas');
+      const roughC = document.createElement('canvas');
+      bumpC.width = roughC.width = size;
+      bumpC.height = roughC.height = size;
+      const bCtx = bumpC.getContext('2d');
+      const rCtx = roughC.getContext('2d');
+      const cx = size / 2;
+      const cy = size / 2;
+
+      bCtx.fillStyle = '#808080';
+      bCtx.fillRect(0, 0, size, size);
+      rCtx.fillStyle = '#6E6E6E';
+      rCtx.fillRect(0, 0, size, size);
+
+      for (let r = 6; r < size * 0.5; r += 1.35) {
+        const bShade = 114 + Math.floor(Math.sin(r * 0.9) * 14 + (Math.random() - 0.5) * 26);
+        const rShade = 96 + Math.floor((Math.random() - 0.5) * 32);
+        bCtx.strokeStyle = `rgb(${bShade},${bShade},${bShade})`;
+        bCtx.lineWidth = 1.05;
+        bCtx.beginPath();
+        bCtx.arc(cx, cy, r, 0, Math.PI * 2);
+        bCtx.stroke();
+
+        rCtx.strokeStyle = `rgb(${rShade},${rShade},${rShade})`;
+        rCtx.lineWidth = 1.1;
+        rCtx.beginPath();
+        rCtx.arc(cx, cy, r, 0, Math.PI * 2);
+        rCtx.stroke();
+      }
+
+      const bumpTex = new THREE.CanvasTexture(bumpC);
+      const roughTex = new THREE.CanvasTexture(roughC);
+      bumpTex.anisotropy = roughTex.anisotropy = 8;
+      return { bumpTex, roughTex };
+    }
+
+    function createBeadBlastedMaps() {
+      const size = 1024;
+      const bumpC = document.createElement('canvas');
+      const roughC = document.createElement('canvas');
+      bumpC.width = roughC.width = size;
+      bumpC.height = roughC.height = size;
+      const bCtx = bumpC.getContext('2d');
+      const rCtx = roughC.getContext('2d');
+      const bImg = bCtx.createImageData(size, size);
+      const rImg = rCtx.createImageData(size, size);
+      const bData = bImg.data;
+      const rData = rImg.data;
+
+      const colBias = new Float32Array(size);
+      for (let x = 0; x < size; x++) {
+        colBias[x] = (Math.random() - 0.5) * 14 + Math.sin(x * 0.28) * 3.5;
+      }
+
+      for (let y = 0; y < size; y++) {
+        const rowOff = y * size;
+        for (let x = 0; x < size; x++) {
+          const i = (rowOff + x) * 4;
+          const micro = (Math.random() - 0.5) * 22;
+          const bV = Math.max(0, Math.min(255, 128 + colBias[x] * 0.65 + micro));
+          const rV = Math.max(0, Math.min(255, 122 + colBias[x] * 0.4 + micro * 0.85));
+          bData[i] = bData[i + 1] = bData[i + 2] = bV;
+          bData[i + 3] = 255;
+          rData[i] = rData[i + 1] = rData[i + 2] = rV;
+          rData[i + 3] = 255;
+        }
+      }
+      bCtx.putImageData(bImg, 0, 0);
+      rCtx.putImageData(rImg, 0, 0);
+
+      const bumpTex = new THREE.CanvasTexture(bumpC);
+      const roughTex = new THREE.CanvasTexture(roughC);
+      bumpTex.wrapS = bumpTex.wrapT = roughTex.wrapS = roughTex.wrapT = THREE.RepeatWrapping;
+      bumpTex.repeat.set(3, 2);
+      roughTex.repeat.set(3, 2);
+      bumpTex.anisotropy = roughTex.anisotropy = 8;
+      return { bumpTex, roughTex };
+    }
+
+    function createMicroPerforatedGrilleMaps() {
+      const w = 2048;
+      const h = 1024;
+      const colC = document.createElement('canvas');
+      const bumpC = document.createElement('canvas');
+      const alphaC = document.createElement('canvas');
+      colC.width = bumpC.width = alphaC.width = w;
+      colC.height = bumpC.height = alphaC.height = h;
+      const cCtx = colC.getContext('2d');
+      const bCtx = bumpC.getContext('2d');
+      const aCtx = alphaC.getContext('2d');
+
+      cCtx.fillStyle = '#EAE6DF';
+      cCtx.fillRect(0, 0, w, h);
+      bCtx.fillStyle = '#D8D8D8';
+      bCtx.fillRect(0, 0, w, h);
+      aCtx.fillStyle = '#FFFFFF';
+      aCtx.fillRect(0, 0, w, h);
+
+      cCtx.strokeStyle = 'rgba(255,255,255,0.16)';
+      cCtx.lineWidth = 1;
+      for (let x = 0; x < w; x += 4) {
+        cCtx.beginPath();
+        cCtx.moveTo(x, 0);
+        cCtx.lineTo(x, h);
+        cCtx.stroke();
+      }
+
+      const cols = 128;
+      const rows = 54;
+      const marginY = 74;
+      const usableH = h - marginY * 2;
+      const stepX = w / cols;
+      const stepY = usableH / rows;
+      const r = Math.min(stepX, stepY) * 0.30;
+
+      for (let row = 0; row <= rows; row++) {
+        const y = marginY + row * stepY;
+        const offX = row % 2 === 0 ? 0 : stepX * 0.5;
+        for (let col = 0; col < cols; col++) {
+          const x = (col * stepX + offX) % w;
+          cCtx.fillStyle = '#FFFFFF';
+          cCtx.beginPath();
+          cCtx.arc(x, y + 0.8, r + 1.0, 0, Math.PI * 2);
+          cCtx.fill();
+
+          cCtx.fillStyle = '#12100E';
+          cCtx.beginPath();
+          cCtx.arc(x, y, r, 0, Math.PI * 2);
+          cCtx.fill();
+
+          bCtx.fillStyle = '#141414';
+          bCtx.beginPath();
+          bCtx.arc(x, y, r + 0.7, 0, Math.PI * 2);
+          bCtx.fill();
+
+          aCtx.fillStyle = '#000000';
+          aCtx.beginPath();
+          aCtx.arc(x, y, r * 0.92, 0, Math.PI * 2);
+          aCtx.fill();
+        }
+      }
+
+      const map = new THREE.CanvasTexture(colC);
+      const bumpMap = new THREE.CanvasTexture(bumpC);
+      const alphaMap = new THREE.CanvasTexture(alphaC);
+      map.colorSpace = THREE.SRGBColorSpace;
+      map.wrapS = bumpMap.wrapS = alphaMap.wrapS = THREE.RepeatWrapping;
+      map.anisotropy = bumpMap.anisotropy = alphaMap.anisotropy = 8;
+      return { map, bumpMap, alphaMap };
+    }
+
+    function createWoundCopperCoilMaps() {
+      const size = 1024;
+      const colC = document.createElement('canvas');
+      const bumpC = document.createElement('canvas');
+      const roughC = document.createElement('canvas');
+      colC.width = bumpC.width = roughC.width = size;
+      colC.height = bumpC.height = roughC.height = size;
+      const cCtx = colC.getContext('2d');
+      const bCtx = bumpC.getContext('2d');
+      const rCtx = roughC.getContext('2d');
+
+      const strands = 112;
+      const sh = size / strands;
+      for (let i = 0; i < strands; i++) {
+        const y = i * sh;
+        const gC = cCtx.createLinearGradient(0, y, 0, y + sh);
+        gC.addColorStop(0.0, '#5E2810');
+        gC.addColorStop(0.32, '#C86D39');
+        gC.addColorStop(0.54, '#ECA26F');
+        gC.addColorStop(0.76, '#B85C2A');
+        gC.addColorStop(1.0, '#4E200C');
+        cCtx.fillStyle = gC;
+        cCtx.fillRect(0, y, size, sh + 0.6);
+
+        const gB = bCtx.createLinearGradient(0, y, 0, y + sh);
+        gB.addColorStop(0.0, '#141414');
+        gB.addColorStop(0.5, '#F5F5F5');
+        gB.addColorStop(1.0, '#141414');
+        bCtx.fillStyle = gB;
+        bCtx.fillRect(0, y, size, sh + 0.6);
+
+        const gR = rCtx.createLinearGradient(0, y, 0, y + sh);
+        gR.addColorStop(0.0, '#9E9E9E');
+        gR.addColorStop(0.5, '#343434');
+        gR.addColorStop(1.0, '#9E9E9E');
+        rCtx.fillStyle = gR;
+        rCtx.fillRect(0, y, size, sh + 0.6);
+      }
+
+      const map = new THREE.CanvasTexture(colC);
+      const bumpMap = new THREE.CanvasTexture(bumpC);
+      const roughMap = new THREE.CanvasTexture(roughC);
+      map.colorSpace = THREE.SRGBColorSpace;
+      map.wrapS = map.wrapT = bumpMap.wrapS = bumpMap.wrapT = roughMap.wrapS = roughMap.wrapT = THREE.RepeatWrapping;
+      map.anisotropy = bumpMap.anisotropy = 8;
+      return { map, bumpMap, roughMap };
+    }
+
+    function createTopDeckLaserEtchMap() {
+      const size = 1024;
+      const c = document.createElement('canvas');
+      c.width = c.height = size;
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0, 0, size, size);
+      const cx = size / 2;
+      const cy = size / 2;
+
+      // Precision radial dB graduation ticks
+      const ticks = 48;
+      for (let i = 0; i < ticks; i++) {
+        const a = (i / ticks) * Math.PI * 2 - Math.PI / 2;
+        const isMajor = i % 6 === 0;
+        const rIn = isMajor ? 330 : 352;
+        const rOut = 384;
+        ctx.strokeStyle = isMajor ? 'rgba(22, 20, 18, 0.56)' : 'rgba(22, 20, 18, 0.24)';
+        ctx.lineWidth = isMajor ? 3.2 : 1.7;
+        ctx.beginPath();
+        ctx.moveTo(cx + Math.cos(a) * rIn, cy + Math.sin(a) * rIn);
+        ctx.lineTo(cx + Math.cos(a) * rOut, cy + Math.sin(a) * rOut);
+        ctx.stroke();
+      }
+
+      ctx.strokeStyle = 'rgba(22, 20, 18, 0.14)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 294, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.fillStyle = 'rgba(22, 20, 18, 0.58)';
+      ctx.font = '500 54px "IBM Plex Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('04', cx, cy + 162);
+
+      ctx.fillStyle = 'rgba(22, 20, 18, 0.36)';
+      ctx.font = '500 22px "DM Sans", sans-serif';
+      ctx.fillText('K I N E T A', cx, cy - 166);
+
+      ctx.font = '500 16px "IBM Plex Mono", monospace';
+      ctx.fillText('-60 dB', cx - 220, cy);
+      ctx.fillText('0 dB', cx + 225, cy);
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.anisotropy = 8;
+      return tex;
+    }
+
+    function createENIGPcbMaps() {
+      // Authentic 1024px Matte-Black Immersion-Gold (ENIG) 4-Layer DSP & Class-D PCB
+      const size = 1024;
+      const colC = document.createElement('canvas');
+      const roughC = document.createElement('canvas');
+      const bumpC = document.createElement('canvas');
+      colC.width = roughC.width = bumpC.width = size;
+      colC.height = roughC.height = bumpC.height = size;
+
+      const cCtx = colC.getContext('2d');
+      const rCtx = roughC.getContext('2d');
+      const bCtx = bumpC.getContext('2d');
+      const cx = size / 2;
+      const cy = size / 2;
+
+      // Matte-black solder mask substrate
+      cCtx.fillStyle = '#171615';
+      cCtx.fillRect(0, 0, size, size);
+      rCtx.fillStyle = '#A8A8A8'; // Matte solder mask
+      rCtx.fillRect(0, 0, size, size);
+      bCtx.fillStyle = '#606060';
+      bCtx.fillRect(0, 0, size, size);
+
+      // Subtle dark copper ground-plane pour traces beneath solder mask
+      cCtx.strokeStyle = '#22211F';
+      cCtx.lineWidth = 6;
+      for (let r = 130; r <= 440; r += 34) {
+        cCtx.beginPath();
+        cCtx.arc(cx, cy, r, 0, Math.PI * 2);
+        cCtx.stroke();
+      }
+
+      // Outer ENIG gold ground shielding ring + mounting fiducials
+      cCtx.strokeStyle = '#D5A74A';
+      cCtx.lineWidth = 9;
+      cCtx.beginPath();
+      cCtx.arc(cx, cy, 476, 0, Math.PI * 2);
+      cCtx.stroke();
+
+      rCtx.strokeStyle = '#262626'; // Shiny gold roughness
+      rCtx.lineWidth = 9;
+      rCtx.beginPath();
+      rCtx.arc(cx, cy, 476, 0, Math.PI * 2);
+      rCtx.stroke();
+
+      // Differential bus gold micro-traces radiating from central QFN DSP chip
+      const drawTrace = (pts, width = 3) => {
+        cCtx.strokeStyle = '#CEA047';
+        cCtx.lineWidth = width;
+        cCtx.lineJoin = 'round';
+        cCtx.beginPath();
+        pts.forEach((p, idx) => (idx === 0 ? cCtx.moveTo(p[0], p[1]) : cCtx.lineTo(p[0], p[1])));
+        cCtx.stroke();
+
+        rCtx.strokeStyle = '#323232';
+        rCtx.lineWidth = width;
+        rCtx.beginPath();
+        pts.forEach((p, idx) => (idx === 0 ? rCtx.moveTo(p[0], p[1]) : rCtx.lineTo(p[0], p[1])));
+        rCtx.stroke();
+
+        bCtx.strokeStyle = '#B8B8B8';
+        bCtx.lineWidth = width;
+        bCtx.beginPath();
+        pts.forEach((p, idx) => (idx === 0 ? bCtx.moveTo(p[0], p[1]) : bCtx.lineTo(p[0], p[1])));
+        bCtx.stroke();
+      };
+
+      for (let i = 0; i < 36; i++) {
+        const a = (i / 36) * Math.PI * 2;
+        const r1 = 115;
+        const r2 = 225 + (i % 3) * 32;
+        const r3 = 390 + (i % 2) * 38;
+        const a2 = a + (i % 2 === 0 ? 0.06 : -0.06);
+        drawTrace([
+          [cx + Math.cos(a) * r1, cy + Math.sin(a) * r1],
+          [cx + Math.cos(a) * r2, cy + Math.sin(a) * r2],
+          [cx + Math.cos(a2) * r3, cy + Math.sin(a2) * r3],
+        ], i % 4 === 0 ? 4.2 : 2.4);
+
+        // Gold plated via at termination
+        const vx = cx + Math.cos(a2) * r3;
+        const vy = cy + Math.sin(a2) * r3;
+        cCtx.fillStyle = '#E0B458';
+        cCtx.beginPath();
+        cCtx.arc(vx, vy, 6.5, 0, Math.PI * 2);
+        cCtx.fill();
+        cCtx.fillStyle = '#0D0C0B';
+        cCtx.beginPath();
+        cCtx.arc(vx, vy, 2.8, 0, Math.PI * 2);
+        cCtx.fill();
+      }
+
+      // Gold ENIG SMD pad arrays around central QFN package
+      for (let side = 0; side < 4; side++) {
+        cCtx.save();
+        cCtx.translate(cx, cy);
+        cCtx.rotate((side * Math.PI) / 2);
+        for (let p = -7; p <= 7; p++) {
+          cCtx.fillStyle = '#DFB357';
+          cCtx.fillRect(p * 11 - 3, 98, 6, 16);
+          rCtx.fillStyle = '#282828';
+          rCtx.fillRect(cx + p * 11 - 3, cy + 98, 6, 16);
+        }
+        cCtx.restore();
+      }
+
+      // 6 Gold mounting pads around perimeter
+      for (let i = 0; i < 6; i++) {
+        const a = (i / 6) * Math.PI * 2 + Math.PI / 6;
+        const mx = cx + Math.cos(a) * 432;
+        const my = cy + Math.sin(a) * 432;
+        cCtx.fillStyle = '#DFB357';
+        cCtx.beginPath();
+        cCtx.arc(mx, my, 18, 0, Math.PI * 2);
+        cCtx.fill();
+        cCtx.fillStyle = '#11100F';
+        cCtx.beginPath();
+        cCtx.arc(mx, my, 9, 0, Math.PI * 2);
+        cCtx.fill();
+      }
+
+      // Crisp off-white industrial silkscreen markings
+      cCtx.fillStyle = 'rgba(236, 232, 225, 0.72)';
+      cCtx.font = '500 22px "IBM Plex Mono", monospace';
+      cCtx.textAlign = 'center';
+      cCtx.fillText('KNT-DSP-04 REV 3.2', cx, cy + 258);
+      cCtx.font = '500 15px "IBM Plex Mono", monospace';
+      cCtx.fillText('4-LAYER ENIG // 32-BIT 384KHZ', cx, cy + 284);
+      cCtx.fillText('CLASS-D BI-AMP STAGE', cx, cy - 262);
+
+      const map = new THREE.CanvasTexture(colC);
+      const roughMap = new THREE.CanvasTexture(roughC);
+      const bumpMap = new THREE.CanvasTexture(bumpC);
+      map.colorSpace = THREE.SRGBColorSpace;
+      map.anisotropy = roughMap.anisotropy = 8;
+      return { map, roughMap, bumpMap };
+    }
+
+    function createContactShadowTexture() {
+      const size = 512;
+      const c = document.createElement('canvas');
+      c.width = c.height = size;
+      const ctx = c.getContext('2d');
+      const cx = size / 2;
+      const cy = size / 2;
+
+      const gWide = ctx.createRadialGradient(cx, cy, 42, cx, cy, 244);
+      gWide.addColorStop(0.0, 'rgba(20, 17, 14, 0.44)');
+      gWide.addColorStop(0.45, 'rgba(20, 17, 14, 0.18)');
+      gWide.addColorStop(0.75, 'rgba(20, 17, 14, 0.05)');
+      gWide.addColorStop(1.0, 'rgba(20, 17, 14, 0.0)');
+      ctx.fillStyle = gWide;
+      ctx.fillRect(0, 0, size, size);
+
+      const gCore = ctx.createRadialGradient(cx, cy, 20, cx, cy, 126);
+      gCore.addColorStop(0.0, 'rgba(15, 12, 10, 0.70)');
+      gCore.addColorStop(0.68, 'rgba(15, 12, 10, 0.34)');
+      gCore.addColorStop(1.0, 'rgba(15, 12, 10, 0.0)');
+      ctx.fillStyle = gCore;
+      ctx.fillRect(0, 0, size, size);
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    }
+
+    /* ---------------------------------------------------------------------
+       4. VIRTUAL PHOTOGRAPHY STUDIO (PMREMGenerator: Softboxes + Negative Fill)
+       --------------------------------------------------------------------- */
+    function buildStudioPMREM(renderer, mode) {
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      pmrem.compileEquirectangularShader();
+
+      const envScene = new THREE.Scene();
+      const isEvening = mode === 'evening';
+      envScene.background = new THREE.Color(isEvening ? 0x1d1a17 : 0x3b3834);
+
+      const addPanel = (w, h, hex, intensity, pos, look = [0, 0, 0]) => {
+        const mat = new THREE.MeshBasicMaterial({
+          color: new THREE.Color(hex).multiplyScalar(intensity),
+          side: THREE.DoubleSide,
+        });
+        const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat);
+        m.position.set(pos[0], pos[1], pos[2]);
+        m.lookAt(look[0], look[1], look[2]);
+        envScene.add(m);
+      };
+
+      // Overhead softbox diffuser
+      addPanel(12, 12, isEvening ? 0xffdfb8 : 0xfffcf7, isEvening ? 2.6 : 3.3, [0, 10, 1]);
+      // Left tall vertical strip key light (sculpts crisp metallic ribbons)
+      addPanel(3.4, 16, isEvening ? 0xffcca0 : 0xffffff, isEvening ? 3.9 : 4.3, [isEvening ? 8.2 : -8.0, 2, 5]);
+      // Right narrow vertical strip rim light
+      addPanel(1.5, 15, isEvening ? 0xc8d7ee : 0xf4f8ff, isEvening ? 3.0 : 3.2, [isEvening ? -7.6 : 7.8, 2.5, -3.8]);
+      // Soft front-oblique fill
+      addPanel(4.2, 9, isEvening ? 0xe7ccb0 : 0xf2ede4, isEvening ? 1.15 : 1.45, [isEvening ? -4.5 : 4.5, 2.5, 8.6]);
+      // Warm limestone cyclorama floor bounce
+      addPanel(24, 24, isEvening ? 0x8e7c68 : 0xd9d2c7, isEvening ? 0.58 : 0.96, [0, -6.5, 0]);
+      // Dark negative-fill flags for crisp dark contour contrast on machined aluminum & brass
+      addPanel(4.8, 14, 0x080706, 1.0, [-4.0, 1.5, 8.0]);
+      addPanel(4.4, 14, 0x080706, 1.0, [5.8, 1.5, 5.6]);
+      addPanel(6.5, 13, 0x0a0908, 1.0, [0, 1.5, -9.0]);
+
+      const rt = pmrem.fromScene(envScene, 0.03);
+      pmrem.dispose();
+      return rt.texture;
+    }
+
+    /* ---------------------------------------------------------------------
+       5. BUILD THE 12-LAYER MECHANICAL EXPLODED HARDWARE ASSEMBLY
+       --------------------------------------------------------------------- */
+    let renderer, scene, camera, controls;
+    let envDaylight, envEvening;
+    let keyLight, rimLight, fillLight;
+    let floorMesh, floorMat, contactShadowMesh, contactShadowMat;
+    let monolithRoot;
+    let webglActive = false;
+
+    const layers = {};
+    const mats = {};
+    const calloutAnchors = [];
+    let torxHeadInst = null;
+    let torxShaftInst = null;
+    let torxSlotInst = null;
+    let wooferDiaphragmSubGroup = null;
+    const torxDummy = new THREE.Object3D();
+
+    // Precision Staggered Expansion Config for ALL 12 Layers
+    // At explode = 0, every layer nests cleanly inside 0.00 .. 3.13 (168 x 312 mm proportion).
+    // At explode = 1, all 12 layers span 0.00 .. 8.58 with zero visual overlap!
+    const LAYER_STAGGER = {
+      L12_crown:     { baseY: 2.99, deltaY: 5.46, t0: 0.08, t1: 0.56 },
+      L11_fasteners: { baseY: 3.05, deltaY: 5.02, t0: 0.05, t1: 0.50 },
+      L10_topDeck:   { baseY: 2.54, deltaY: 4.74, t0: 0.12, t1: 0.60 },
+      L09_waveguide: { baseY: 2.18, deltaY: 4.46, t0: 0.16, t1: 0.64 },
+      L08_vitonRing: { baseY: 2.51, deltaY: 3.86, t0: 0.19, t1: 0.66 },
+      L07_grille:    { baseY: 1.86, deltaY: 3.60, t0: 0.24, t1: 0.72 },
+      L06_woofer:    { baseY: 1.56, deltaY: 2.66, t0: 0.30, t1: 0.78 },
+      L05_motor:     { baseY: 1.12, deltaY: 2.16, t0: 0.38, t1: 0.84 },
+      L04_baffle:    { baseY: 0.30, deltaY: 1.88, t0: 0.44, t1: 0.88 },
+      L03_pcb:       { baseY: 0.72, deltaY: 0.80, t0: 0.52, t1: 0.92 },
+      L02_power:     { baseY: 0.28, deltaY: 0.34, t0: 0.58, t1: 0.95 },
+      L01_plinth:    { baseY: 0.00, deltaY: 0.00, t0: 0.00, t1: 1.00 },
+    };
+
+    function createCalloutAnchor(parent, localPos, code, title, spec, minExpand) {
+      const anchor = new THREE.Object3D();
+      anchor.position.set(localPos[0], localPos[1], localPos[2]);
+      parent.add(anchor);
+      calloutAnchors.push({ anchor, code, title, spec, minExpand, labelEl: null, lineEl: null, dotEl: null });
+    }
+
+    function build12LayerMonolith() {
+      const radialMaps = createRadialBrushedMaps();
+      const beadMaps = createBeadBlastedMaps();
+      const grilleMaps = createMicroPerforatedGrilleMaps();
+      const copperMaps = createWoundCopperCoilMaps();
+      const etchMap = createTopDeckLaserEtchMap();
+      const pcbMaps = createENIGPcbMaps();
+
+      const f0 = FINISHES.aluminum;
+
+      // Primary CNC Aluminum Chassis & Crown Materials (switchable live!)
+      mats.chassis = new THREE.MeshPhysicalMaterial({
+        color: f0.chassisColor,
+        metalness: f0.metalness,
+        roughness: f0.roughness,
+        clearcoat: f0.clearcoat,
+        clearcoatRoughness: f0.clearcoatRoughness,
+        bumpMap: beadMaps.bumpTex,
+        bumpScale: 0.0045,
+        roughnessMap: beadMaps.roughTex,
+        envMapIntensity: f0.envIntensity,
+      });
+
+      mats.crown = new THREE.MeshPhysicalMaterial({
+        color: f0.crownColor,
+        metalness: f0.metalness,
+        roughness: f0.roughness * 0.86,
+        clearcoat: f0.clearcoat,
+        clearcoatRoughness: 0.22,
+        bumpMap: radialMaps.bumpTex,
+        bumpScale: 0.006,
+        roughnessMap: radialMaps.roughTex,
+        envMapIntensity: f0.envIntensity * 1.05,
+      });
+
+      mats.sleeve = new THREE.MeshPhysicalMaterial({
+        color: f0.sleeveColor,
+        metalness: f0.metalness * 0.95,
+        roughness: f0.roughness * 0.92,
+        map: grilleMaps.map,
+        bumpMap: grilleMaps.bumpMap,
+        bumpScale: 0.012,
+        alphaMap: grilleMaps.alphaMap,
+        alphaTest: 0.42,
+        side: THREE.DoubleSide,
+        envMapIntensity: f0.envIntensity,
+      });
+
+      // Specialized Industrial Hardware Materials
+      mats.sorbothane = new THREE.MeshStandardMaterial({ color: 0x191715, metalness: 0.02, roughness: 0.88 });
+      mats.viton = new THREE.MeshStandardMaterial({ color: 0x201E1C, metalness: 0.04, roughness: 0.72 });
+      mats.brass = new THREE.MeshPhysicalMaterial({
+        color: 0xc2a26c,
+        metalness: 0.94,
+        roughness: 0.22,
+        bumpMap: radialMaps.bumpTex,
+        bumpScale: 0.0025,
+        envMapIntensity: 1.32,
+      });
+      mats.gold = new THREE.MeshPhysicalMaterial({
+        color: 0xd9ad52,
+        metalness: 0.96,
+        roughness: 0.18,
+        envMapIntensity: 1.38,
+      });
+      mats.stainless = new THREE.MeshPhysicalMaterial({
+        color: 0xe0ddd6,
+        metalness: 0.96,
+        roughness: 0.16,
+        envMapIntensity: 1.38,
+      });
+      mats.machinedAlu = new THREE.MeshPhysicalMaterial({
+        color: 0xd7d3cb,
+        metalness: 0.93,
+        roughness: 0.20,
+        bumpMap: radialMaps.bumpTex,
+        bumpScale: 0.003,
+        envMapIntensity: 1.30,
+      });
+      mats.beryllium = new THREE.MeshPhysicalMaterial({
+        color: 0x3b3936,
+        metalness: 0.90,
+        roughness: 0.19,
+        clearcoat: 0.22,
+        envMapIntensity: 1.35,
+      });
+      mats.copperCoil = new THREE.MeshPhysicalMaterial({
+        color: 0xd87b45,
+        map: copperMaps.map,
+        bumpMap: copperMaps.bumpMap,
+        bumpScale: 0.016,
+        roughnessMap: copperMaps.roughMap,
+        metalness: 0.94,
+        roughness: 0.24,
+        envMapIntensity: 1.32,
+      });
+      mats.copperSolid = new THREE.MeshPhysicalMaterial({
+        color: 0xc96e3d,
+        metalness: 0.94,
+        roughness: 0.22,
+        envMapIntensity: 1.30,
+      });
+      mats.neodymium = new THREE.MeshPhysicalMaterial({
+        color: 0xbfc3c7,
+        metalness: 0.95,
+        roughness: 0.15,
+        envMapIntensity: 1.40,
+      });
+      mats.castBasket = new THREE.MeshPhysicalMaterial({
+        color: 0x363330,
+        metalness: 0.72,
+        roughness: 0.42,
+        envMapIntensity: 1.05,
+      });
+      mats.wooferCone = new THREE.MeshPhysicalMaterial({
+        color: 0x252320,
+        metalness: 0.24,
+        roughness: 0.48,
+        bumpMap: radialMaps.bumpTex,
+        bumpScale: 0.004,
+        side: THREE.DoubleSide,
+      });
+      mats.nomexSpider = new THREE.MeshStandardMaterial({
+        color: 0xa67432,
+        metalness: 0.08,
+        roughness: 0.76,
+        side: THREE.DoubleSide,
+      });
+      mats.pcbBoard = new THREE.MeshPhysicalMaterial({
+        map: pcbMaps.map,
+        roughnessMap: pcbMaps.roughMap,
+        bumpMap: pcbMaps.bumpMap,
+        bumpScale: 0.005,
+        metalness: 0.32,
+        roughness: 0.42,
+        clearcoat: 0.16,
+        envMapIntensity: 1.15,
+      });
+      mats.silicon = new THREE.MeshStandardMaterial({ color: 0x161514, metalness: 0.18, roughness: 0.36 });
+      mats.cellOlive = new THREE.MeshPhysicalMaterial({
+        color: 0x4b5145,
+        metalness: 0.62,
+        roughness: 0.34,
+        clearcoat: 0.15,
+        envMapIntensity: 1.1,
+      });
+      mats.vermilion = new THREE.MeshStandardMaterial({
+        color: 0xc6441c,
+        emissive: 0xd65e38,
+        emissiveIntensity: 0.85,
+        roughness: 0.24,
+        metalness: 0.10,
+      });
+
+      monolithRoot = new THREE.Group();
+      monolithRoot.position.y = 0.0; // Grounded directly on studio cyclorama floor y = 0
+      scene.add(monolithRoot);
+
+      const dummy = new THREE.Object3D();
+
+      /* ===================================================================
+         LAYER 01 — WEIGHTED SOLID BRASS & SORBOTHANE ISOLATION BASE PLINTH
+         =================================================================== */
+      const L01 = new THREE.Group();
+      L01.position.y = LAYER_STAGGER.L01_plinth.baseY;
+
+      // Dark matte Sorbothane anti-vibration ring pad (y = 0.00 .. 0.075)
+      const sorboPts = [
+        new THREE.Vector2(0.0, 0.015),
+        new THREE.Vector2(0.66, 0.015),
+        new THREE.Vector2(0.72, 0.0),
+        new THREE.Vector2(0.79, 0.0),
+        new THREE.Vector2(0.808, 0.02),
+        new THREE.Vector2(0.808, 0.075),
+        new THREE.Vector2(0.76, 0.09),
+        new THREE.Vector2(0.0, 0.09),
+      ];
+      const sorboMesh = new THREE.Mesh(new THREE.LatheGeometry(sorboPts, 84), mats.sorbothane);
+      sorboMesh.castShadow = true;
+      sorboMesh.receiveShadow = true;
+      L01.add(sorboMesh);
+
+      // Heavy chamfered Solid Brass Weight Plinth (y = 0.075 .. 0.30)
+      const plinthPts = [
+        new THREE.Vector2(0.0, 0.08),
+        new THREE.Vector2(0.795, 0.08),
+        new THREE.Vector2(0.838, 0.105), // 2mm chamfered solid brass base bevel
+        new THREE.Vector2(0.846, 0.145),
+        new THREE.Vector2(0.846, 0.24),
+        new THREE.Vector2(0.822, 0.275), // stepped seat that mates flush with L04 lower shell
+        new THREE.Vector2(0.742, 0.275),
+        new THREE.Vector2(0.742, 0.305),
+        new THREE.Vector2(0.68, 0.305),
+        new THREE.Vector2(0.68, 0.23),
+        new THREE.Vector2(0.0, 0.23),
+      ];
+      const plinthMesh = new THREE.Mesh(new THREE.LatheGeometry(plinthPts, 96), mats.brass);
+      plinthMesh.castShadow = true;
+      plinthMesh.receiveShadow = true;
+      L01.add(plinthMesh);
+
+      monolithRoot.add(L01);
+      layers.L01_plinth = L01;
+      createCalloutAnchor(L01, [0.84, 0.16, 0.0], '06', 'SORBOTHANE PLINTH', 'SOLID BRASS · 4.8 KG', 0.38);
+
+      /* ===================================================================
+         LAYER 02 — MACHINED POWER CELL CRADLE, 6× CELLS & GOLD I/O BUS BAR
+         =================================================================== */
+      const L02 = new THREE.Group();
+      L02.position.y = LAYER_STAGGER.L02_power.baseY;
+
+      // Milled aluminum lower & upper cell retention plates
+      const cradlePlateGeo = new THREE.CylinderGeometry(0.71, 0.71, 0.036, 64);
+      const cradleBot = new THREE.Mesh(cradlePlateGeo, mats.machinedAlu);
+      cradleBot.position.y = 0.02;
+      cradleBot.castShadow = true;
+      L02.add(cradleBot);
+
+      const cradleTop = new THREE.Mesh(
+        new THREE.RingGeometry(0.18, 0.70, 48),
+        mats.machinedAlu
+      );
+      cradleTop.rotation.x = -Math.PI / 2;
+      cradleTop.position.y = 0.39;
+      L02.add(cradleTop);
+
+      // 6 High-Density Anodized Cylindrical Power Cells (21700 format)
+      const cellBodyGeo = new THREE.CylinderGeometry(0.145, 0.145, 0.35, 32);
+      const cellCapGeo = new THREE.CylinderGeometry(0.068, 0.072, 0.025, 24);
+      const cellRingGeo = new THREE.TorusGeometry(0.146, 0.008, 10, 32);
+      for (let i = 0; i < 6; i++) {
+        const a = (i / 6) * Math.PI * 2 + Math.PI / 6;
+        const r = 0.43;
+        const cx = Math.cos(a) * r;
+        const cz = Math.sin(a) * r;
+        const cell = new THREE.Mesh(cellBodyGeo, i % 2 === 0 ? mats.cellOlive : mats.stainless);
+        cell.position.set(cx, 0.21, cz);
+        cell.castShadow = true;
+        L02.add(cell);
+
+        const cap = new THREE.Mesh(cellCapGeo, mats.gold);
+        cap.position.set(cx, 0.395, cz);
+        L02.add(cap);
+
+        const insRing = new THREE.Mesh(cellRingGeo, mats.sorbothane);
+        insRing.rotation.x = Math.PI / 2;
+        insRing.position.set(cx, 0.37, cz);
+        L02.add(insRing);
+      }
+
+      // Central power bus column
+      const busCore = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.38, 32), mats.castBasket);
+      busCore.position.y = 0.21;
+      L02.add(busCore);
+
+      // Rear Gold-Plated I/O Bus Bar (USB-C + Optical TOSLINK Brass Shielding Block)
+      const ioBlock = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.16, 0.15), mats.brass);
+      ioBlock.position.set(0.0, 0.16, -0.61);
+      L02.add(ioBlock);
+
+      const usbPort = new THREE.Mesh(new THREE.BoxGeometry(0.095, 0.036, 0.04), mats.gold);
+      usbPort.position.set(-0.08, 0.16, -0.68);
+      L02.add(usbPort);
+
+      const toslinkPort = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.068, 0.04), mats.sorbothane);
+      toslinkPort.position.set(0.085, 0.16, -0.68);
+      L02.add(toslinkPort);
+
+      monolithRoot.add(L02);
+      layers.L02_power = L02;
+
+      /* ===================================================================
+         LAYER 03 — 4-LAYER MATTE-BLACK ENIG DSP & CLASS-D AMPLIFIER PCB
+         =================================================================== */
+      const L03 = new THREE.Group();
+      L03.position.y = LAYER_STAGGER.L03_pcb.baseY;
+
+      // Circular 4-layer ENIG PCB board
+      const pcbCyl = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.715, 0.715, 0.034, 72),
+        [mats.gold, mats.pcbBoard, mats.pcbBoard]
+      );
+      pcbCyl.castShadow = true;
+      pcbCyl.receiveShadow = true;
+      L03.add(pcbCyl);
+
+      // Central Matte-Black QFN DSP Silicon IC ('KNT-DSP-04')
+      const qfnChip = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.042, 0.24), mats.silicon);
+      qfnChip.position.y = 0.038;
+      qfnChip.castShadow = true;
+      L03.add(qfnChip);
+
+      const dieMark = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.008, 0.11), mats.stainless);
+      dieMark.position.y = 0.062;
+      L03.add(dieMark);
+
+      // Dual Copper-Wound Toroidal Inductors
+      [-0.35, 0.35].forEach((xOff) => {
+        const toroid = new THREE.Mesh(new THREE.TorusGeometry(0.105, 0.046, 18, 36), mats.copperCoil);
+        toroid.rotation.x = Math.PI / 2;
+        toroid.position.set(xOff, 0.068, 0.24);
+        toroid.castShadow = true;
+        L03.add(toroid);
+      });
+
+      // 6 Brushed-Aluminum Cylindrical Electrolytic Capacitors
+      const capBodyGeo = new THREE.CylinderGeometry(0.062, 0.062, 0.175, 24);
+      const capRingGeo = new THREE.CylinderGeometry(0.0635, 0.0635, 0.025, 24);
+      for (let i = 0; i < 6; i++) {
+        const a = -Math.PI * 0.82 + (i / 5) * Math.PI * 0.64;
+        const r = 0.50;
+        const cap = new THREE.Mesh(capBodyGeo, mats.stainless);
+        cap.position.set(Math.cos(a) * r, 0.105, Math.sin(a) * r);
+        cap.castShadow = true;
+        L03.add(cap);
+
+        const capCollar = new THREE.Mesh(capRingGeo, mats.sorbothane);
+        capCollar.position.set(Math.cos(a) * r, 0.028, Math.sin(a) * r);
+        L03.add(capCollar);
+      }
+
+      // Extruded Copper Micro-Fin Heatsink (Base + 9 Thin Parallel Fins)
+      const hsGroup = new THREE.Group();
+      hsGroup.position.set(0.0, 0.02, -0.34);
+      const hsBase = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.032, 0.22), mats.copperSolid);
+      hsBase.position.y = 0.016;
+      hsGroup.add(hsBase);
+      const finGeo = new THREE.BoxGeometry(0.018, 0.145, 0.215);
+      for (let f = -4; f <= 4; f++) {
+        const fin = new THREE.Mesh(finGeo, mats.copperSolid);
+        fin.position.set(f * 0.05, 0.095, 0);
+        fin.castShadow = true;
+        hsGroup.add(fin);
+      }
+      L03.add(hsGroup);
+
+      // Instanced SMD Resistor & Ceramic Capacitor Banks
+      const smdGeo = new THREE.BoxGeometry(0.034, 0.018, 0.020);
+      const smdCount = 32;
+      const smdInst = new THREE.InstancedMesh(smdGeo, mats.gold, smdCount);
+      for (let i = 0; i < smdCount; i++) {
+        const ring = i < 16 ? 0.26 : 0.34;
+        const a = ((i % 16) / 16) * Math.PI * 2;
+        dummy.position.set(Math.cos(a) * ring, 0.026, Math.sin(a) * ring);
+        dummy.rotation.set(0, -a, 0);
+        dummy.updateMatrix();
+        smdInst.setMatrixAt(i, dummy.matrix);
+      }
+      L03.add(smdInst);
+
+      monolithRoot.add(L03);
+      layers.L03_pcb = L03;
+      createCalloutAnchor(L03, [0.71, 0.06, 0.0], '05', '4-LAYER ENIG DSP PCB', 'KNT-DSP-04 · DUAL 180W', 0.62);
+
+      /* ===================================================================
+         LAYER 04 — INTERNAL CNC HELMHOLTZ ACOUSTIC BAFFLE & LOWER UNIBODY
+         =================================================================== */
+      const L04 = new THREE.Group();
+      L04.position.y = LAYER_STAGGER.L04_baffle.baseY;
+
+      // Turned CNC 6061-T6 Lower Monoblock Shell (y = 0.00 .. 0.88 relative -> 0.30 .. 1.18 assembled)
+      const shellPts = [
+        new THREE.Vector2(0.750, 0.0),
+        new THREE.Vector2(0.838, 0.0),
+        new THREE.Vector2(0.846, 0.022),
+        new THREE.Vector2(0.842, 0.42),
+        new THREE.Vector2(0.838, 0.76),
+        new THREE.Vector2(0.820, 0.78), // signature recessed waist shadow-line
+        new THREE.Vector2(0.820, 0.805),
+        new THREE.Vector2(0.838, 0.82),
+        new THREE.Vector2(0.836, 0.865),
+        new THREE.Vector2(0.822, 0.88), // top bevel meeting perforated grille sleeve
+        new THREE.Vector2(0.752, 0.88),
+        new THREE.Vector2(0.752, 0.0),
+      ];
+      const shellMesh = new THREE.Mesh(new THREE.LatheGeometry(shellPts, 96), mats.chassis);
+      shellMesh.castShadow = true;
+      shellMesh.receiveShadow = true;
+      L04.add(shellMesh);
+
+      // Internal CNC Helmholtz Resonance Baffle Ring + 6 Structural Bracing Ribs
+      const baffleRing = new THREE.Mesh(
+        new THREE.TorusGeometry(0.68, 0.068, 16, 64),
+        mats.machinedAlu
+      );
+      baffleRing.rotation.x = Math.PI / 2;
+      baffleRing.position.y = 0.76;
+      L04.add(baffleRing);
+
+      const ribGeo = new THREE.BoxGeometry(0.036, 0.72, 0.14);
+      for (let i = 0; i < 6; i++) {
+        const a = (i / 6) * Math.PI * 2;
+        const rib = new THREE.Mesh(ribGeo, mats.machinedAlu);
+        rib.position.set(Math.cos(a) * 0.67, 0.42, Math.sin(a) * 0.67);
+        rib.rotation.y = -a + Math.PI / 2;
+        L04.add(rib);
+      }
+
+      // 4 Chamfered Helmholtz Port Tubes inside upper baffle plane
+      const portGeo = new THREE.CylinderGeometry(0.056, 0.062, 0.16, 24, 1, true);
+      for (let i = 0; i < 4; i++) {
+        const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
+        const port = new THREE.Mesh(portGeo, mats.sorbothane);
+        port.material.side = THREE.DoubleSide;
+        port.position.set(Math.cos(a) * 0.56, 0.78, Math.sin(a) * 0.56);
+        L04.add(port);
+      }
+
+      monolithRoot.add(L04);
+      layers.L04_baffle = L04;
+
+      /* ===================================================================
+         LAYER 05 — DUAL N52 NEODYMIUM MOTOR, COPPER SHORTING RING & T-YOKE
+         =================================================================== */
+      const L05 = new THREE.Group();
+      L05.position.y = LAYER_STAGGER.L05_motor.baseY;
+
+      // Vented Chrome-Steel T-Yoke & Chamfered Bottom Motor Plate
+      const yokePts = [
+        new THREE.Vector2(0.11, 0.0),  // central cooling vent bore
+        new THREE.Vector2(0.45, 0.0),
+        new THREE.Vector2(0.48, 0.025),
+        new THREE.Vector2(0.48, 0.095),
+        new THREE.Vector2(0.44, 0.11),
+        new THREE.Vector2(0.22, 0.11),
+        new THREE.Vector2(0.22, 0.42), // central magnetic pole piece
+        new THREE.Vector2(0.195, 0.44),
+        new THREE.Vector2(0.11, 0.44),
+      ];
+      const yokeMesh = new THREE.Mesh(new THREE.LatheGeometry(yokePts, 64), mats.stainless);
+      yokeMesh.castShadow = true;
+      L05.add(yokeMesh);
+
+      // Twin Stacked N52 Neodymium Magnet Rings
+      const neoGeo = new THREE.CylinderGeometry(0.455, 0.455, 0.115, 64);
+      const neo1 = new THREE.Mesh(neoGeo, mats.neodymium);
+      neo1.position.y = 0.168;
+      neo1.castShadow = true;
+      L05.add(neo1);
+
+      const neo2 = new THREE.Mesh(neoGeo, mats.neodymium);
+      neo2.position.y = 0.305;
+      neo2.castShadow = true;
+      L05.add(neo2);
+
+      // Precision Chamfered Top Magnetic Plate
+      const topMagPlate = new THREE.Mesh(new THREE.CylinderGeometry(0.47, 0.47, 0.045, 64), mats.stainless);
+      topMagPlate.position.y = 0.388;
+      L05.add(topMagPlate);
+
+      // Gleaming Copper Flux-Stabilization Shorting Ring crowning the pole piece
+      const shortingRing = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.238, 0.238, 0.095, 48),
+        mats.copperSolid
+      );
+      shortingRing.position.y = 0.40;
+      L05.add(shortingRing);
+
+      monolithRoot.add(L05);
+      layers.L05_motor = L05;
+      createCalloutAnchor(L05, [0.47, 0.25, 0.0], '04', 'N52 NEODYMIUM MOTOR', 'DUAL STACK · 1.68 TESLA', 0.44);
+
+      /* ===================================================================
+         LAYER 06 — LONG-THROW WOOFER, 6-SPOKE BASKET, NOMEX SPIDER & OFC COIL
+         =================================================================== */
+      const L06 = new THREE.Group();
+      L06.position.y = LAYER_STAGGER.L06_woofer.baseY;
+
+      // Cast-Aluminum 6-Spoke Woofer Basket (outer mounting ring + 6 swept structural struts)
+      const basketTopRing = new THREE.Mesh(
+        new THREE.TorusGeometry(0.71, 0.036, 14, 72),
+        mats.castBasket
+      );
+      basketTopRing.rotation.x = Math.PI / 2;
+      basketTopRing.position.y = 0.26;
+      L06.add(basketTopRing);
+
+      const basketBotRing = new THREE.Mesh(
+        new THREE.TorusGeometry(0.41, 0.028, 12, 48),
+        mats.castBasket
+      );
+      basketBotRing.rotation.x = Math.PI / 2;
+      basketBotRing.position.y = -0.02;
+      L06.add(basketBotRing);
+
+      // 6 Swept Cast Struts linking lower spider landing to upper surround rim
+      const strutGeo = new THREE.BoxGeometry(0.055, 0.36, 0.032);
+      for (let i = 0; i < 6; i++) {
+        const a = (i / 6) * Math.PI * 2;
+        const strut = new THREE.Mesh(strutGeo, mats.castBasket);
+        strut.position.set(Math.cos(a) * 0.56, 0.12, Math.sin(a) * 0.56);
+        strut.rotation.y = -a;
+        strut.rotation.z = -0.78;
+        L06.add(strut);
+      }
+
+      // Vibrating Sub-Group: Corrugated Nomex Spider + Helical OFC Copper Voice Coil + Cone + Surround
+      wooferDiaphragmSubGroup = new THREE.Group();
+
+      // Helical-Wound 99.99% OFC Copper Voice Coil (extends cleanly below spider so scrolling pulls it out of L05 gap!)
+      const coilFormer = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.258, 0.258, 0.34, 64, 1, true),
+        mats.stainless
+      );
+      coilFormer.position.y = -0.14;
+      wooferDiaphragmSubGroup.add(coilFormer);
+
+      const copperWinding = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.268, 0.268, 0.24, 72, 1, true),
+        mats.copperCoil
+      );
+      copperWinding.position.y = -0.19;
+      copperWinding.castShadow = true;
+      wooferDiaphragmSubGroup.add(copperWinding);
+
+      // Corrugated Amber Nomex Spider Suspension (sinusoidal Lathe profile!)
+      const spiderPts = [];
+      for (let i = 0; i <= 24; i++) {
+        const t = i / 24;
+        const r = 0.26 + t * 0.22;
+        const y = 0.02 + Math.sin(t * Math.PI * 7) * 0.018;
+        spiderPts.push(new THREE.Vector2(r, y));
+      }
+      const spiderMesh = new THREE.Mesh(new THREE.LatheGeometry(spiderPts, 64), mats.nomexSpider);
+      wooferDiaphragmSubGroup.add(spiderMesh);
+
+      // Concave Anodized Carbon/Aluminum Acoustic Cone
+      const conePts = [
+        new THREE.Vector2(0.24, 0.04),
+        new THREE.Vector2(0.35, 0.09),
+        new THREE.Vector2(0.48, 0.17),
+        new THREE.Vector2(0.60, 0.25),
+      ];
+      const coneMesh = new THREE.Mesh(new THREE.LatheGeometry(conePts, 72), mats.wooferCone);
+      coneMesh.castShadow = true;
+      wooferDiaphragmSubGroup.add(coneMesh);
+
+      // Rolled Santoprene Rubber Surround
+      const surPts = [];
+      for (let i = 0; i <= 14; i++) {
+        const th = (i / 14) * Math.PI;
+        surPts.push(new THREE.Vector2(0.652 - Math.cos(th) * 0.056, 0.248 + Math.sin(th) * 0.046));
+      }
+      const surMesh = new THREE.Mesh(new THREE.LatheGeometry(surPts, 72), mats.sorbothane);
+      wooferDiaphragmSubGroup.add(surMesh);
+
+      // Woven Carbon Dust Cap
+      const capGeo = new THREE.SphereGeometry(0.25, 48, 20, 0, Math.PI * 2, 0, Math.PI * 0.36);
+      const capMesh = new THREE.Mesh(capGeo, mats.silicon);
+      capMesh.position.y = -0.10;
+      wooferDiaphragmSubGroup.add(capMesh);
+
+      L06.add(wooferDiaphragmSubGroup);
+      monolithRoot.add(L06);
+      layers.L06_woofer = L06;
+      createCalloutAnchor(L06, [0.28, -0.18, 0.0], '03', 'OFC VOICE COIL', '99.99% COPPER · NOMEX', 0.34);
+
+      /* ===================================================================
+         LAYER 07 — CNC MICRO-PERFORATED OUTER ACOUSTIC GRILLE SLEEVE
+         =================================================================== */
+      const L07 = new THREE.Group();
+      L07.position.y = LAYER_STAGGER.L07_grille.baseY;
+
+      const sleeveMesh = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.833, 0.837, 1.36, 96, 1, true),
+        mats.sleeve
+      );
+      sleeveMesh.castShadow = true;
+      sleeveMesh.receiveShadow = true;
+      L07.add(sleeveMesh);
+
+      const trimGeo = new THREE.TorusGeometry(0.834, 0.012, 16, 96);
+      const trimBot = new THREE.Mesh(trimGeo, mats.crown);
+      trimBot.rotation.x = Math.PI / 2;
+      trimBot.position.y = -0.674;
+      L07.add(trimBot);
+
+      const trimTop = new THREE.Mesh(trimGeo, mats.crown);
+      trimTop.rotation.x = Math.PI / 2;
+      trimTop.position.y = 0.674;
+      L07.add(trimTop);
+
+      monolithRoot.add(L07);
+      layers.L07_grille = L07;
+
+      /* ===================================================================
+         LAYER 08 — UPPER VITON ELASTOMERIC ISOLATION RING
+         =================================================================== */
+      const L08 = new THREE.Group();
+      L08.position.y = LAYER_STAGGER.L08_vitonRing.baseY;
+
+      const vitonRing = new THREE.Mesh(new THREE.TorusGeometry(0.79, 0.024, 18, 84), mats.viton);
+      vitonRing.rotation.x = Math.PI / 2;
+      vitonRing.castShadow = true;
+      L08.add(vitonRing);
+
+      monolithRoot.add(L08);
+      layers.L08_vitonRing = L08;
+
+      /* ===================================================================
+         LAYER 09 — HYPERBOLIC BERYLLIUM TWEETER WAVEGUIDE & TI PHASE PLUG
+         =================================================================== */
+      const L09 = new THREE.Group();
+      L09.position.y = LAYER_STAGGER.L09_waveguide.baseY;
+
+      // Sculpted CNC Hyperbolic Aluminum Horn Flare
+      const wgPts = [
+        new THREE.Vector2(0.14, 0.0),
+        new THREE.Vector2(0.24, 0.05),
+        new THREE.Vector2(0.40, 0.16),
+        new THREE.Vector2(0.58, 0.255),
+        new THREE.Vector2(0.71, 0.295),
+        new THREE.Vector2(0.735, 0.315),
+        new THREE.Vector2(0.735, 0.36),
+        new THREE.Vector2(0.70, 0.375),
+        new THREE.Vector2(0.14, 0.375),
+      ];
+      const hornMesh = new THREE.Mesh(new THREE.LatheGeometry(wgPts, 84), mats.machinedAlu);
+      hornMesh.castShadow = true;
+      L09.add(hornMesh);
+
+      // Dark Metallic Beryllium Tweeter Dome
+      const domeGeo = new THREE.SphereGeometry(0.165, 48, 24, 0, Math.PI * 2, 0, Math.PI * 0.48);
+      const domeMesh = new THREE.Mesh(domeGeo, mats.beryllium);
+      domeMesh.position.y = -0.02;
+      L09.add(domeMesh);
+
+      // Central Machined Titanium Phase Plug Point
+      const plugPts = [
+        new THREE.Vector2(0.0, -0.08),
+        new THREE.Vector2(0.048, -0.01),
+        new THREE.Vector2(0.072, 0.05),
+        new THREE.Vector2(0.0, 0.06),
+      ];
+      const plugMesh = new THREE.Mesh(new THREE.LatheGeometry(plugPts, 48), mats.stainless);
+      L09.add(plugMesh);
+
+      monolithRoot.add(L09);
+      layers.L09_waveguide = L09;
+      createCalloutAnchor(L09, [0.73, 0.24, 0.0], '02', 'BERYLLIUM HORN', 'HYPERBOLIC · 28 KHZ', 0.20);
+
+      /* ===================================================================
+         LAYER 10 — LASER-ETCHED TOP DECK & CHAMFERED BEZEL RING
+         =================================================================== */
+      const L10 = new THREE.Group();
+      L10.position.y = LAYER_STAGGER.L10_topDeck.baseY;
+
+      const collarPts = [
+        new THREE.Vector2(0.745, 0.0),
+        new THREE.Vector2(0.822, 0.0),
+        new THREE.Vector2(0.834, 0.016),
+        new THREE.Vector2(0.828, 0.48),
+        new THREE.Vector2(0.806, 0.514), // crisp 2mm chamfer
+        new THREE.Vector2(0.780, 0.522),
+        new THREE.Vector2(0.635, 0.522),
+        new THREE.Vector2(0.618, 0.506), // recessed crown bezel
+        new THREE.Vector2(0.618, 0.442),
+        new THREE.Vector2(0.14, 0.442),  // central bore for brass encoder shaft
+        new THREE.Vector2(0.14, 0.36),
+        new THREE.Vector2(0.745, 0.36),
+      ];
+      const collarMesh = new THREE.Mesh(new THREE.LatheGeometry(collarPts, 96), mats.chassis);
+      collarMesh.castShadow = true;
+      collarMesh.receiveShadow = true;
+      L10.add(collarMesh);
+
+      // Underside acoustic gasket ring on top deck
+      const deckGasket = new THREE.Mesh(new THREE.TorusGeometry(0.77, 0.014, 12, 72), mats.viton);
+      deckGasket.rotation.x = Math.PI / 2;
+      deckGasket.position.y = 0.005;
+      L10.add(deckGasket);
+
+      // Tiny Braun Vermilion Power LED Pinhole
+      const ledSeat = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.014, 20), mats.sorbothane);
+      ledSeat.position.set(0, 0.52, 0.712);
+      L10.add(ledSeat);
+
+      const ledLens = new THREE.Mesh(new THREE.SphereGeometry(0.014, 18, 12), mats.vermilion);
+      ledLens.scale.set(1, 0.4, 1);
+      ledLens.position.set(0, 0.526, 0.712);
+      L10.add(ledLens);
+
+      monolithRoot.add(L10);
+      layers.L10_topDeck = L10;
+
+      /* ===================================================================
+         LAYER 11 — 12× M2.5 TORX STAINLESS FASTENERS (VISIBLY UNSCREW!)
+         =================================================================== */
+      const L11 = new THREE.Group();
+      L11.position.y = LAYER_STAGGER.L11_fasteners.baseY;
+
+      const screwCount = 12;
+      const headGeo = new THREE.CylinderGeometry(0.032, 0.029, 0.024, 20);
+      const shaftGeo = new THREE.CylinderGeometry(0.015, 0.014, 0.11, 14);
+      const slotGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.008, 6);
+
+      torxHeadInst = new THREE.InstancedMesh(headGeo, mats.stainless, screwCount);
+      torxShaftInst = new THREE.InstancedMesh(shaftGeo, mats.stainless, screwCount);
+      torxSlotInst = new THREE.InstancedMesh(slotGeo, mats.sorbothane, screwCount);
+      torxHeadInst.castShadow = true;
+
+      L11.add(torxHeadInst, torxShaftInst, torxSlotInst);
+      updateTorxFasteners(0);
+
+      monolithRoot.add(L11);
+      layers.L11_fasteners = L11;
+
+      /* ===================================================================
+         LAYER 12 — KNURLED ROTARY VOLUME CROWN & BRASS ENCODER SHAFT
+         =================================================================== */
+      const L12 = new THREE.Group();
+      L12.position.y = LAYER_STAGGER.L12_crown.baseY;
+
+      // Stepped Machined Brass Optical Encoder Shaft descending from underside of crown
+      const shaftPts = [
+        new THREE.Vector2(0.0, -0.34),
+        new THREE.Vector2(0.072, -0.34),
+        new THREE.Vector2(0.080, -0.32),
+        new THREE.Vector2(0.080, -0.16),
+        new THREE.Vector2(0.125, -0.145),
+        new THREE.Vector2(0.125, 0.01),
+        new THREE.Vector2(0.0, 0.01),
+      ];
+      const encoderShaft = new THREE.Mesh(new THREE.LatheGeometry(shaftPts, 48), mats.brass);
+      encoderShaft.castShadow = true;
+      L12.add(encoderShaft);
+
+      // Crown cylindrical body with top chamfer & shallow finger dish
+      const crownPts = [
+        new THREE.Vector2(0.0, 0.0),
+        new THREE.Vector2(0.585, 0.0),
+        new THREE.Vector2(0.592, 0.015),
+        new THREE.Vector2(0.592, 0.114),
+        new THREE.Vector2(0.574, 0.135),
+        new THREE.Vector2(0.538, 0.138),
+        new THREE.Vector2(0.455, 0.130),
+        new THREE.Vector2(0.0, 0.124),
+      ];
+      const crownBody = new THREE.Mesh(new THREE.LatheGeometry(crownPts, 96), mats.crown);
+      crownBody.castShadow = true;
+      crownBody.receiveShadow = true;
+      L12.add(crownBody);
+
+      // 96 Instanced Precision Perimeter Knurls
+      const knurlCount = 96;
+      const knurlGeo = new THREE.BoxGeometry(0.011, 0.098, 0.017);
+      const knurlInst = new THREE.InstancedMesh(knurlGeo, mats.crown, knurlCount);
+      for (let i = 0; i < knurlCount; i++) {
+        const a = (i / knurlCount) * Math.PI * 2;
+        const r = 0.594;
+        dummy.position.set(Math.sin(a) * r, 0.064, Math.cos(a) * r);
+        dummy.rotation.set(0, a, 0);
+        dummy.updateMatrix();
+        knurlInst.setMatrixAt(i, dummy.matrix);
+      }
+      L12.add(knurlInst);
+
+      // Laser-etched top-deck dial markings ('04', radial dB ticks, KINETA)
+      const etchPlane = new THREE.Mesh(
+        new THREE.CircleGeometry(0.534, 72),
+        new THREE.MeshBasicMaterial({ map: etchMap, transparent: true, opacity: 0.76, depthWrite: false })
+      );
+      etchPlane.rotation.x = -Math.PI / 2;
+      etchPlane.position.y = 0.134;
+      L12.add(etchPlane);
+
+      // Recessed vermilion index dot
+      const crownIndex = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.010, 18), mats.vermilion);
+      crownIndex.position.set(0, 0.134, 0.495);
+      L12.add(crownIndex);
+
+      monolithRoot.add(L12);
+      layers.L12_crown = L12;
+      createCalloutAnchor(L12, [0.60, 0.06, 0.0], '01', 'KNURLED CROWN', '96-TOOTH CNC · BRASS SHAFT', 0.12);
+
+      /* ===================================================================
+         SEAMLESS STUDIO CYCLORAMA FLOOR + DYNAMIC CONTACT AO SHADOW
+         =================================================================== */
+      floorMat = new THREE.MeshStandardMaterial({
+        color: LIGHTING_MODES.daylight.floorHex,
+        roughness: 0.93,
+        metalness: 0.0,
+      });
+      floorMesh = new THREE.Mesh(new THREE.CircleGeometry(42, 72), floorMat);
+      floorMesh.rotation.x = -Math.PI / 2;
+      floorMesh.position.y = -0.002;
+      floorMesh.receiveShadow = true;
+      scene.add(floorMesh);
+
+      contactShadowMat = new THREE.MeshBasicMaterial({
+        map: createContactShadowTexture(),
+        transparent: true,
+        opacity: 0.92,
+        depthWrite: false,
+      });
+      contactShadowMesh = new THREE.Mesh(new THREE.PlaneGeometry(3.35, 3.35), contactShadowMat);
+      contactShadowMesh.rotation.x = -Math.PI / 2;
+      contactShadowMesh.position.y = 0.003;
+      scene.add(contactShadowMesh);
+    }
+
+    // Updates all 12 Torx fasteners so each screw visibly rotates around its own axis as it unscrews!
+    function updateTorxFasteners(unscrewT) {
+      if (!torxHeadInst || !torxShaftInst || !torxSlotInst) return;
+      const count = 12;
+      const radius = 0.718;
+      // 4.5 full revolutions around each screw's own Y axis while backing out
+      const spinAngle = unscrewT * Math.PI * 9.0;
+      for (let i = 0; i < count; i++) {
+        const a = (i / count) * Math.PI * 2 + Math.PI / 12;
+        const x = Math.cos(a) * radius;
+        const z = Math.sin(a) * radius;
+
+        torxDummy.position.set(x, 0.012, z);
+        torxDummy.rotation.set(0, a + spinAngle, 0);
+        torxDummy.updateMatrix();
+        torxHeadInst.setMatrixAt(i, torxDummy.matrix);
+
+        torxDummy.position.set(x, -0.052, z);
+        torxDummy.updateMatrix();
+        torxShaftInst.setMatrixAt(i, torxDummy.matrix);
+
+        torxDummy.position.set(x, 0.022, z);
+        torxDummy.updateMatrix();
+        torxSlotInst.setMatrixAt(i, torxDummy.matrix);
+      }
+      torxHeadInst.instanceMatrix.needsUpdate = true;
+      torxShaftInst.instanceMatrix.needsUpdate = true;
+      torxSlotInst.instanceMatrix.needsUpdate = true;
+    }
+
+    function initWebGL() {
+      const canvas = document.getElementById('studio-canvas');
+      const fallback = document.getElementById('webgl-fallback');
+      try {
+        renderer = new THREE.WebGLRenderer({
+          canvas,
+          antialias: true,
+          powerPreference: 'high-performance',
+        });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        renderer.setSize(window.innerWidth, window.innerHeight, false);
+        renderer.toneMapping = THREE.AgXToneMapping;
+        renderer.toneMappingExposure = LIGHTING_MODES.daylight.exposure;
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(LIGHTING_MODES.daylight.bgHex);
+        scene.fog = new THREE.Fog(LIGHTING_MODES.daylight.bgHex, 20, 44);
+
+        camera = new THREE.PerspectiveCamera(32, window.innerWidth / window.innerHeight, 0.1, 80);
+        camera.position.copy(state.curCamPos);
+
+        envDaylight = buildStudioPMREM(renderer, 'daylight');
+        envEvening = buildStudioPMREM(renderer, 'evening');
+        scene.environment = envDaylight;
+
+        keyLight = new THREE.DirectionalLight(LIGHTING_MODES.daylight.keyColor, LIGHTING_MODES.daylight.keyIntensity);
+        keyLight.position.set(...LIGHTING_MODES.daylight.keyPos);
+        keyLight.castShadow = true;
+        keyLight.shadow.mapSize.set(1024, 1024);
+        keyLight.shadow.camera.near = 1;
+        keyLight.shadow.camera.far = 28;
+        keyLight.shadow.camera.left = -4.5;
+        keyLight.shadow.camera.right = 4.5;
+        keyLight.shadow.camera.top = 10.5;
+        keyLight.shadow.camera.bottom = -2.5;
+        keyLight.shadow.bias = -0.0005;
+        keyLight.shadow.radius = 4;
+        scene.add(keyLight);
+
+        rimLight = new THREE.DirectionalLight(LIGHTING_MODES.daylight.rimColor, LIGHTING_MODES.daylight.rimIntensity);
+        rimLight.position.set(...LIGHTING_MODES.daylight.rimPos);
+        scene.add(rimLight);
+
+        fillLight = new THREE.HemisphereLight(0xfaf6f0, 0xcac2b6, 0.56);
+        scene.add(fillLight);
+
+        build12LayerMonolith();
+        buildCalloutDOM();
+
+        controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.06;
+        controls.enablePan = false;
+        controls.enableZoom = true;
+        controls.minDistance = 4.2;
+        controls.maxDistance = 28.0;
+        controls.minPolarAngle = 0.18;
+        controls.maxPolarAngle = Math.PI * 0.49;
+        controls.enabled = false;
+
+        webglActive = true;
+      } catch (err) {
+        console.warn('WebGL fallback active:', err);
+        if (fallback) fallback.classList.remove('hidden');
+      }
+    }
+
+    /* ---------------------------------------------------------------------
+       6. PROJECTED 3D-TO-2D SWISS ENGINEERING CALLOUTS (Zero Overlap)
+       --------------------------------------------------------------------- */
+    const calloutSvg = document.getElementById('callout-svg');
+    const calloutLabelsRoot = document.getElementById('callout-labels');
+    const projVec = new THREE.Vector3();
+
+    function buildCalloutDOM() {
+      if (!calloutSvg || !calloutLabelsRoot) return;
+      calloutSvg.innerHTML = '';
+      calloutLabelsRoot.innerHTML = '';
+      const ns = 'http://www.w3.org/2000/svg';
+
+      calloutAnchors.forEach((item) => {
+        const line = document.createElementNS(ns, 'polyline');
+        line.setAttribute('fill', 'none');
+        line.setAttribute('stroke', 'rgba(22, 20, 18, 0.34)');
+        line.setAttribute('stroke-width', '1');
+        line.style.opacity = '0';
+        calloutSvg.appendChild(line);
+
+        const dot = document.createElementNS(ns, 'circle');
+        dot.setAttribute('r', '3.2');
+        dot.setAttribute('fill', '#C6441C');
+        dot.setAttribute('stroke', '#FAF8F5');
+        dot.setAttribute('stroke-width', '1.2');
+        dot.style.opacity = '0';
+        calloutSvg.appendChild(dot);
+
+        const label = document.createElement('div');
+        label.className = 'callout-label px-2.5 py-1.5 bg-[#FAF8F5]/86 backdrop-blur-sm border border-[rgba(22,20,18,0.11)] rounded-[8px] shadow-sm';
+        label.innerHTML = `
+          <div class="font-mono text-[9.5px] leading-tight text-stone tracking-wider">
+            <span class="text-vermilion font-medium">${item.code}</span> / ${item.title}
+          </div>
+          <div class="font-mono text-[9px] text-charcoal/80 mt-0.5 tabular-nums">${item.spec}</div>
+        `;
+        calloutLabelsRoot.appendChild(label);
+
+        item.lineEl = line;
+        item.dotEl = dot;
+        item.labelEl = label;
+      });
+    }
+
+    function updateProjectedCallouts(explodeAmount) {
+      if (!webglActive || !state.calloutsEnabled || window.innerWidth < 1024) return;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const railX = Math.min(w - 275, w * 0.74);
+
+      // Project all 6 3D anchors into screen space
+      const projected = calloutAnchors.map((item) => {
+        item.anchor.getWorldPosition(projVec);
+        projVec.project(camera);
+        const sx = (projVec.x * 0.5 + 0.5) * w;
+        const sy = (-projVec.y * 0.5 + 0.5) * h;
+        const visible = projVec.z < 1 && explodeAmount >= item.minExpand && sx > 120 && sx < w - 120 && sy > 76 && sy < h - 92;
+        const fade = visible ? Math.min(1, (explodeAmount - item.minExpand) / 0.14) : 0;
+        return { item, sx, sy, ly: sy, fade };
+      });
+
+      // Anti-collision pass: sort top-to-bottom and enforce clean 48px vertical Swiss spacing
+      const activeList = projected.filter((p) => p.fade > 0.02).sort((a, b) => a.sy - b.sy);
+      const minGap = 50;
+      for (let i = 1; i < activeList.length; i++) {
+        if (activeList[i].ly - activeList[i - 1].ly < minGap) {
+          activeList[i].ly = activeList[i - 1].ly + minGap;
+        }
+      }
+      // Clamp bottom overflow gently upward
+      const maxY = h - 108;
+      for (let i = activeList.length - 1; i >= 0; i--) {
+        if (activeList[i].ly > maxY) activeList[i].ly = maxY;
+        if (i > 0 && activeList[i].ly - activeList[i - 1].ly < minGap) {
+          activeList[i - 1].ly = activeList[i].ly - minGap;
+        }
+      }
+
+      projected.forEach(({ item, sx, sy, ly, fade }) => {
+        if (!item.labelEl || !item.lineEl || !item.dotEl) return;
+        item.dotEl.style.opacity = fade.toFixed(3);
+        item.lineEl.style.opacity = fade.toFixed(3);
+        item.labelEl.style.opacity = fade.toFixed(3);
+        if (fade <= 0.01) return;
+
+        const elbowX = Math.max(sx + 28, railX - 24);
+        item.dotEl.setAttribute('cx', sx.toFixed(1));
+        item.dotEl.setAttribute('cy', sy.toFixed(1));
+        item.lineEl.setAttribute(
+          'points',
+          `${sx.toFixed(1)},${sy.toFixed(1)} ${elbowX.toFixed(1)},${ly.toFixed(1)} ${railX.toFixed(1)},${ly.toFixed(1)}`
+        );
+        item.labelEl.style.transform = `translate3d(${railX.toFixed(1)}px, ${(ly - 19).toFixed(1)}px, 0)`;
+      });
+    }
+
+    /* ---------------------------------------------------------------------
+       7. SCROLL PROGRESS SAMPLING (Zero Per-Frame Layout Thrashing)
+       --------------------------------------------------------------------- */
+    const teardownSection = document.getElementById('teardown-stage');
+    const acousticsSection = document.getElementById('acoustics');
+    const topNav = document.getElementById('top-nav');
+    const chapterCards = document.querySelectorAll('.chapter-card');
+    const railSteps = document.querySelectorAll('.rail-step');
+    const railExpReadout = document.getElementById('rail-expansion-readout');
+    const explodeSlider = document.getElementById('explode-scrub-slider');
+    const explodeSliderVal = document.getElementById('explode-scrub-value');
+    const syncScrollBtn = document.getElementById('sync-scroll-btn');
+
+    function clamp01(v) {
+      return Math.min(Math.max(v, 0), 1);
+    }
+
+    function smoothstep(t) {
+      const c = clamp01(t);
+      return c * c * (3 - 2 * c);
+    }
+
+    function lerp(a, b, t) {
+      return a + (b - a) * t;
+    }
+
+    function sampleScrollPosition() {
+      if (teardownSection) {
+        const rect = teardownSection.getBoundingClientRect();
+        const scrollable = Math.max(rect.height - window.innerHeight, 1);
+        state.targetScrollProgress = clamp01(-rect.top / scrollable);
+      }
+
+      // Adaptive dark navbar when crossing Obsidian Acoustic Chamber
+      if (acousticsSection && topNav) {
+        const r = acousticsSection.getBoundingClientRect();
+        const inChamber = r.top <= 68 && r.bottom >= 68;
+        topNav.classList.toggle('nav-dark', inChamber);
+      }
+    }
+
+    function updateChapterUI(p) {
+      let ch = 0;
+      if (p < 0.15) ch = 0;
+      else if (p < 0.36) ch = 1;
+      else if (p < 0.62) ch = 2;
+      else if (p < 0.86) ch = 3;
+      else ch = 4;
+
+      if (ch !== state.activeChapter) {
+        state.activeChapter = ch;
+        chapterCards.forEach((card, idx) => {
+          card.classList.toggle('is-active', idx === ch);
+        });
+        railSteps.forEach((step, idx) => {
+          const active = idx === ch;
+          const num = step.querySelector('span:first-child');
+          const pip = step.querySelector('.rail-pip');
+          if (num) {
+            num.classList.toggle('text-charcoal', active);
+            num.classList.toggle('font-medium', active);
+            num.classList.toggle('text-stone', !active);
+          }
+          if (pip) {
+            pip.classList.toggle('bg-vermilion', active);
+            pip.classList.toggle('w-4', active);
+            pip.classList.toggle('bg-[rgba(22,20,18,0.22)]', !active);
+            pip.classList.toggle('w-2', !active);
+          }
+        });
+      }
+    }
+
+    function sampleShotKeyframes(p) {
+      let a = SHOTS[0];
+      let b = SHOTS[SHOTS.length - 1];
+      for (let i = 0; i < SHOTS.length - 1; i++) {
+        if (p >= SHOTS[i].p && p <= SHOTS[i + 1].p) {
+          a = SHOTS[i];
+          b = SHOTS[i + 1];
+          break;
+        }
+      }
+      const span = Math.max(b.p - a.p, 0.0001);
+      const t = smoothstep((p - a.p) / span);
+      return {
+        camPos: [
+          lerp(a.camPos[0], b.camPos[0], t),
+          lerp(a.camPos[1], b.camPos[1], t),
+          lerp(a.camPos[2], b.camPos[2], t),
+        ],
+        lookAt: [
+          lerp(a.lookAt[0], b.lookAt[0], t),
+          lerp(a.lookAt[1], b.lookAt[1], t),
+          lerp(a.lookAt[2], b.lookAt[2], t),
+        ],
+        rotY: lerp(a.rotY, b.rotY, t),
+        explode: lerp(a.explode, b.explode, t),
+      };
+    }
+
+    /* ---------------------------------------------------------------------
+       8. LIVE WEB AUDIO API SYNTHESIZER + HIGH-DPI OSCILLOSCOPE + CROSS-SECTION
+       --------------------------------------------------------------------- */
+    const audioEngine = {
+      ctx: null,
+      masterGain: null,
+      filter: null,
+      analyser: null,
+      timeBuf: null,
+      freqBuf: null,
+      oscs: [],
+
+      buildVoices() {
+        this.oscs.forEach((o) => {
+          try {
+            o.stop();
+            o.disconnect();
+          } catch (_) {}
+        });
+        this.oscs = [];
+        if (!this.ctx || !this.filter) return;
+        const now = this.ctx.currentTime;
+        const hz = state.freqHz;
+
+        if (state.audioPreset === 'chord') {
+          const ratios = [
+            { m: 1.0, type: 'sine', a: 0.30 },
+            { m: 1.25, type: 'sine', a: 0.16 },
+            { m: 1.5, type: 'triangle', a: 0.13 },
+            { m: 0.5, type: 'sine', a: 0.20 },
+          ];
+          ratios.forEach((r) => {
+            const osc = this.ctx.createOscillator();
+            const g = this.ctx.createGain();
+            osc.type = r.type;
+            osc.frequency.setValueAtTime(Math.min(hz * r.m, 18000), now);
+            g.gain.setValueAtTime(r.a, now);
+            osc.connect(g);
+            g.connect(this.filter);
+            osc.start();
+            this.oscs.push(osc);
+          });
+        } else if (state.audioPreset === 'sub42') {
+          const osc1 = this.ctx.createOscillator();
+          const osc2 = this.ctx.createOscillator();
+          const g1 = this.ctx.createGain();
+          const g2 = this.ctx.createGain();
+          osc1.type = 'sine';
+          osc2.type = 'triangle';
+          osc1.frequency.setValueAtTime(hz, now);
+          osc2.frequency.setValueAtTime(hz * 2, now);
+          g1.gain.setValueAtTime(0.48, now);
+          g2.gain.setValueAtTime(0.11, now);
+          osc1.connect(g1);
+          osc2.connect(g2);
+          g1.connect(this.filter);
+          g2.connect(this.filter);
+          osc1.start();
+          osc2.start();
+          this.oscs.push(osc1, osc2);
+        } else {
+          const osc = this.ctx.createOscillator();
+          const g = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(hz, now);
+          g.gain.setValueAtTime(0.42, now);
+          osc.connect(g);
+          g.connect(this.filter);
+          osc.start();
+          this.oscs.push(osc);
+        }
+      },
+
+      toggle() {
+        try {
+          if (!this.ctx) {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return false;
+            this.ctx = new AudioCtx();
+            this.filter = this.ctx.createBiquadFilter();
+            this.filter.type = 'lowpass';
+            this.filter.frequency.setValueAtTime(16000, this.ctx.currentTime);
+
+            this.masterGain = this.ctx.createGain();
+            this.masterGain.gain.setValueAtTime(0.0001, this.ctx.currentTime);
+
+            this.analyser = this.ctx.createAnalyser();
+            this.analyser.fftSize = 512;
+            this.analyser.smoothingTimeConstant = 0.78;
+            this.timeBuf = new Uint8Array(this.analyser.fftSize);
+            this.freqBuf = new Uint8Array(this.analyser.frequencyBinCount);
+
+            this.filter.connect(this.masterGain);
+            this.masterGain.connect(this.analyser);
+            this.analyser.connect(this.ctx.destination);
+            this.buildVoices();
+          }
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+
+          state.audioOn = !state.audioOn;
+          const now = this.ctx.currentTime;
+          this.masterGain.gain.cancelScheduledValues(now);
+          this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now);
+          this.masterGain.gain.linearRampToValueAtTime(state.audioOn ? 0.22 : 0.0001, now + 0.18);
+          return state.audioOn;
+        } catch (err) {
+          console.warn('Web Audio unavailable:', err);
+          return false;
+        }
+      },
+
+      setFrequency(hz) {
+        state.freqHz = hz;
+        if (!this.ctx || !this.oscs.length) return;
+        const now = this.ctx.currentTime;
+        if (state.audioPreset === 'chord') {
+          const ratios = [1.0, 1.25, 1.5, 0.5];
+          this.oscs.forEach((o, i) => o.frequency.setTargetAtTime(Math.min(hz * ratios[i], 18000), now, 0.025));
+        } else if (state.audioPreset === 'sub42') {
+          if (this.oscs[0]) this.oscs[0].frequency.setTargetAtTime(hz, now, 0.025);
+          if (this.oscs[1]) this.oscs[1].frequency.setTargetAtTime(hz * 2, now, 0.025);
+        } else {
+          this.oscs[0].frequency.setTargetAtTime(hz, now, 0.025);
+        }
+      },
+
+      sample(dt) {
+        if (state.audioOn && state.audioPreset === 'sweep') {
+          state.sweepPhase = (state.sweepPhase + dt * 0.14) % 1;
+          const hz = Math.round(28 * Math.pow(8000 / 28, state.sweepPhase));
+          this.setFrequency(hz);
+          updateFreqUI(hz, false);
+        }
+
+        if (!this.analyser || !state.audioOn) {
+          state.audioAmp += (0 - state.audioAmp) * 0.14;
+          state.audioPeak += (0 - state.audioPeak) * 0.14;
+          return;
+        }
+        this.analyser.getByteTimeDomainData(this.timeBuf);
+        this.analyser.getByteFrequencyData(this.freqBuf);
+
+        let sumSq = 0;
+        let peak = 0;
+        for (let i = 0; i < this.timeBuf.length; i++) {
+          const n = (this.timeBuf[i] - 128) / 128;
+          sumSq += n * n;
+          const a = Math.abs(n);
+          if (a > peak) peak = a;
+        }
+        const rms = Math.sqrt(sumSq / this.timeBuf.length);
+        state.audioAmp += (rms - state.audioAmp) * 0.30;
+        state.audioPeak += (peak - state.audioPeak) * 0.26;
+      },
+    };
+
+    const oscCanvas = document.getElementById('chamber-osc-canvas');
+    const oscCtx = oscCanvas ? oscCanvas.getContext('2d') : null;
+    const crossCanvas = document.getElementById('driver-cross-canvas');
+    const crossCtx = crossCanvas ? crossCanvas.getContext('2d') : null;
+    const chamberTelemetry = document.getElementById('chamber-telemetry');
+    const driverMmVal = document.getElementById('driver-mm-val');
+
+    function resize2DCanvases() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      [oscCanvas, crossCanvas].forEach((cv) => {
+        if (!cv) return;
+        const r = cv.getBoundingClientRect();
+        if (r.width > 0 && r.height > 0) {
+          cv.width = Math.round(r.width * dpr);
+          cv.height = Math.round(r.height * dpr);
+        }
+      });
+    }
+
+    function drawChamberVisuals(elapsed) {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+      // 1. Oscilloscope + FFT Harmonic Bars
+      if (oscCtx && oscCanvas) {
+        const w = oscCanvas.width;
+        const h = oscCanvas.height;
+        oscCtx.clearRect(0, 0, w, h);
+
+        oscCtx.strokeStyle = 'rgba(236, 232, 225, 0.06)';
+        oscCtx.lineWidth = 1;
+        for (let i = 1; i < 4; i++) {
+          const y = (h / 4) * i;
+          oscCtx.beginPath();
+          oscCtx.moveTo(0, y);
+          oscCtx.lineTo(w, y);
+          oscCtx.stroke();
+        }
+
+        const bars = 36;
+        const gap = 2 * dpr;
+        const bw = (w - gap * (bars - 1)) / bars;
+        for (let i = 0; i < bars; i++) {
+          let mag = 0.03;
+          if (state.audioOn && audioEngine.freqBuf) {
+            const bin = Math.min(Math.floor(i * 2.4), audioEngine.freqBuf.length - 1);
+            mag = audioEngine.freqBuf[bin] / 255;
+          }
+          const bh = Math.max(2 * dpr, mag * h * 0.68);
+          oscCtx.fillStyle = state.audioOn ? 'rgba(214, 94, 56, 0.25)' : 'rgba(236, 232, 225, 0.06)';
+          oscCtx.fillRect(i * (bw + gap), h - bh, bw, bh);
+        }
+
+        oscCtx.strokeStyle = state.audioOn ? '#D65E38' : 'rgba(236, 232, 225, 0.34)';
+        oscCtx.lineWidth = 1.75 * dpr;
+        oscCtx.beginPath();
+        if (state.audioOn && audioEngine.timeBuf) {
+          const buf = audioEngine.timeBuf;
+          const step = w / buf.length;
+          for (let i = 0; i < buf.length; i++) {
+            const v = (buf[i] - 128) / 128;
+            const y = h * 0.5 + v * h * 0.44;
+            if (i === 0) oscCtx.moveTo(0, y);
+            else oscCtx.lineTo(i * step, y);
+          }
+        } else {
+          for (let x = 0; x <= w; x += 3 * dpr) {
+            const nx = x / w;
+            const y = h * 0.5 + Math.sin(nx * Math.PI * 4 - elapsed * 1.1) * (REDUCED_MOTION ? 0 : 2.0 * dpr) * Math.sin(nx * Math.PI);
+            if (x === 0) oscCtx.moveTo(x, y);
+            else oscCtx.lineTo(x, y);
+          }
+        }
+        oscCtx.stroke();
+      }
+
+      // 2. Synchronized L06/L05 Transducer Cross-Section Diagram
+      const excursionMm = state.audioOn ? state.audioPeak * 6.8 : 0;
+      const dispPx = state.audioOn
+        ? Math.sin(elapsed * Math.min(state.freqHz * 0.42, 65)) * state.audioAmp * 11 * dpr
+        : 0;
+
+      if (crossCtx && crossCanvas) {
+        const w = crossCanvas.width;
+        const h = crossCanvas.height;
+        const cx = w * 0.5;
+        crossCtx.clearRect(0, 0, w, h);
+
+        // Fixed Dual N52 Neodymium Motor & T-Yoke (bottom)
+        crossCtx.fillStyle = '#322E2A';
+        crossCtx.fillRect(cx - 56 * dpr, h * 0.62, 112 * dpr, 28 * dpr);
+        crossCtx.fillStyle = '#8F9499';
+        crossCtx.fillRect(cx - 46 * dpr, h * 0.65, 30 * dpr, 16 * dpr);
+        crossCtx.fillRect(cx + 16 * dpr, h * 0.65, 30 * dpr, 16 * dpr);
+
+        // Copper Voice Coil moving vertically inside magnet gap
+        const coilY = h * 0.44 + dispPx;
+        crossCtx.strokeStyle = '#D67B45';
+        crossCtx.lineWidth = 3 * dpr;
+        crossCtx.strokeRect(cx - 18 * dpr, coilY, 36 * dpr, 28 * dpr);
+
+        // Woofer Cone & Surround moving vertically in sync
+        const coneRimY = h * 0.24 + dispPx;
+        crossCtx.strokeStyle = '#ECE8E1';
+        crossCtx.lineWidth = 2 * dpr;
+        crossCtx.beginPath();
+        crossCtx.moveTo(cx - 88 * dpr, coneRimY);
+        crossCtx.lineTo(cx - 18 * dpr, coilY + 4 * dpr);
+        crossCtx.lineTo(cx + 18 * dpr, coilY + 4 * dpr);
+        crossCtx.lineTo(cx + 88 * dpr, coneRimY);
+        crossCtx.stroke();
+
+        // Dust cap arc
+        crossCtx.strokeStyle = '#D65E38';
+        crossCtx.beginPath();
+        crossCtx.arc(cx, coilY + 4 * dpr, 18 * dpr, Math.PI, 0);
+        crossCtx.stroke();
+
+        // Acoustic wavefront arcs radiating upward when audio active
+        if (state.audioOn && state.audioAmp > 0.01) {
+          for (let r = 1; r <= 3; r++) {
+            const alpha = Math.max(0, 0.35 - r * 0.09) * Math.min(1, state.audioAmp * 4);
+            crossCtx.strokeStyle = `rgba(214, 94, 56, ${alpha.toFixed(2)})`;
+            crossCtx.lineWidth = 1.2 * dpr;
+            crossCtx.beginPath();
+            crossCtx.arc(cx, coneRimY + 6 * dpr, (24 + r * 22 + ((elapsed * 45) % 22)) * dpr, Math.PI * 1.18, Math.PI * 1.82);
+            crossCtx.stroke();
+          }
+        }
+      }
+
+      if (chamberTelemetry && driverMmVal) {
+        if (state.audioOn && state.audioAmp > 0.002) {
+          const db = Math.max(-60, 20 * Math.log10(state.audioAmp)).toFixed(1);
+          chamberTelemetry.textContent = `${db} dBFS · ${excursionMm.toFixed(2)} mm Xmax`;
+          driverMmVal.textContent = `${excursionMm.toFixed(2)} mm`;
+        } else {
+          chamberTelemetry.textContent = '-∞ dBFS · 0.00 mm Xmax';
+          driverMmVal.textContent = '0.00 mm';
+        }
+      }
+    }
+
+    /* ---------------------------------------------------------------------
+       9. SINGLE-CLOCK UNIFIED ANIMATION LOOP (60fps Smooth Damping)
+       --------------------------------------------------------------------- */
+    const clock = new THREE.Clock();
+    const tmpBg = new THREE.Color();
+    const tmpFloor = new THREE.Color();
+    const tmpKeyPos = new THREE.Vector3();
+    const tmpRimPos = new THREE.Vector3();
+    const tmpKeyCol = new THREE.Color();
+    const tmpRimCol = new THREE.Color();
+
+    function apply12LayerExpansion(e, elapsed) {
+      // Stagger each of the 12 layers smoothly using its own normalized window [t0, t1]
+      Object.keys(LAYER_STAGGER).forEach((key) => {
+        const grp = layers[key];
+        if (!grp) return;
+        const cfg = LAYER_STAGGER[key];
+        const localT = smoothstep((e - cfg.t0) / Math.max(cfg.t1 - cfg.t0, 0.001));
+        grp.position.y = cfg.baseY + cfg.deltaY * localT;
+      });
+
+      // Layer 11 Torx Fasteners visibly rotate as they unscrew during the first release window
+      const screwT = smoothstep((e - 0.04) / 0.30);
+      updateTorxFasteners(screwT);
+
+      // Layer 12 Knurled Rotary Crown subtle rotation synced to frequency & expansion
+      if (layers.L12_crown) {
+        const freqAngle = (Math.log(state.freqHz / 28) / Math.log(18000 / 28) - 0.4) * Math.PI * 1.2;
+        layers.L12_crown.rotation.y += (freqAngle + e * 0.55 - layers.L12_crown.rotation.y) * 0.1;
+      }
+
+      // Layer 06 Woofer Diaphragm & Copper Voice Coil vibrate physically with live Web Audio!
+      if (wooferDiaphragmSubGroup) {
+        const vib = state.audioOn
+          ? Math.sin(elapsed * Math.min(state.freqHz * 0.42, 75)) * state.audioAmp * 0.12 +
+            state.audioPeak * 0.045
+          : 0;
+        wooferDiaphragmSubGroup.position.y = vib;
+      }
+
+      // Baked studio contact shadow softens & expands subtly as upper mass lifts off plinth
+      if (contactShadowMesh && contactShadowMat) {
+        const shadowScale = 1.0 + e * 0.18;
+        contactShadowMesh.scale.set(shadowScale, shadowScale, 1);
+        contactShadowMat.opacity = lerp(0.92, 0.72, e);
+      }
+
+      // Subtle LED intensity response
+      if (mats.vermilion) {
+        mats.vermilion.emissiveIntensity = state.audioOn ? 1.4 + state.audioAmp * 1.8 : 0.85;
+      }
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const dt = Math.min(clock.getDelta(), 0.05);
+      const elapsed = clock.getElapsedTime();
+
+      audioEngine.sample(dt);
+      drawChamberVisuals(elapsed);
+
+      if (!webglActive) return;
+
+      const damp = REDUCED_MOTION ? 0.35 : 0.085;
+      state.currentScrollProgress += (state.targetScrollProgress - state.currentScrollProgress) * damp;
+
+      // Update active editorial chapter cards & Swiss progress rail
+      updateChapterUI(state.currentScrollProgress);
+
+      const shot = sampleShotKeyframes(state.currentScrollProgress);
+      const desiredExplode = state.manualExplodeOverride ? state.manualExplodeValue : shot.explode;
+      state.curExplode += (desiredExplode - state.curExplode) * damp;
+      state.curRotY += (shot.rotY - state.curRotY) * damp;
+
+      // Update live expansion UI readouts cleanly
+      const pct = Math.round(state.curExplode * 100);
+      if (railExpReadout) railExpReadout.textContent = `EXP ${pct}%`;
+      if (!state.manualExplodeOverride && explodeSlider && explodeSliderVal) {
+        explodeSlider.value = String(pct);
+        explodeSliderVal.textContent = `${pct}%`;
+      }
+
+      // Smooth pointer parallax
+      state.smoothPointerX += (state.pointerX - state.smoothPointerX) * 0.06;
+      state.smoothPointerY += (state.pointerY - state.smoothPointerY) * 0.06;
+
+      // Smooth Studio Lighting & Background transitions
+      const lCfg = LIGHTING_MODES[state.activeLighting];
+      tmpBg.setHex(lCfg.bgHex);
+      tmpFloor.setHex(lCfg.floorHex);
+      scene.background.lerp(tmpBg, 0.07);
+      scene.fog.color.lerp(tmpBg, 0.07);
+      floorMat.color.lerp(tmpFloor, 0.07);
+
+      tmpKeyPos.set(...lCfg.keyPos);
+      tmpRimPos.set(...lCfg.rimPos);
+      keyLight.position.lerp(tmpKeyPos, 0.06);
+      rimLight.position.lerp(tmpRimPos, 0.06);
+      tmpKeyCol.setHex(lCfg.keyColor);
+      tmpRimCol.setHex(lCfg.rimColor);
+      keyLight.color.lerp(tmpKeyCol, 0.06);
+      rimLight.color.lerp(tmpRimCol, 0.06);
+      keyLight.intensity += (lCfg.keyIntensity - keyLight.intensity) * 0.07;
+
+      // Smooth PBR Finish Material Interpolation
+      mats.chassis.color.lerp(state.targetChassisColor, 0.09);
+      mats.crown.color.lerp(state.targetCrownColor, 0.09);
+      mats.sleeve.color.lerp(state.targetSleeveColor, 0.09);
+      mats.chassis.metalness += (state.targetMetalness - mats.chassis.metalness) * 0.09;
+      mats.chassis.roughness += (state.targetRoughness - mats.chassis.roughness) * 0.09;
+      mats.chassis.clearcoat += (state.targetClearcoat - mats.chassis.clearcoat) * 0.09;
+      mats.chassis.clearcoatRoughness += (state.targetClearcoatRoughness - mats.chassis.clearcoatRoughness) * 0.09;
+      mats.chassis.envMapIntensity += (state.targetEnvIntensity - mats.chassis.envMapIntensity) * 0.09;
+
+      mats.crown.metalness = mats.chassis.metalness;
+      mats.crown.roughness = mats.chassis.roughness * 0.86;
+      mats.crown.envMapIntensity = mats.chassis.envMapIntensity * 1.05;
+      mats.sleeve.metalness = mats.chassis.metalness * 0.95;
+      mats.sleeve.roughness = mats.chassis.roughness * 0.92;
+      mats.sleeve.envMapIntensity = mats.chassis.envMapIntensity;
+
+      // Apply 12-layer mechanical expansion & unscrewing fasteners
+      apply12LayerExpansion(state.curExplode, elapsed);
+
+      // Camera Choreography vs. 360° Free Inspect Orbit Mode
+      if (state.inspectMode) {
+        controls.update();
+      } else {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const aspect = w / Math.max(h, 1);
+        const isMobile = w < 1024;
+
+        // If manual explode slider overrides scroll while not in inspect mode, automatically pull camera back
+        // so all 12 layers always stay cleanly framed inside the viewport!
+        let baseCamX = shot.camPos[0];
+        let baseCamY = shot.camPos[1];
+        let baseCamZ = shot.camPos[2];
+        let baseLookX = shot.lookAt[0];
+        let baseLookY = shot.lookAt[1];
+
+        if (state.manualExplodeOverride) {
+          const ex = state.curExplode;
+          baseCamX = lerp(0.45, 0.95, ex);
+          baseCamY = lerp(2.05, 4.60, ex);
+          baseCamZ = lerp(6.35, 19.8, ex);
+          baseLookX = lerp(-0.88, -1.12, ex);
+          baseLookY = lerp(1.58, 4.24, ex);
+        }
+
+        // Responsive framing safeguard: never clip top/bottom or sides on mobile or narrow panes
+        const narrowScale = aspect < 0.8 ? 1.15 / Math.max(aspect, 0.5) * 0.68 : 1.0;
+        const mobileZScale = isMobile ? Math.max(1.18, narrowScale) : 1.0;
+
+        const targetLookX = isMobile ? 0.0 : baseLookX;
+        const targetLookY = isMobile ? baseLookY - 0.15 : baseLookY;
+        const pX = REDUCED_MOTION ? 0 : state.smoothPointerX * 0.25;
+        const pY = REDUCED_MOTION ? 0 : -state.smoothPointerY * 0.14;
+
+        state.curCamPos.x += (baseCamX + pX - state.curCamPos.x) * damp;
+        state.curCamPos.y += (baseCamY + pY - state.curCamPos.y) * damp;
+        state.curCamPos.z += (baseCamZ * mobileZScale - state.curCamPos.z) * damp;
+
+        state.curLookAt.x += (targetLookX - state.curLookAt.x) * damp;
+        state.curLookAt.y += (targetLookY - state.curLookAt.y) * damp;
+        state.curLookAt.z += (0 - state.curLookAt.z) * damp;
+
+        camera.position.copy(state.curCamPos);
+        camera.lookAt(state.curLookAt);
+
+        // Gentle slow showcase rotation at Chapter 05 full-stack settling
+        const settleDrift =
+          !REDUCED_MOTION && state.currentScrollProgress > 0.85
+            ? Math.sin(elapsed * 0.32) * 0.18
+            : 0;
+        monolithRoot.rotation.y =
+          state.curRotY + settleDrift + (REDUCED_MOTION ? 0 : state.smoothPointerX * 0.08);
+      }
+
+      renderer.render(scene, camera);
+      updateProjectedCallouts(state.curExplode);
+    }
+
+    /* ---------------------------------------------------------------------
+       10. INTERACTIVE UI BINDINGS (Finishes, Lighting, Scrub, 360°, Audio, Drawer)
+       --------------------------------------------------------------------- */
+    const finishBtns = document.querySelectorAll('.finish-btn');
+    const allocFinishName = document.getElementById('alloc-finish-name');
+    const inputFinish = document.getElementById('input-finish');
+
+    function selectFinish(key) {
+      const f = FINISHES[key];
+      if (!f) return;
+      state.activeFinish = key;
+      state.targetChassisColor.setHex(f.chassisColor);
+      state.targetCrownColor.setHex(f.crownColor);
+      state.targetSleeveColor.setHex(f.sleeveColor);
+      state.targetMetalness = f.metalness;
+      state.targetRoughness = f.roughness;
+      state.targetClearcoat = f.clearcoat;
+      state.targetClearcoatRoughness = f.clearcoatRoughness;
+      state.targetEnvIntensity = f.envIntensity;
+
+      if (allocFinishName) allocFinishName.textContent = f.name;
+      if (inputFinish) inputFinish.value = key;
+
+      finishBtns.forEach((btn) => {
+        const active = btn.dataset.finish === key;
+        btn.setAttribute('aria-pressed', String(active));
+        btn.classList.toggle('is-selected', active);
+        btn.classList.toggle('text-charcoal', active);
+        btn.classList.toggle('text-stone', !active);
+      });
+    }
+
+    finishBtns.forEach((btn) => btn.addEventListener('click', () => selectFinish(btn.dataset.finish)));
+
+    // Studio Lighting Switch
+    const lightingBtns = document.querySelectorAll('.lighting-btn');
+    function selectLighting(mode) {
+      const cfg = LIGHTING_MODES[mode];
+      if (!cfg) return;
+      state.activeLighting = mode;
+      if (webglActive) {
+        scene.environment = mode === 'evening' ? envEvening : envDaylight;
+        renderer.toneMappingExposure = cfg.exposure;
+      }
+      lightingBtns.forEach((btn) => {
+        const active = btn.dataset.lighting === mode;
+        btn.setAttribute('aria-pressed', String(active));
+        btn.classList.toggle('is-selected', active);
+        btn.classList.toggle('text-charcoal', active);
+        btn.classList.toggle('text-stone', !active);
+      });
+    }
+    lightingBtns.forEach((btn) => btn.addEventListener('click', () => selectLighting(btn.dataset.lighting)));
+
+    // Manual Explode Scrub Slider + Sync to Scroll
+    if (explodeSlider) {
+      explodeSlider.addEventListener('input', (e) => {
+        const pct = Number(e.target.value);
+        state.manualExplodeOverride = true;
+        state.manualExplodeValue = pct / 100;
+        if (explodeSliderVal) explodeSliderVal.textContent = `${Math.round(pct)}%`;
+        if (syncScrollBtn) syncScrollBtn.classList.remove('hidden');
+      });
+    }
+
+    if (syncScrollBtn) {
+      syncScrollBtn.addEventListener('click', () => {
+        state.manualExplodeOverride = false;
+        syncScrollBtn.classList.add('hidden');
+      });
+    }
+
+    // 360° Free Inspect Toggle
+    const inspectBtn = document.getElementById('inspect-toggle-btn');
+    const inspectLabel = document.getElementById('inspect-toggle-label');
+    const inspectBanner = document.getElementById('inspect-banner');
+    const studioCanvasEl = document.getElementById('studio-canvas');
+    const editorialRail = document.getElementById('editorial-rail');
+    const chapter5InspectBtn = document.getElementById('chapter5-inspect-btn');
+
+    function setInspectMode(enabled) {
+      state.inspectMode = enabled;
+      if (inspectBtn) {
+        inspectBtn.setAttribute('aria-pressed', String(enabled));
+        inspectBtn.classList.toggle('is-selected', enabled);
+      }
+      if (inspectLabel) inspectLabel.textContent = enabled ? 'Exit 360°' : '360° Inspect';
+      if (studioCanvasEl) studioCanvasEl.classList.toggle('inspect-active', enabled);
+      if (editorialRail) editorialRail.classList.toggle('inspect-dimmed', enabled);
+      if (inspectBanner) {
+        inspectBanner.classList.toggle('opacity-0', !enabled);
+        inspectBanner.classList.toggle('opacity-100', enabled);
+        inspectBanner.classList.toggle('translate-y-1', !enabled);
+        inspectBanner.classList.toggle('translate-y-0', enabled);
+      }
+      if (controls) {
+        controls.enabled = enabled;
+        if (enabled) {
+          controls.target.set(0, 1.5 + state.curExplode * 2.75, 0);
+          controls.update();
+        } else {
+          state.curCamPos.copy(camera.position);
+        }
+      }
+    }
+
+    if (inspectBtn) inspectBtn.addEventListener('click', () => setInspectMode(!state.inspectMode));
+    if (chapter5InspectBtn) chapter5InspectBtn.addEventListener('click', () => setInspectMode(true));
+
+    // Toggle Projected Callout Labels
+    const calloutsToggleBtn = document.getElementById('callouts-toggle-btn');
+    const calloutLayer = document.getElementById('callout-layer');
+    const calloutsDot = document.getElementById('callouts-dot');
+
+    if (calloutsToggleBtn) {
+      calloutsToggleBtn.addEventListener('click', () => {
+        state.calloutsEnabled = !state.calloutsEnabled;
+        calloutsToggleBtn.setAttribute('aria-pressed', String(state.calloutsEnabled));
+        calloutsToggleBtn.classList.toggle('is-selected', state.calloutsEnabled);
+        if (calloutLayer) calloutLayer.classList.toggle('callouts-hidden', !state.calloutsEnabled);
+        if (calloutsDot) {
+          calloutsDot.classList.toggle('bg-vermilion', state.calloutsEnabled);
+          calloutsDot.classList.toggle('bg-stone/40', !state.calloutsEnabled);
+        }
+      });
+    }
+
+    // Smooth Scroll Jump for Swiss Chapter Rail & Hero CTA
+    document.querySelectorAll('[data-jump-chapter]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (!teardownSection) return;
+        const idx = Number(btn.dataset.jumpChapter);
+        const targetP = CHAPTER_TARGETS[idx] ?? 0;
+        const top = teardownSection.offsetTop;
+        const scrollable = Math.max(teardownSection.offsetHeight - window.innerHeight, 1);
+        state.manualExplodeOverride = false;
+        if (syncScrollBtn) syncScrollBtn.classList.add('hidden');
+        window.scrollTo({ top: top + targetP * scrollable, behavior: REDUCED_MOTION ? 'auto' : 'smooth' });
+      });
+    });
+
+    // Link from Acoustic Chamber back to Layer 06 3D Coil View
+    const watch3dLink = document.getElementById('watch-3d-driver-link');
+    if (watch3dLink) {
+      watch3dLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (!teardownSection) return;
+        const scrollable = Math.max(teardownSection.offsetHeight - window.innerHeight, 1);
+        window.scrollTo({ top: teardownSection.offsetTop + 0.54 * scrollable, behavior: 'smooth' });
+      });
+    }
+
+    // Acoustic Chamber Controls
+    const powerSwitch = document.getElementById('chamber-power-switch');
+    const powerLabel = document.getElementById('chamber-power-label');
+    const chamberLed = document.getElementById('chamber-led');
+    const freqSlider = document.getElementById('chamber-freq-slider');
+    const freqReadout = document.getElementById('chamber-freq-readout');
+    const presetBtns = document.querySelectorAll('.preset-btn');
+    const driverPresetVal = document.getElementById('driver-preset-val');
+
+    const PRESET_META = {
+      sub42: { label: 'Sub-Bass 42 Hz', hz: 42 },
+      ref110: { label: 'Reference 110 Hz', hz: 110 },
+      chord: { label: 'Harmonic Chord', hz: 165 },
+      sweep: { label: 'Acoustic Sweep', hz: 28 },
+    };
+
+    function updateFreqUI(hz, updateAudio = true) {
+      if (updateAudio) audioEngine.setFrequency(hz);
+      if (freqReadout) {
+        freqReadout.textContent = hz >= 1000 ? `${(hz / 1000).toFixed(2)} kHz` : `${hz} Hz`;
+      }
+      if (freqSlider) {
+        const norm = Math.log(Math.max(28, Math.min(18000, hz)) / 28) / Math.log(18000 / 28);
+        freqSlider.value = String(Math.round(norm * 1000));
+      }
+    }
+
+    if (powerSwitch) {
+      powerSwitch.addEventListener('click', () => {
+        const on = audioEngine.toggle();
+        powerSwitch.setAttribute('aria-checked', String(on));
+        if (powerLabel) powerLabel.textContent = on ? 'Active' : 'Standby';
+        if (chamberLed) chamberLed.style.backgroundColor = on ? '#D65E38' : '#5B554E';
+      });
+    }
+
+    if (freqSlider) {
+      freqSlider.addEventListener('input', (e) => {
+        const norm = Number(e.target.value) / 1000;
+        const hz = Math.round(28 * Math.pow(18000 / 28, norm));
+        if (state.audioPreset === 'sweep') {
+          state.audioPreset = 'ref110';
+          if (audioEngine.ctx) audioEngine.buildVoices();
+        }
+        updateFreqUI(hz, true);
+      });
+    }
+
+    presetBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.preset;
+        const meta = PRESET_META[key];
+        if (!meta) return;
+        state.audioPreset = key;
+        state.sweepPhase = 0;
+        updateFreqUI(meta.hz, true);
+        if (audioEngine.ctx) audioEngine.buildVoices();
+        if (driverPresetVal) driverPresetVal.textContent = meta.label;
+
+        presetBtns.forEach((b) => {
+          const active = b.dataset.preset === key;
+          b.setAttribute('aria-pressed', String(active));
+          b.classList.toggle('is-selected', active);
+        });
+      });
+    });
+
+    // Slide-Over Reservation Drawer
+    const drawer = document.getElementById('reserve-drawer');
+    const drawerBackdrop = document.getElementById('drawer-backdrop');
+    const drawerCloseBtn = document.getElementById('drawer-close-btn');
+    const drawerDoneBtn = document.getElementById('drawer-done-btn');
+    const reserveForm = document.getElementById('reserve-form');
+    const reserveConf = document.getElementById('reserve-confirmation');
+
+    const openDrawer = () => {
+      if (!drawer) return;
+      if (inputFinish) inputFinish.value = state.activeFinish;
+      drawer.classList.add('drawer-open');
+    };
+    const closeDrawer = () => {
+      if (drawer) drawer.classList.remove('drawer-open');
+    };
+
+    ['nav-reserve-btn', 'hero-reserve-btn', 'alloc-reserve-btn'].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('click', openDrawer);
+    });
+    if (drawerBackdrop) drawerBackdrop.addEventListener('click', closeDrawer);
+    if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', closeDrawer);
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeDrawer();
+    });
+    if (inputFinish) inputFinish.addEventListener('change', (e) => selectFinish(e.target.value));
+
+    if (reserveForm) {
+      reserveForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('input-name').value.trim() || 'Private Collector';
+        const fKey = document.getElementById('input-finish').value;
+        const cfg = document.getElementById('input-config').value;
+        const serial = String(213 + Math.floor(Math.random() * 34)).padStart(3, '0');
+
+        document.getElementById('conf-serial').textContent = `KNT-04-${serial}`;
+        document.getElementById('conf-name').textContent = name;
+        document.getElementById('conf-finish').textContent = FINISHES[fKey].name;
+        document.getElementById('conf-config').textContent = cfg;
+
+        reserveForm.classList.add('hidden');
+        reserveConf.classList.remove('hidden');
+      });
+    }
+
+    if (drawerDoneBtn) {
+      drawerDoneBtn.addEventListener('click', () => {
+        closeDrawer();
+        setTimeout(() => {
+          reserveConf.classList.add('hidden');
+          reserveForm.classList.remove('hidden');
+          reserveForm.reset();
+          if (inputFinish) inputFinish.value = state.activeFinish;
+        }, 300);
+      });
+    }
+
+    // Event Listeners
+    window.addEventListener('scroll', sampleScrollPosition, { passive: true });
+    window.addEventListener('mousemove', (e) => {
+      state.pointerX = (e.clientX / window.innerWidth) * 2 - 1;
+      state.pointerY = (e.clientY / window.innerHeight) * 2 - 1;
+    });
+    window.addEventListener('resize', () => {
+      resize2DCanvases();
+      sampleScrollPosition();
+      if (!webglActive || !renderer || !camera) return;
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight, false);
+    });
+
+    // Bootstrap cleanly on window load
+    window.addEventListener('load', () => {
+      initPaperGrain();
+      initWebGL();
+      resize2DCanvases();
+      sampleScrollPosition();
+      updateFreqUI(110, false);
+      animate();
+    });
+  </script>
+</body>
+</html>

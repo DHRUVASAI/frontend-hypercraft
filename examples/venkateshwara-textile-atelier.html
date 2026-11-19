@@ -1,0 +1,3807 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Venkateshwara Enterprises — Architectural Textile Atelier | Hyderabad</title>
+  <meta
+    name="description"
+    content="Direct uniform and garment manufacturer in Hyderabad, Telangana. 15+ years crafting precision uniforms for airports, hospitals, corporates, factories, and institutions."
+  />
+
+  <!-- Typography: Cormorant Garamond, Plus Jakarta Sans, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cotton: '#F4F1EA',
+            alabaster: '#FAF8F4',
+            plinth: '#EAE4D8',
+            indigoInk: '#141A24',
+            loomSlate: '#48505E',
+            specTone: '#757C88',
+            uniformNavy: '#1B365D',
+            tailorBrass: '#A67236',
+            chamberBg: '#111620',
+            chamberBone: '#F3EFE7',
+            chamberBrass: '#C89654',
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Three.js v0.170.0 ES Module Import Map -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      /* Perceptual OKLCH-Calibrated Tinted Warm Neutrals */
+      --bg-canvas: #F4F1EA;
+      --bg-elevated: #FAF8F4;
+      --bg-plinth: #EAE4D8;
+      --ink-primary: #141A24;
+      --ink-secondary: #48505E;
+      --ink-tertiary: #757C88;
+      --accent-indigo: #1B365D;
+      --accent-indigo-deep: #132846;
+      --accent-brass: #A67236;
+      --hairline: rgba(20, 26, 36, 0.11);
+      --hairline-strong: rgba(20, 26, 36, 0.20);
+
+      /* Optical GSM Microscope Contrast Chapter */
+      --chamber-bg: #111620;
+      --chamber-elevated: #171E2C;
+      --chamber-bone: #F3EFE7;
+      --chamber-muted: #9AA4B4;
+      --chamber-brass: #C89654;
+      --chamber-hairline: rgba(243, 239, 231, 0.12);
+
+      /* Concentric Radius Geometry: outer = inner + gap */
+      --r-btn: 10px;
+      --r-tray-inner: 12px;
+      --r-tray-pad: 6px;
+      --r-tray-outer: calc(var(--r-tray-inner) + var(--r-tray-pad));
+      --r-card-inner: 12px;
+      --r-card-pad: 8px;
+      --r-card-outer: calc(var(--r-card-inner) + var(--r-card-pad));
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-canvas);
+      color: var(--ink-primary);
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-canvas);
+      color: var(--ink-primary);
+      overflow-x: hidden;
+    }
+
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .editorial-display {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      letter-spacing: -0.02em;
+    }
+
+    /* Ultra-Subtle Procedural Paper Grain Canvas Overlay (2.5% opacity) */
+    #paper-grain-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 60;
+      opacity: 0.025;
+      mix-blend-mode: multiply;
+    }
+
+    /* Architectural Frosted Linen Header */
+    .atelier-nav {
+      background: rgba(244, 241, 234, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    /* =====================================================================
+       4-LAYER TACTILE HARDWARE / ATELIER CONTROLS
+       Consistent 4-slot shadow stack (rest <-> active) for smooth physics
+       ===================================================================== */
+    .btn-indigo-tactile {
+      background: linear-gradient(180deg, #21406E 0%, #1B365D 100%);
+      color: #FAF8F4;
+      border: 1px solid rgba(15, 31, 56, 0.45);
+      border-radius: var(--r-btn);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 250, 240, 0.28),
+        inset 0 -1.5px 0 rgba(10, 21, 38, 0.45),
+        0 1px 2px rgba(20, 26, 36, 0.16),
+        0 10px 22px -8px rgba(27, 54, 93, 0.38);
+      transition: transform 0.12s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.14s ease-out, filter 0.14s ease-out;
+      will-change: transform;
+    }
+
+    .btn-indigo-tactile:hover {
+      filter: brightness(1.05);
+    }
+
+    .btn-indigo-tactile:active {
+      transform: translateY(1.5px);
+      box-shadow:
+        inset 0 1.5px 2px rgba(10, 21, 38, 0.42),
+        inset 0 0 0 rgba(10, 21, 38, 0.12),
+        0 0.5px 1px rgba(20, 26, 36, 0.18),
+        0 3px 6px -2px rgba(27, 54, 93, 0.25);
+    }
+
+    .btn-linen-tactile {
+      background: linear-gradient(180deg, #FDFBF8 0%, #F4F0E8 100%);
+      color: var(--ink-primary);
+      border: 1px solid rgba(20, 26, 36, 0.14);
+      border-radius: var(--r-btn);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.92),
+        inset 0 -1.5px 0 rgba(20, 26, 36, 0.08),
+        0 1px 2px rgba(20, 26, 36, 0.08),
+        0 8px 18px -8px rgba(32, 28, 22, 0.16);
+      transition: transform 0.12s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.14s ease-out, border-color 0.15s ease-out, background 0.15s ease-out;
+      will-change: transform;
+    }
+
+    .btn-linen-tactile:hover {
+      border-color: rgba(20, 26, 36, 0.28);
+    }
+
+    .btn-linen-tactile:active {
+      transform: translateY(1.5px);
+      box-shadow:
+        inset 0 1.5px 2px rgba(20, 26, 36, 0.12),
+        inset 0 0 0 rgba(20, 26, 36, 0.03),
+        0 0.5px 1px rgba(20, 26, 36, 0.09),
+        0 2px 4px -2px rgba(32, 28, 22, 0.10);
+    }
+
+    .btn-linen-tactile.is-active {
+      background: linear-gradient(180deg, #FAF8F4 0%, #EFEAE0 100%);
+      border-color: rgba(27, 54, 93, 0.45);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.96),
+        inset 0 -1.5px 0 rgba(27, 54, 93, 0.14),
+        0 1px 2px rgba(20, 26, 36, 0.10),
+        0 6px 14px -6px rgba(27, 54, 93, 0.18);
+    }
+
+    .btn-chamber-tactile {
+      background: linear-gradient(180deg, #1E2738 0%, #161D2B 100%);
+      color: var(--chamber-bone);
+      border: 1px solid rgba(243, 239, 231, 0.13);
+      border-radius: var(--r-btn);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 248, 235, 0.10),
+        inset 0 -1.5px 0 rgba(5, 8, 14, 0.60),
+        0 1px 2px rgba(4, 7, 12, 0.50),
+        0 8px 18px -6px rgba(4, 7, 12, 0.65);
+      transition: transform 0.12s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.14s ease-out, border-color 0.16s ease-out;
+      will-change: transform;
+    }
+
+    .btn-chamber-tactile:hover {
+      border-color: rgba(200, 150, 84, 0.45);
+    }
+
+    .btn-chamber-tactile:active {
+      transform: translateY(1.5px);
+      box-shadow:
+        inset 0 1.5px 2px rgba(4, 7, 12, 0.65),
+        inset 0 0 0 rgba(4, 7, 12, 0.2),
+        0 0.5px 1px rgba(4, 7, 12, 0.45),
+        0 2px 5px -2px rgba(4, 7, 12, 0.50);
+    }
+
+    .btn-chamber-tactile.is-active {
+      background: linear-gradient(180deg, #253044 0%, #1C2536 100%);
+      border-color: rgba(200, 150, 84, 0.72);
+    }
+
+    /* Concentric Recessed Tailoring Tray */
+    .atelier-tray {
+      background: var(--bg-plinth);
+      border: 1px solid rgba(20, 26, 36, 0.09);
+      border-radius: var(--r-tray-outer);
+      padding: var(--r-tray-pad);
+      box-shadow:
+        inset 0 1px 3px rgba(20, 26, 36, 0.08),
+        0 1px 0 rgba(255, 255, 255, 0.78);
+    }
+
+    /* Elevated Studio Card / Docket (Single Global Overhead Light Source) */
+    .atelier-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--hairline);
+      border-radius: var(--r-card-outer);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.88),
+        0 1px 2px rgba(20, 26, 36, 0.05),
+        0 10px 24px -10px rgba(34, 30, 24, 0.09),
+        0 22px 44px -22px rgba(34, 30, 24, 0.11);
+    }
+
+    /* Sunlit Architectural Studio Plinth for Transparent -nobg.png Cutouts */
+    .studio-plinth {
+      position: relative;
+      background:
+        radial-gradient(ellipse 74% 58% at 50% 24%, rgba(252, 250, 246, 0.94) 0%, rgba(234, 228, 216, 0.88) 65%, rgba(223, 215, 200, 0.96) 100%);
+      border: 1px solid rgba(20, 26, 36, 0.08);
+      border-radius: var(--r-card-inner);
+      overflow: hidden;
+      transform-style: preserve-3d;
+      transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease-out;
+      will-change: transform;
+    }
+
+    /* Grounded Elliptical Contact Shadow beneath studio garment */
+    .garment-contact-shadow {
+      position: absolute;
+      bottom: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 58%;
+      height: 18px;
+      border-radius: 50%;
+      background: radial-gradient(
+        ellipse at center,
+        rgba(20, 24, 32, 0.32) 0%,
+        rgba(20, 24, 32, 0.13) 48%,
+        rgba(20, 24, 32, 0.0) 76%
+      );
+      filter: blur(4px);
+      pointer-events: none;
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.28s ease;
+    }
+
+    .plinth-card:hover .garment-contact-shadow {
+      transform: translateX(-50%) scale(0.92);
+      opacity: 0.78;
+    }
+
+    .garment-specimen-img {
+      position: relative;
+      z-index: 2;
+      filter: drop-shadow(0 14px 18px rgba(20, 26, 36, 0.13));
+      transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform;
+    }
+
+    .plinth-card:hover .garment-specimen-img {
+      transform: translateY(-6px) scale(1.03);
+    }
+
+    /* Infinite Smooth Client Marquee */
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: atelierMarquee 38s linear infinite;
+      will-change: transform;
+    }
+
+    .marquee-track:hover {
+      animation-play-state: paused;
+    }
+
+    @keyframes atelierMarquee {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    /* Tactile Precision Quantity Range Slider */
+    input[type='range'].atelier-range {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: #DED7C8;
+      border: 1px solid rgba(20, 26, 36, 0.12);
+      box-shadow: inset 0 1px 2px rgba(20, 26, 36, 0.12);
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type='range'].atelier-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #254678 0%, #1B365D 100%);
+      border: 2px solid #FAF8F4;
+      box-shadow:
+        0 1px 3px rgba(20, 26, 36, 0.25),
+        0 6px 14px -3px rgba(27, 54, 93, 0.45);
+      transition: transform 0.14s ease;
+    }
+
+    input[type='range'].atelier-range::-webkit-slider-thumb:hover {
+      transform: scale(1.08);
+    }
+
+    input[type='range'].atelier-range::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #1B365D;
+      border: 2px solid #FAF8F4;
+      box-shadow: 0 3px 10px rgba(27, 54, 93, 0.4);
+    }
+
+    /* Smooth Scroll Reveal (GPU-only transform + opacity) */
+    .reveal-item {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1), transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform, opacity;
+    }
+
+    .reveal-item.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Modal & Mobile Drawer Transitions */
+    .atelier-overlay {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.26s ease-out, visibility 0.26s ease-out;
+    }
+
+    .atelier-overlay.is-open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .atelier-modal-panel {
+      transform: scale(0.95) translateY(10px);
+      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .atelier-overlay.is-open .atelier-modal-panel {
+      transform: scale(1) translateY(0);
+    }
+
+    .mobile-drawer-panel {
+      transform: translateX(100%);
+      transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .atelier-overlay.is-open .mobile-drawer-panel {
+      transform: translateX(0);
+    }
+
+    /* Milestone Pin Active Pulse */
+    .stitch-pin {
+      transition: background-color 0.28s ease, border-color 0.28s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease;
+    }
+
+    .stitch-pin.is-lit {
+      background-color: #A67236;
+      border-color: #FAF8F4;
+      transform: scale(1.18);
+      box-shadow: 0 0 0 5px rgba(166, 114, 54, 0.18);
+    }
+
+    /* Respect Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+      .marquee-track {
+        animation: none;
+      }
+      .reveal-item {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="selection:bg-uniformNavy selection:text-alabaster">
+  <!-- Ultra-Subtle 2.5% Procedural Paper Grain Canvas -->
+  <canvas id="paper-grain-canvas" aria-hidden="true"></canvas>
+
+  <!-- =====================================================================
+       1. STICKY ARCHITECTURAL NAVIGATION
+       ===================================================================== -->
+  <header class="atelier-nav fixed top-0 left-0 right-0 z-40">
+    <div class="max-w-[1380px] mx-auto px-5 sm:px-8 lg:px-12 h-[72px] flex items-center justify-between gap-4">
+      <!-- Brand Lockup -->
+      <a href="#hero" class="flex items-center gap-3 group focus:outline-none">
+        <div class="w-10 h-10 rounded-[10px] bg-alabaster border border-[rgba(20,26,36,0.12)] p-1 flex items-center justify-center shadow-sm shrink-0 overflow-hidden">
+          <img
+            src="https://venkateswaraenterprises.netlify.app/assets/logo.png"
+            alt="Venkateshwara Enterprises Emblem"
+            class="w-full h-full object-contain"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+          />
+          <span class="hidden w-full h-full items-center justify-center font-serif font-semibold text-base text-uniformNavy">VE</span>
+        </div>
+        <div class="leading-tight">
+          <span class="block font-sans font-semibold text-[13px] sm:text-sm tracking-[-0.01em] text-indigoInk">
+            Venkateshwara Enterprises
+          </span>
+          <span class="block font-mono text-[10px] tracking-[0.14em] uppercase text-specTone mt-0.5 tabular-nums">
+            HYD · EST. 2011
+          </span>
+        </div>
+      </a>
+
+      <!-- Center Navigation Links -->
+      <nav class="hidden lg:flex items-center gap-7 text-[13px] font-medium text-loomSlate" aria-label="Primary Navigation">
+        <a href="#fabric-lab" class="hover:text-indigoInk transition-colors">Fabric Lab</a>
+        <a href="#craft-process" class="hover:text-indigoInk transition-colors">Craft Process</a>
+        <a href="#client-archive" class="hover:text-indigoInk transition-colors">Client Archive</a>
+        <a href="#catalogue" class="hover:text-indigoInk transition-colors">Catalogue</a>
+        <a href="#quote-builder" class="hover:text-indigoInk transition-colors">Quote Builder</a>
+        <a href="#leadership" class="hover:text-indigoInk transition-colors">Leadership</a>
+      </nav>
+
+      <!-- Right Actions -->
+      <div class="flex items-center gap-2.5">
+        <a
+          href="https://wa.me/917013107335?text=Hello%20Venkateshwara%20Enterprises%2C%20I%20would%20like%20to%20inquire%20about%20bulk%20uniform%20manufacturing."
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-[10px] text-xs font-mono text-loomSlate hover:text-indigoInk hover:bg-plinth/60 transition-colors tabular-nums"
+          aria-label="WhatsApp Venkateshwara Enterprises"
+        >
+          <span class="w-1.5 h-1.5 rounded-full bg-tailorBrass"></span>
+          +91 70131 07335
+        </a>
+        <a
+          href="#quote-builder"
+          class="btn-indigo-tactile px-4 py-2.5 text-xs sm:text-[13px] font-medium tracking-tight"
+        >
+          Request Quote
+        </a>
+        <button
+          id="mobile-menu-open"
+          type="button"
+          aria-label="Open Menu"
+          class="lg:hidden btn-linen-tactile w-10 h-10 flex items-center justify-center text-indigoInk"
+        >
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <line x1="4" y1="7" x2="20" y2="7" />
+            <line x1="4" y1="12" x2="20" y2="12" />
+            <line x1="4" y1="17" x2="20" y2="17" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Drawer -->
+  <div id="mobile-drawer" class="atelier-overlay fixed inset-0 z-50 bg-indigoInk/40 backdrop-blur-sm flex justify-end" role="dialog" aria-modal="true" aria-label="Mobile Navigation">
+    <div id="mobile-drawer-backdrop" class="flex-1 h-full"></div>
+    <div class="mobile-drawer-panel w-full max-w-xs h-full bg-alabaster border-l border-[rgba(20,26,36,0.12)] p-6 flex flex-col justify-between shadow-2xl">
+      <div>
+        <div class="flex items-center justify-between pb-5 border-b border-[rgba(20,26,36,0.11)]">
+          <span class="font-mono text-[11px] uppercase tracking-[0.14em] text-specTone">Atelier Index</span>
+          <button id="mobile-menu-close" type="button" class="btn-linen-tactile px-3 py-1.5 font-mono text-xs text-loomSlate">
+            Close
+          </button>
+        </div>
+        <nav class="mt-6 flex flex-col gap-2">
+          <a href="#fabric-lab" class="mobile-nav-link py-3 px-3 rounded-[10px] text-base font-medium text-indigoInk hover:bg-plinth/70 transition-colors">01 · Optical Fabric Lab</a>
+          <a href="#craft-process" class="mobile-nav-link py-3 px-3 rounded-[10px] text-base font-medium text-indigoInk hover:bg-plinth/70 transition-colors">02 · 5-Step Craft Process</a>
+          <a href="#client-archive" class="mobile-nav-link py-3 px-3 rounded-[10px] text-base font-medium text-indigoInk hover:bg-plinth/70 transition-colors">03 · Client Works Archive</a>
+          <a href="#catalogue" class="mobile-nav-link py-3 px-3 rounded-[10px] text-base font-medium text-indigoInk hover:bg-plinth/70 transition-colors">04 · Core Catalogue</a>
+          <a href="#quote-builder" class="mobile-nav-link py-3 px-3 rounded-[10px] text-base font-medium text-indigoInk hover:bg-plinth/70 transition-colors">05 · Bulk Quote Builder</a>
+          <a href="#leadership" class="mobile-nav-link py-3 px-3 rounded-[10px] text-base font-medium text-indigoInk hover:bg-plinth/70 transition-colors">06 · Leadership &amp; Factory</a>
+        </nav>
+      </div>
+      <div class="pt-5 border-t border-[rgba(20,26,36,0.11)] space-y-3">
+        <a
+          href="https://wa.me/917013107335?text=Hello%20Venkateshwara%20Enterprises%2C%20I%20would%20like%20to%20request%20a%20uniform%20quote."
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-indigo-tactile w-full py-3 text-center text-sm font-medium block"
+        >
+          WhatsApp Direct · +91 70131 07335
+        </a>
+        <p class="font-mono text-[10px] text-specTone text-center tabular-nums">
+          GSTIN 36AJGPV5047H1ZV · Hyderabad
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <!-- ===================================================================
+         2. HERO — REAL-TIME 3D PHYSICAL WOVEN CLOTH STUDIO
+         =================================================================== -->
+    <section id="hero" class="relative min-h-[100svh] pt-[72px] flex flex-col justify-between overflow-hidden bg-cotton">
+      <!-- Three.js AgX Studio Woven Fabric Stage -->
+      <div id="hero-cloth-stage" class="absolute inset-0 z-0 pointer-events-none">
+        <canvas id="hero-cloth-canvas" class="w-full h-full block" aria-label="Interactive 3D sculptural bolt of woven uniform fabric"></canvas>
+        <!-- Graceful 2D Woven Canvas Fallback if WebGL unavailable -->
+        <canvas id="hero-cloth-fallback" class="hidden w-full h-full block"></canvas>
+      </div>
+
+      <!-- Subtle Editorial Readability Veil (left side only, leaves 3D cloth unobstructed on right) -->
+      <div
+        class="absolute inset-0 z-[1] pointer-events-none"
+        style="
+          background: linear-gradient(
+            98deg,
+            rgba(244, 241, 234, 0.94) 0%,
+            rgba(244, 241, 234, 0.84) 38%,
+            rgba(244, 241, 234, 0.28) 64%,
+            rgba(244, 241, 234, 0.04) 100%
+          );
+        "
+      ></div>
+      <div
+        class="absolute inset-x-0 bottom-0 h-44 z-[1] pointer-events-none"
+        style="background: linear-gradient(180deg, rgba(244,241,234,0) 0%, rgba(244,241,234,0.92) 85%, #F4F1EA 100%);"
+      ></div>
+
+      <!-- Main Asymmetric Editorial Hero Grid -->
+      <div class="relative z-10 max-w-[1380px] mx-auto w-full px-5 sm:px-8 lg:px-12 pt-12 sm:pt-16 lg:pt-20 pb-8 flex-1 flex items-center">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full items-center">
+          <div class="lg:col-span-7 xl:col-span-6">
+            <div class="inline-flex flex-wrap items-center gap-2.5 font-mono text-[10px] sm:text-[11px] tracking-[0.14em] uppercase text-loomSlate mb-6">
+              <span class="w-2 h-2 rounded-full bg-tailorBrass inline-block"></span>
+              <span>HYDERABAD</span>
+              <span class="text-specTone">·</span>
+              <span class="tabular-nums">GSTIN 36AJGPV5047H1ZV</span>
+              <span class="text-specTone">·</span>
+              <span>DIRECT MANUFACTURER</span>
+            </div>
+
+            <h1 class="editorial-display text-[clamp(3.1rem,6.2vw,6.0rem)] leading-[0.98] font-medium text-indigoInk mb-6">
+              Crafting Professional
+              <span class="italic font-normal text-uniformNavy block">Identity.</span>
+              <span class="block text-[0.74em] font-normal text-indigoInk/90 mt-1">
+                One Stitch at a Time.
+              </span>
+            </h1>
+
+            <p class="text-[15px] sm:text-[17px] leading-[1.68] text-loomSlate max-w-[50ch] mb-9">
+              Precision-engineered uniforms for airports, hospitals, corporates, factories,
+              and academic institutions across Hyderabad and Telangana—cut, embroidered,
+              and audited direct on our own manufacturing floor.
+            </p>
+
+            <div class="flex flex-wrap items-center gap-3.5">
+              <a
+                href="#quote-builder"
+                class="btn-indigo-tactile inline-flex items-center gap-2.5 px-6 py-3.5 text-sm font-medium"
+              >
+                Configure Bulk Quote
+                <span aria-hidden="true">→</span>
+              </a>
+              <a
+                href="#client-archive"
+                class="btn-linen-tactile inline-flex items-center gap-2.5 px-6 py-3.5 text-sm font-medium text-indigoInk"
+              >
+                Explore Client Works
+                <span class="font-mono text-[11px] text-specTone tabular-nums">(18)</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Right Floating Spec Tag for Active 3D Cloth Specimen -->
+          <div class="lg:col-span-5 xl:col-span-6 hidden lg:flex justify-end items-end self-end pb-4">
+            <div class="bg-alabaster/80 backdrop-blur-md border border-[rgba(20,26,36,0.11)] rounded-[16px] px-4 py-3 shadow-sm max-w-xs">
+              <div class="flex items-center justify-between gap-6 font-mono text-[10px] uppercase tracking-[0.12em] text-specTone mb-1">
+                <span>LIVE 3D MILL SPECIMEN</span>
+                <span class="text-tailorBrass">AGX STUDIO</span>
+              </div>
+              <div id="hero-badge-name" class="font-serif text-lg font-medium text-indigoInk leading-snug">
+                180 GSM Poly-Cotton Twill
+              </div>
+              <div id="hero-badge-meta" class="font-mono text-[11px] text-loomSlate tabular-nums mt-0.5">
+                2/1 Diagonal Twill · MOQ 100 · Schools &amp; Institutional
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Hero Textile Bar (Floating Glass-Linen Atelier Dock) -->
+      <div class="relative z-10 max-w-[1380px] mx-auto w-full px-5 sm:px-8 lg:px-12 pb-8">
+        <div
+          class="bg-alabaster/88 backdrop-blur-md border border-[rgba(20,26,36,0.12)] p-2 sm:p-2.5 shadow-lg"
+          style="border-radius: 20px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 16px 36px -18px rgba(20,26,36,0.16);"
+        >
+          <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-3">
+            <!-- 5 Tactile Fabric Swatch Selectors -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 flex-1" role="radiogroup" aria-label="Select Live 3D Fabric Weave">
+              <button
+                type="button"
+                data-fabric-idx="0"
+                class="hero-fabric-btn btn-linen-tactile is-active px-3 py-2.5 text-left flex items-center gap-2.5"
+                style="border-radius: 12px;"
+                aria-pressed="true"
+              >
+                <span class="w-6 h-6 rounded-full shrink-0 border border-black/15 shadow-inner" style="background: linear-gradient(135deg, #27436B 0%, #1C314E 100%);"></span>
+                <span class="min-w-0">
+                  <span class="block font-mono text-[10px] text-tailorBrass tabular-nums">180 GSM</span>
+                  <span class="block text-xs font-semibold text-indigoInk truncate">Poly-Cotton Twill</span>
+                </span>
+              </button>
+
+              <button
+                type="button"
+                data-fabric-idx="1"
+                class="hero-fabric-btn btn-linen-tactile px-3 py-2.5 text-left flex items-center gap-2.5"
+                style="border-radius: 12px;"
+                aria-pressed="false"
+              >
+                <span class="w-6 h-6 rounded-full shrink-0 border border-black/15 shadow-inner" style="background: linear-gradient(135deg, #EAE3D6 0%, #D4C9B6 100%);"></span>
+                <span class="min-w-0">
+                  <span class="block font-mono text-[10px] text-specTone tabular-nums">220 GSM</span>
+                  <span class="block text-xs font-semibold text-indigoInk truncate">Combed Pique</span>
+                </span>
+              </button>
+
+              <button
+                type="button"
+                data-fabric-idx="2"
+                class="hero-fabric-btn btn-linen-tactile px-3 py-2.5 text-left flex items-center gap-2.5"
+                style="border-radius: 12px;"
+                aria-pressed="false"
+              >
+                <span class="w-6 h-6 rounded-full shrink-0 border border-black/20 shadow-inner" style="background: linear-gradient(135deg, #3A4250 0%, #242932 100%);"></span>
+                <span class="min-w-0">
+                  <span class="block font-mono text-[10px] text-specTone tabular-nums">280 GSM</span>
+                  <span class="block text-xs font-semibold text-indigoInk truncate">FR Industrial Twill</span>
+                </span>
+              </button>
+
+              <button
+                type="button"
+                data-fabric-idx="3"
+                class="hero-fabric-btn btn-linen-tactile px-3 py-2.5 text-left flex items-center gap-2.5"
+                style="border-radius: 12px;"
+                aria-pressed="false"
+              >
+                <span class="w-6 h-6 rounded-full shrink-0 border border-black/15 shadow-inner" style="background: linear-gradient(135deg, #336B70 0%, #234D51 100%);"></span>
+                <span class="min-w-0">
+                  <span class="block font-mono text-[10px] text-specTone tabular-nums">200 GSM</span>
+                  <span class="block text-xs font-semibold text-indigoInk truncate">Anti-Microbial Poplin</span>
+                </span>
+              </button>
+
+              <button
+                type="button"
+                data-fabric-idx="4"
+                class="hero-fabric-btn btn-linen-tactile px-3 py-2.5 text-left flex items-center gap-2.5 col-span-2 sm:col-span-1"
+                style="border-radius: 12px;"
+                aria-pressed="false"
+              >
+                <span class="w-6 h-6 rounded-full shrink-0 border border-black/25 shadow-inner" style="background: linear-gradient(135deg, #2D323E 0%, #171A21 100%);"></span>
+                <span class="min-w-0">
+                  <span class="block font-mono text-[10px] text-specTone tabular-nums">300 GSM</span>
+                  <span class="block text-xs font-semibold text-indigoInk truncate">Super-110 Wool</span>
+                </span>
+              </button>
+            </div>
+
+            <!-- Live Monospace Telemetry Strip -->
+            <div class="xl:border-l xl:border-[rgba(20,26,36,0.11)] xl:pl-4 px-2 py-1 flex flex-wrap xl:flex-col justify-between gap-x-5 gap-y-1 xl:min-w-[215px]">
+              <div class="flex items-center justify-between gap-3 font-mono text-[11px] tabular-nums">
+                <span class="text-specTone">WEAVE</span>
+                <span id="dock-weave" class="text-indigoInk font-medium">2/1 Diagonal Twill</span>
+              </div>
+              <div class="flex items-center justify-between gap-3 font-mono text-[11px] tabular-nums">
+                <span class="text-specTone">SECTOR · MOQ</span>
+                <span id="dock-moq" class="text-uniformNavy font-medium">Schools · 100 pcs</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Architectural Proof Ledger (Clean Hairline Columns — Zero Boxy Cards) -->
+      <div class="relative z-10 border-t border-[rgba(20,26,36,0.11)] bg-alabaster/75 backdrop-blur-sm">
+        <div class="max-w-[1380px] mx-auto px-5 sm:px-8 lg:px-12">
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-[rgba(20,26,36,0.10)]">
+            <div class="py-5 sm:px-5 first:pl-0">
+              <div class="editorial-display text-3xl sm:text-[34px] font-medium text-indigoInk leading-none tabular-nums">500+</div>
+              <div class="font-mono text-[10px] uppercase tracking-[0.12em] text-specTone mt-1.5">Clients Served</div>
+            </div>
+            <div class="py-5 px-4 sm:px-5">
+              <div class="editorial-display text-3xl sm:text-[34px] font-medium text-indigoInk leading-none tabular-nums">15+ Yrs</div>
+              <div class="font-mono text-[10px] uppercase tracking-[0.12em] text-specTone mt-1.5">Manufacturing Legacy</div>
+            </div>
+            <div class="py-5 sm:px-5">
+              <div class="editorial-display text-3xl sm:text-[34px] font-medium text-indigoInk leading-none tabular-nums">10,000+</div>
+              <div class="font-mono text-[10px] uppercase tracking-[0.12em] text-specTone mt-1.5">Units / Month Floor</div>
+            </div>
+            <div class="py-5 px-4 sm:px-5">
+              <div class="editorial-display text-3xl sm:text-[34px] font-medium text-indigoInk leading-none tabular-nums">5 Sectors</div>
+              <div class="font-mono text-[10px] uppercase tracking-[0.12em] text-specTone mt-1.5">Airports to Schools</div>
+            </div>
+            <div class="py-5 sm:px-5 col-span-2 sm:col-span-1 flex flex-col justify-center">
+              <div class="text-sm font-semibold text-uniformNavy leading-snug">Zero Middlemen</div>
+              <div class="font-mono text-[10px] uppercase tracking-[0.12em] text-tailorBrass mt-1">Direct Owner Access</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         3. REPUTED CLIENTS LEDGER (Refined Editorial Typography Marquee)
+         =================================================================== -->
+    <section class="border-y border-[rgba(20,26,36,0.11)] bg-cotton py-6 overflow-hidden" aria-label="Trusted Institutional and Enterprise Clients">
+      <div class="max-w-[1380px] mx-auto px-5 sm:px-8 lg:px-12 mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-specTone">
+          VERIFIED SUPPLY ROSTER · TELANGANA &amp; PAN-INDIA INSTITUTIONS
+        </span>
+        <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-tailorBrass">
+          REPEAT PROCUREMENT PARTNERS
+        </span>
+      </div>
+
+      <div class="relative overflow-hidden py-2">
+        <div class="marquee-track items-center gap-10">
+          <!-- Set A -->
+          <div class="flex items-center gap-10 pr-10">
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">GMR International Airports</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">Delhi International Airport</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">Deloitte</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">TSRTC</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">Laurus</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">Konnect Diagnostics</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">Techolution</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">Buffalo Wild Wings</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">Barbeque Pride</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">Star Industrial</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">VNRVJIET</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">Smart India Hackathon</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">Emmadi</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">BSR</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+          </div>
+          <!-- Set B (Duplicate for seamless infinite loop) -->
+          <div class="flex items-center gap-10 pr-10" aria-hidden="true">
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">GMR International Airports</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">Delhi International Airport</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">Deloitte</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">TSRTC</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">Laurus</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">Konnect Diagnostics</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">Techolution</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">Buffalo Wild Wings</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">Barbeque Pride</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">Star Industrial</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">VNRVJIET</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">Smart India Hackathon</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">Emmadi</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+            <span class="editorial-display text-2xl sm:text-[28px] text-indigoInk/85 whitespace-nowrap">BSR</span>
+            <span class="text-tailorBrass text-xs">◆</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         4. DARK ATELIER CONTRAST CHAPTER — OPTICAL 12× GSM FABRIC MICROSCOPE
+         =================================================================== -->
+    <section
+      id="fabric-lab"
+      class="bg-chamberBg text-chamberBone py-24 sm:py-32 px-5 sm:px-8 lg:px-12 relative overflow-hidden"
+    >
+      <div class="max-w-[1380px] mx-auto">
+        <!-- Chapter Header -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-12 border-b border-[rgba(243,239,231,0.12)] items-end reveal-item">
+          <div class="lg:col-span-7">
+            <p class="font-mono text-[11px] uppercase tracking-[0.16em] text-chamberBrass mb-4 flex items-center gap-2.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-chamberBrass inline-block"></span>
+              01 · QUALITY INSPECTION BENCH
+            </p>
+            <h2 class="editorial-display text-[clamp(2.4rem,4.5vw,4.1rem)] leading-[1.02] font-normal text-chamberBone">
+              12× Optical GSM <span class="italic text-chamberBrass">Linen-Tester</span>
+            </h2>
+          </div>
+          <div class="lg:col-span-5 text-sm sm:text-[15px] leading-relaxed text-[#A5AEBD]">
+            Every fabric bolt entering our Hyderabad cutting floor undergoes GSM weight calibration,
+            warp-weft density verification, and double-needle seam stress inspection. Glide the brass
+            optical loupe across the specimen below to inspect yarn twist and 12 SPI lockstitch geometry.
+          </div>
+        </div>
+
+        <!-- Microscope Workbench Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 pt-12 items-start">
+          <!-- Left: Specimen Selector + Live Technical Manufacturing Lab Metrics -->
+          <div class="lg:col-span-5 space-y-6 reveal-item">
+            <!-- Selector Tabs -->
+            <div class="p-1.5 rounded-[18px] bg-[#0B0F17] border border-[rgba(243,239,231,0.10)] space-y-1.5" role="radiogroup" aria-label="Select Microscope Fabric Specimen">
+              <button type="button" data-lab-idx="0" class="lab-fabric-btn btn-chamber-tactile is-active w-full px-3.5 py-2.5 flex items-center justify-between text-left" style="border-radius: 12px;" aria-pressed="true">
+                <span class="flex items-center gap-3">
+                  <span class="w-4 h-4 rounded-full border border-white/25" style="background: #1C314E;"></span>
+                  <span class="text-xs sm:text-[13px] font-medium text-chamberBone">180 GSM Poly-Cotton Twill</span>
+                </span>
+                <span class="font-mono text-[10px] text-chamberBrass tabular-nums">2/1 TWILL</span>
+              </button>
+
+              <button type="button" data-lab-idx="1" class="lab-fabric-btn btn-chamber-tactile w-full px-3.5 py-2.5 flex items-center justify-between text-left" style="border-radius: 12px;" aria-pressed="false">
+                <span class="flex items-center gap-3">
+                  <span class="w-4 h-4 rounded-full border border-white/25" style="background: #DDD4C4;"></span>
+                  <span class="text-xs sm:text-[13px] font-medium text-chamberBone">220 GSM Combed Pique</span>
+                </span>
+                <span class="font-mono text-[10px] text-[#9AA4B4] tabular-nums">HONEYCOMB</span>
+              </button>
+
+              <button type="button" data-lab-idx="2" class="lab-fabric-btn btn-chamber-tactile w-full px-3.5 py-2.5 flex items-center justify-between text-left" style="border-radius: 12px;" aria-pressed="false">
+                <span class="flex items-center gap-3">
+                  <span class="w-4 h-4 rounded-full border border-white/25" style="background: #282E38;"></span>
+                  <span class="text-xs sm:text-[13px] font-medium text-chamberBone">280 GSM FR Industrial Twill</span>
+                </span>
+                <span class="font-mono text-[10px] text-[#9AA4B4] tabular-nums">RIPSTOP FR</span>
+              </button>
+
+              <button type="button" data-lab-idx="3" class="lab-fabric-btn btn-chamber-tactile w-full px-3.5 py-2.5 flex items-center justify-between text-left" style="border-radius: 12px;" aria-pressed="false">
+                <span class="flex items-center gap-3">
+                  <span class="w-4 h-4 rounded-full border border-white/25" style="background: #28565A;"></span>
+                  <span class="text-xs sm:text-[13px] font-medium text-chamberBone">200 GSM Anti-Microbial Poplin</span>
+                </span>
+                <span class="font-mono text-[10px] text-[#9AA4B4] tabular-nums">SURGICAL</span>
+              </button>
+
+              <button type="button" data-lab-idx="4" class="lab-fabric-btn btn-chamber-tactile w-full px-3.5 py-2.5 flex items-center justify-between text-left" style="border-radius: 12px;" aria-pressed="false">
+                <span class="flex items-center gap-3">
+                  <span class="w-4 h-4 rounded-full border border-white/25" style="background: #1C1F26;"></span>
+                  <span class="text-xs sm:text-[13px] font-medium text-chamberBone">300 GSM Super-110 Wool Blend</span>
+                </span>
+                <span class="font-mono text-[10px] text-[#9AA4B4] tabular-nums">SERGE WOOL</span>
+              </button>
+            </div>
+
+            <!-- Live Laboratory Telemetry Ledger -->
+            <div class="rounded-[20px] p-2 bg-[#0B0F17] border border-[rgba(243,239,231,0.10)]">
+              <div class="rounded-[12px] bg-[#151C29] border border-[rgba(243,239,231,0.08)] p-5 divide-y divide-[rgba(243,239,231,0.09)]">
+                <div class="pb-3.5 flex items-baseline justify-between gap-4">
+                  <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-[#9AA4B4]">GSM MASS RATING</span>
+                  <span id="lab-gsm" class="font-mono text-base font-medium text-chamberBrass tabular-nums">180 g/m² ±2%</span>
+                </div>
+                <div class="py-3.5 flex items-baseline justify-between gap-4">
+                  <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-[#9AA4B4]">WARP × WEFT DENSITY</span>
+                  <span id="lab-density" class="font-mono text-xs sm:text-[13px] text-chamberBone tabular-nums">128 × 64 EPI/PPI</span>
+                </div>
+                <div class="py-3.5 flex items-baseline justify-between gap-4">
+                  <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-[#9AA4B4]">INDUSTRIAL WASH CYCLE</span>
+                  <span id="lab-wash" class="font-mono text-xs sm:text-[13px] text-chamberBone tabular-nums">120+ Cycles @ 60°C</span>
+                </div>
+                <div class="py-3.5 flex items-baseline justify-between gap-4">
+                  <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-[#9AA4B4]">COLOR FASTNESS</span>
+                  <span id="lab-fastness" class="font-mono text-xs sm:text-[13px] text-chamberBone tabular-nums">ISO Grade 4.5 / 5.0</span>
+                </div>
+                <div class="py-3.5 flex items-baseline justify-between gap-4">
+                  <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-[#9AA4B4]">BREATHABILITY INDEX</span>
+                  <span id="lab-breath" class="font-mono text-xs sm:text-[13px] text-chamberBone tabular-nums">84 cfm · All-Day Climate</span>
+                </div>
+                <div class="pt-3.5 flex items-baseline justify-between gap-4">
+                  <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-[#9AA4B4]">STANDARD STITCH SPEC</span>
+                  <span id="lab-stitch" class="font-mono text-xs sm:text-[13px] text-chamberBrass tabular-nums">12 SPI Double-Needle</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Interactive High-DPI Macro Weave Viewport + Live 12× Brass Optical Loupe -->
+          <div class="lg:col-span-7 reveal-item">
+            <div class="rounded-[22px] p-2 bg-[#0B0F17] border border-[rgba(243,239,231,0.12)] shadow-2xl">
+              <div class="relative rounded-[14px] overflow-hidden border border-[rgba(243,239,231,0.10)] bg-[#0E131D]">
+                <!-- Top Instrument Bar -->
+                <div class="px-4 py-3 bg-[#141B27]/95 border-b border-[rgba(243,239,231,0.10)] flex flex-wrap items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-[0.12em]">
+                  <span class="text-chamberBone flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-chamberBrass"></span>
+                    <span id="loupe-specimen-label">SPECIMEN 01 // 180 GSM POLY-COTTON TWILL</span>
+                  </span>
+                  <span id="loupe-telemetry" class="text-chamberBrass tabular-nums">
+                    MAG 12.0× · SEAM TENSION 4.2 N · 1.0 MM SCALE
+                  </span>
+                </div>
+
+                <!-- Interactive Macro Canvas Stage -->
+                <div id="loupe-stage" class="relative w-full h-[380px] sm:h-[460px] cursor-crosshair select-none touch-none">
+                  <canvas
+                    id="macro-fabric-canvas"
+                    class="w-full h-full block"
+                    aria-label="Macro fabric weave and stitched seam specimen with 12x optical loupe"
+                  ></canvas>
+                </div>
+
+                <!-- Bottom Instrument Guidance Bar -->
+                <div class="px-4 py-2.5 bg-[#141B27]/95 border-t border-[rgba(243,239,231,0.10)] flex flex-wrap items-center justify-between gap-2 font-mono text-[10px] text-[#9AA4B4]">
+                  <span>MOVE CURSOR OR DRAG ACROSS SWATCH TO POSITION 12× OPTICAL LOUPE</span>
+                  <span id="loupe-coords" class="tabular-nums text-chamberBone">X 50% · Y 50% · LOCKSTITCH SEAM</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         5. SCROLL-DRIVEN 5-STEP MANUFACTURING ATELIER (Live Double-Needle Stitch)
+         =================================================================== -->
+    <section id="craft-process" class="py-24 sm:py-32 px-5 sm:px-8 lg:px-12 bg-cotton relative">
+      <div class="max-w-[1380px] mx-auto">
+        <!-- Header -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-16 border-b border-[rgba(20,26,36,0.11)] items-end reveal-item">
+          <div class="lg:col-span-7">
+            <p class="font-mono text-[11px] uppercase tracking-[0.16em] text-tailorBrass mb-4">
+              02 · THE MANUFACTURING FLOOR
+            </p>
+            <h2 class="editorial-display text-[clamp(2.5rem,4.6vw,4.2rem)] leading-[1.02] font-normal text-indigoInk">
+              Five Disciplines From <span class="italic text-uniformNavy">Mill Bolt to Dispatch</span>
+            </h2>
+          </div>
+          <div class="lg:col-span-5 text-sm sm:text-[15px] leading-relaxed text-loomSlate">
+            No outsourced job-work guesswork. Every order from 25 executive blazers to 10,000
+            institutional uniforms moves linearly through our in-house Hyderabad production line.
+          </div>
+        </div>
+
+        <!-- Staggered Asymmetric Timeline with Live Scroll-Sewn SVG Double-Needle Spine -->
+        <div id="stitch-timeline" class="relative mt-16 lg:mt-20">
+          <!-- Continuous Vertical Double-Needle Running Stitch SVG Spine (Desktop center, Mobile left) -->
+          <div
+            class="absolute top-0 bottom-0 left-[18px] lg:left-1/2 lg:-translate-x-1/2 w-[36px] pointer-events-none"
+            aria-hidden="true"
+          >
+            <svg id="stitch-svg" class="w-full h-full overflow-visible" viewBox="0 0 36 1000" preserveAspectRatio="none">
+              <!-- Faint Tailoring Chalk Guide Lines -->
+              <line x1="14" y1="0" x2="14" y2="1000" stroke="rgba(20,26,36,0.12)" stroke-width="1" stroke-dasharray="4 6" />
+              <line x1="22" y1="0" x2="22" y2="1000" stroke="rgba(20,26,36,0.12)" stroke-width="1" stroke-dasharray="4 6" />
+              <!-- Live Scroll-Sewn Twin Thread 1: Antique Tailor Brass -->
+              <path
+                id="stitch-path-brass"
+                d="M 14 0 L 14 1000"
+                fill="none"
+                stroke="#A67236"
+                stroke-width="2.2"
+                stroke-dasharray="10 6"
+                stroke-linecap="round"
+              />
+              <!-- Live Scroll-Sewn Twin Thread 2: Uniform Navy Indigo -->
+              <path
+                id="stitch-path-indigo"
+                d="M 22 0 L 22 1000"
+                fill="none"
+                stroke="#1B365D"
+                stroke-width="2.2"
+                stroke-dasharray="10 6"
+                stroke-linecap="round"
+              />
+            </svg>
+          </div>
+
+          <div class="space-y-12 lg:space-y-20">
+            <!-- Step 01 (Left on Desktop) -->
+            <div class="relative grid grid-cols-1 lg:grid-cols-12 items-center gap-6 pl-12 lg:pl-0" data-stitch-step="0">
+              <div class="lg:col-span-5 lg:text-right reveal-item">
+                <article class="atelier-card p-6 sm:p-8 inline-block text-left w-full">
+                  <div class="flex items-center justify-between font-mono text-[11px] text-specTone mb-3 tabular-nums">
+                    <span class="text-tailorBrass font-medium">STEP 01</span>
+                    <span>ISO 105-C06 AUDIT</span>
+                  </div>
+                  <h3 class="editorial-display text-2xl sm:text-3xl font-medium text-indigoInk mb-3">
+                    Fabric Sourcing &amp; GSM Lab Audit
+                  </h3>
+                  <p class="text-sm leading-relaxed text-loomSlate mb-4">
+                    Direct procurement from certified Indian spinning mills. Every lot is cut-tested
+                    for exact GSM mass, wet/dry rub color fastness, shrinkage tolerance (&lt;1.5%),
+                    and warp-weft tear strength before clearing for production.
+                  </p>
+                  <div class="pt-3.5 border-t border-[rgba(20,26,36,0.09)] font-mono text-[10px] uppercase tracking-[0.1em] text-uniformNavy">
+                    Mill-Certified Lots · Zero Sub-Grade Substitutes
+                  </div>
+                </article>
+              </div>
+              <div class="hidden lg:flex lg:col-span-2 justify-center">
+                <div class="stitch-pin w-4 h-4 rounded-full bg-plinth border-2 border-indigoInk/35 z-10"></div>
+              </div>
+              <div class="hidden lg:block lg:col-span-5"></div>
+              <!-- Mobile Pin -->
+              <div class="lg:hidden stitch-pin absolute left-[11px] top-8 w-3.5 h-3.5 rounded-full bg-plinth border-2 border-indigoInk/35 z-10"></div>
+            </div>
+
+            <!-- Step 02 (Right on Desktop) -->
+            <div class="relative grid grid-cols-1 lg:grid-cols-12 items-center gap-6 pl-12 lg:pl-0" data-stitch-step="1">
+              <div class="hidden lg:block lg:col-span-5"></div>
+              <div class="hidden lg:flex lg:col-span-2 justify-center">
+                <div class="stitch-pin w-4 h-4 rounded-full bg-plinth border-2 border-indigoInk/35 z-10"></div>
+              </div>
+              <div class="lg:col-span-5 reveal-item">
+                <article class="atelier-card p-6 sm:p-8 w-full">
+                  <div class="flex items-center justify-between font-mono text-[11px] text-specTone mb-3 tabular-nums">
+                    <span class="text-tailorBrass font-medium">STEP 02</span>
+                    <span>XS TO 5XL GRADING</span>
+                  </div>
+                  <h3 class="editorial-display text-2xl sm:text-3xl font-medium text-indigoInk mb-3">
+                    Custom Ergonomic Pattern Drafting
+                  </h3>
+                  <p class="text-sm leading-relaxed text-loomSlate mb-4">
+                    Master pattern-makers draft movement-ready blocks engineered for 10-hour airport,
+                    clinical, or factory shifts—with articulated underarm gussets, structured collars,
+                    and consistent proportional grading from XS through 5XL.
+                  </p>
+                  <div class="pt-3.5 border-t border-[rgba(20,26,36,0.09)] font-mono text-[10px] uppercase tracking-[0.1em] text-uniformNavy">
+                    Pre-Production Sample Fit Sign-Off Included
+                  </div>
+                </article>
+              </div>
+              <div class="lg:hidden stitch-pin absolute left-[11px] top-8 w-3.5 h-3.5 rounded-full bg-plinth border-2 border-indigoInk/35 z-10"></div>
+            </div>
+
+            <!-- Step 03 (Left on Desktop) -->
+            <div class="relative grid grid-cols-1 lg:grid-cols-12 items-center gap-6 pl-12 lg:pl-0" data-stitch-step="2">
+              <div class="lg:col-span-5 reveal-item">
+                <article class="atelier-card p-6 sm:p-8 w-full">
+                  <div class="flex items-center justify-between font-mono text-[11px] text-specTone mb-3 tabular-nums">
+                    <span class="text-tailorBrass font-medium">STEP 03</span>
+                    <span>MULTI-HEAD EMBROIDERY</span>
+                  </div>
+                  <h3 class="editorial-display text-2xl sm:text-3xl font-medium text-indigoInk mb-3">
+                    CAD Precision Cutting &amp; High-Density Embroidery
+                  </h3>
+                  <p class="text-sm leading-relaxed text-loomSlate mb-4">
+                    Zero-fray CAD nested lay cutting guarantees grainline alignment across thousands
+                    of panels. Institutional crests and corporate emblems are digitized in-house for
+                    high-density multi-head embroidery and cured plastisol screen printing.
+                  </p>
+                  <div class="pt-3.5 border-t border-[rgba(20,26,36,0.09)] font-mono text-[10px] uppercase tracking-[0.1em] text-uniformNavy">
+                    Pantone-Matched Madeira &amp; Rayon Thread Vault
+                  </div>
+                </article>
+              </div>
+              <div class="hidden lg:flex lg:col-span-2 justify-center">
+                <div class="stitch-pin w-4 h-4 rounded-full bg-plinth border-2 border-indigoInk/35 z-10"></div>
+              </div>
+              <div class="hidden lg:block lg:col-span-5"></div>
+              <div class="lg:hidden stitch-pin absolute left-[11px] top-8 w-3.5 h-3.5 rounded-full bg-plinth border-2 border-indigoInk/35 z-10"></div>
+            </div>
+
+            <!-- Step 04 (Right on Desktop) -->
+            <div class="relative grid grid-cols-1 lg:grid-cols-12 items-center gap-6 pl-12 lg:pl-0" data-stitch-step="3">
+              <div class="hidden lg:block lg:col-span-5"></div>
+              <div class="hidden lg:flex lg:col-span-2 justify-center">
+                <div class="stitch-pin w-4 h-4 rounded-full bg-plinth border-2 border-indigoInk/35 z-10"></div>
+              </div>
+              <div class="lg:col-span-5 reveal-item">
+                <article class="atelier-card p-6 sm:p-8 w-full">
+                  <div class="flex items-center justify-between font-mono text-[11px] text-specTone mb-3 tabular-nums">
+                    <span class="text-tailorBrass font-medium">STEP 04</span>
+                    <span>12 SPI FLAT-FELLED</span>
+                  </div>
+                  <h3 class="editorial-display text-2xl sm:text-3xl font-medium text-indigoInk mb-3">
+                    Industrial Double-Needle Stitching &amp; Assembly
+                  </h3>
+                  <p class="text-sm leading-relaxed text-loomSlate mb-4">
+                    Dedicated Juki and Brother industrial lines execute reinforced double-needle
+                    flat-felled seams, high-tension pocket corner bar-tacking, fused collar interlinings,
+                    and shatter-resistant horn or melamine button attachment.
+                  </p>
+                  <div class="pt-3.5 border-t border-[rgba(20,26,36,0.09)] font-mono text-[10px] uppercase tracking-[0.1em] text-uniformNavy">
+                    Bar-Tacked Stress Points · Industrial Wash Durability
+                  </div>
+                </article>
+              </div>
+              <div class="lg:hidden stitch-pin absolute left-[11px] top-8 w-3.5 h-3.5 rounded-full bg-plinth border-2 border-indigoInk/35 z-10"></div>
+            </div>
+
+            <!-- Step 05 (Left on Desktop) -->
+            <div class="relative grid grid-cols-1 lg:grid-cols-12 items-center gap-6 pl-12 lg:pl-0" data-stitch-step="4">
+              <div class="lg:col-span-5 reveal-item">
+                <article class="atelier-card p-6 sm:p-8 w-full">
+                  <div class="flex items-center justify-between font-mono text-[11px] text-specTone mb-3 tabular-nums">
+                    <span class="text-tailorBrass font-medium">STEP 05</span>
+                    <span>10–10,000 UNIT LOGISTICS</span>
+                  </div>
+                  <h3 class="editorial-display text-2xl sm:text-3xl font-medium text-indigoInk mb-3">
+                    Multi-Point Quality Audit &amp; Bulk Packaging
+                  </h3>
+                  <p class="text-sm leading-relaxed text-loomSlate mb-4">
+                    Every finished garment passes thread-trimming, steam pressing, measurement tolerance
+                    verification, and individual size-sorted polybagging in labeled master cartons—ready
+                    for scheduled doorstep dispatch across Hyderabad, Telangana, and pan-India sites.
+                  </p>
+                  <div class="pt-3.5 border-t border-[rgba(20,26,36,0.09)] font-mono text-[10px] uppercase tracking-[0.1em] text-uniformNavy">
+                    GST-Compliant Invoicing · Department-Wise Carton Labeling
+                  </div>
+                </article>
+              </div>
+              <div class="hidden lg:flex lg:col-span-2 justify-center">
+                <div class="stitch-pin w-4 h-4 rounded-full bg-plinth border-2 border-indigoInk/35 z-10"></div>
+              </div>
+              <div class="hidden lg:block lg:col-span-5"></div>
+              <div class="lg:hidden stitch-pin absolute left-[11px] top-8 w-3.5 h-3.5 rounded-full bg-plinth border-2 border-indigoInk/35 z-10"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         6. REAL CLIENT GARMENT ARCHIVE — SUNLIT STUDIO PLINTH GALLERY (ALL 18!)
+         =================================================================== -->
+    <section id="client-archive" class="py-24 sm:py-32 px-5 sm:px-8 lg:px-12 bg-alabaster border-t border-[rgba(20,26,36,0.11)]">
+      <div class="max-w-[1380px] mx-auto">
+        <!-- Header -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-10 border-b border-[rgba(20,26,36,0.11)] items-end reveal-item">
+          <div class="lg:col-span-7">
+            <p class="font-mono text-[11px] uppercase tracking-[0.16em] text-tailorBrass mb-4">
+              03 · REAL CLIENT DELIVERIES
+            </p>
+            <h2 class="editorial-display text-[clamp(2.5rem,4.6vw,4.3rem)] leading-[1.01] font-normal text-indigoInk">
+              The Studio <span class="italic text-uniformNavy">Specimen Archive</span>
+            </h2>
+          </div>
+          <div class="lg:col-span-5 text-sm sm:text-[15px] leading-relaxed text-loomSlate">
+            Eighteen actual garments, caps, jackets, and bags manufactured and delivered for
+            named enterprise, healthcare, aviation, hospitality, and institutional clients.
+            Select any piece to inspect full fabric specs or load directly into your quote.
+          </div>
+        </div>
+
+        <!-- Tactile Category Filter Bar (Concentric Tray) -->
+        <div class="mt-8 mb-10 reveal-item">
+          <div id="archive-filters" class="atelier-tray flex flex-wrap gap-1.5" role="tablist" aria-label="Filter Client Garments by Sector">
+            <!-- Populated cleanly via JS -->
+          </div>
+        </div>
+
+        <!-- Asymmetric Editorial Studio Plinth Gallery -->
+        <div id="archive-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 sm:gap-7">
+          <!-- All 18 Real Client Cutouts Rendered Here -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         7. CORE CATALOGUE LEDGER (Architectural Spec Sheet — 6 Flagship SKUs)
+         =================================================================== -->
+    <section id="catalogue" class="py-24 sm:py-32 px-5 sm:px-8 lg:px-12 bg-cotton border-t border-[rgba(20,26,36,0.11)]">
+      <div class="max-w-[1380px] mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-12 border-b border-[rgba(20,26,36,0.11)] items-end reveal-item">
+          <div class="lg:col-span-7">
+            <p class="font-mono text-[11px] uppercase tracking-[0.16em] text-tailorBrass mb-4">
+              04 · FLAGSHIP SPECIFICATION LEDGER
+            </p>
+            <h2 class="editorial-display text-[clamp(2.4rem,4.4vw,4.0rem)] leading-[1.03] font-normal text-indigoInk">
+              Standard Production <span class="italic text-uniformNavy">Catalogue</span>
+            </h2>
+          </div>
+          <div class="lg:col-span-5 text-sm sm:text-[15px] leading-relaxed text-loomSlate">
+            Verified baseline GSM grades and minimum order quantities across our six primary
+            manufacturing lines. Click any row to load its defaults directly into the Bulk Quote Builder.
+          </div>
+        </div>
+
+        <!-- Architectural Table Header (Desktop) -->
+        <div class="hidden lg:grid grid-cols-12 gap-4 py-4 border-b border-[rgba(20,26,36,0.16)] font-mono text-[10px] uppercase tracking-[0.14em] text-specTone">
+          <div class="col-span-3">FLAGSHIP SKU</div>
+          <div class="col-span-2">FABRIC &amp; GSM</div>
+          <div class="col-span-1">MOQ</div>
+          <div class="col-span-3">KEY FINISHING SPECIFICATION</div>
+          <div class="col-span-3 text-right">PROCUREMENT ACTION</div>
+        </div>
+
+        <!-- Ledger Rows -->
+        <div id="catalogue-ledger" class="divide-y divide-[rgba(20,26,36,0.11)] border-b border-[rgba(20,26,36,0.11)]">
+          <!-- Populated via JS for synchronized Quote Builder + WhatsApp links -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         8. INTERACTIVE BULK PROCUREMENT QUOTE & SPEC BUILDER
+         =================================================================== -->
+    <section id="quote-builder" class="py-24 sm:py-32 px-5 sm:px-8 lg:px-12 bg-alabaster border-t border-[rgba(20,26,36,0.11)]">
+      <div class="max-w-[1380px] mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-12 border-b border-[rgba(20,26,36,0.11)] items-end reveal-item">
+          <div class="lg:col-span-7">
+            <p class="font-mono text-[11px] uppercase tracking-[0.16em] text-tailorBrass mb-4">
+              05 · DIRECT FACTORY ESTIMATOR
+            </p>
+            <h2 class="editorial-display text-[clamp(2.5rem,4.6vw,4.2rem)] leading-[1.02] font-normal text-indigoInk">
+              Bulk Procurement <span class="italic text-uniformNavy">Quote &amp; Spec Builder</span>
+            </h2>
+          </div>
+          <div class="lg:col-span-5 text-sm sm:text-[15px] leading-relaxed text-loomSlate">
+            Configure garment category, mill fabric GSM, batch volume, and embroidery specs for an
+            instant indicative factory estimate—then transmit your formatted spec sheet directly to
+            our production desk on WhatsApp.
+          </div>
+        </div>
+
+        <!-- Two-Column Tactile Tailoring Workbench -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 pt-12 items-start">
+          <!-- LEFT WORKBENCH CONTROLS -->
+          <div class="lg:col-span-7 space-y-8 reveal-item">
+            <!-- 1. Garment Category Selector (8 options) -->
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <label class="font-mono text-[11px] uppercase tracking-[0.14em] text-loomSlate font-medium">
+                  01 · Garment Category
+                </label>
+                <span id="qb-category-base" class="font-mono text-[11px] text-specTone tabular-nums">
+                  Indicative Base · ₹520 – ₹740 / set
+                </span>
+              </div>
+              <div id="qb-categories" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+
+            <!-- 2. Fabric / GSM Grade Pills -->
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <label class="font-mono text-[11px] uppercase tracking-[0.14em] text-loomSlate font-medium">
+                  02 · Mill Fabric &amp; GSM Grade
+                </label>
+                <span class="font-mono text-[11px] text-tailorBrass">Auto-matched default</span>
+              </div>
+              <div id="qb-fabrics" class="atelier-tray grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+
+            <!-- 3. Order Quantity Slider + Quick Chips + Tier Discount -->
+            <div class="atelier-card p-5 sm:p-6">
+              <div class="flex flex-wrap items-baseline justify-between gap-2 mb-4">
+                <label for="qb-qty-slider" class="font-mono text-[11px] uppercase tracking-[0.14em] text-loomSlate font-medium">
+                  03 · Batch Order Quantity
+                </label>
+                <div class="flex items-center gap-3">
+                  <span id="qb-tier-badge" class="px-2.5 py-1 rounded-[8px] bg-plinth font-mono text-[10px] font-medium text-uniformNavy tabular-nums">
+                    TIER SAVINGS · 8% OFF
+                  </span>
+                  <span id="qb-qty-display" class="editorial-display text-3xl font-semibold text-indigoInk tabular-nums">
+                    250 <span class="font-mono text-xs font-normal text-specTone">units</span>
+                  </span>
+                </div>
+              </div>
+
+              <input
+                id="qb-qty-slider"
+                type="range"
+                min="0"
+                max="1000"
+                value="390"
+                class="atelier-range mb-5"
+                aria-label="Order quantity between 25 and 10000 units"
+              />
+
+              <div id="qb-qty-chips" class="flex flex-wrap gap-2">
+                <!-- 25, 50, 100, 250, 500, 1000, 5000, 10000 -->
+              </div>
+            </div>
+
+            <!-- 4. Customization & Branding Toggles -->
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="font-mono text-[11px] uppercase tracking-[0.14em] text-loomSlate font-medium">
+                  04 · Branding &amp; Finishing Add-Ons
+                </span>
+                <span class="font-mono text-[11px] text-specTone">Multi-select</span>
+              </div>
+              <div id="qb-addons" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+
+            <!-- 5. Delivery Schedule + Optional Organization Inputs -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <span class="block font-mono text-[11px] uppercase tracking-[0.14em] text-loomSlate font-medium mb-2.5">
+                  05 · Dispatch Schedule
+                </span>
+                <div class="atelier-tray grid grid-cols-2 gap-1.5" role="radiogroup" aria-label="Delivery Schedule">
+                  <button type="button" data-schedule="standard" class="qb-schedule-btn btn-linen-tactile is-active py-2.5 px-2 text-center" style="border-radius: 12px;" aria-pressed="true">
+                    <span class="block text-xs font-semibold text-indigoInk">Standard</span>
+                    <span class="block font-mono text-[10px] text-specTone tabular-nums">14–21 Days</span>
+                  </button>
+                  <button type="button" data-schedule="priority" class="qb-schedule-btn btn-linen-tactile py-2.5 px-2 text-center" style="border-radius: 12px;" aria-pressed="false">
+                    <span class="block text-xs font-semibold text-indigoInk">Priority</span>
+                    <span class="block font-mono text-[10px] text-tailorBrass tabular-nums">7–10 Days (+10%)</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="space-y-2.5">
+                <label for="qb-org-name" class="block font-mono text-[11px] uppercase tracking-[0.14em] text-loomSlate font-medium">
+                  06 · Organization &amp; City (Optional)
+                </label>
+                <div class="grid grid-cols-2 gap-2">
+                  <input
+                    id="qb-org-name"
+                    type="text"
+                    placeholder="Company / School"
+                    class="w-full px-3.5 py-2.5 bg-cotton border border-[rgba(20,26,36,0.15)] rounded-[10px] text-xs sm:text-sm text-indigoInk placeholder:text-specTone/70 focus:outline-none focus:border-uniformNavy"
+                  />
+                  <input
+                    id="qb-org-city"
+                    type="text"
+                    placeholder="Hyderabad"
+                    value="Hyderabad"
+                    class="w-full px-3.5 py-2.5 bg-cotton border border-[rgba(20,26,36,0.15)] rounded-[10px] text-xs sm:text-sm text-indigoInk placeholder:text-specTone/70 focus:outline-none focus:border-uniformNavy"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT LIVE STICKY TAILORING SPEC SHEET DOCKET -->
+          <div class="lg:col-span-5 lg:sticky lg:top-24 reveal-item">
+            <div class="atelier-tray p-2" style="border-radius: 22px;">
+              <div class="bg-alabaster border border-[rgba(20,26,36,0.10)] p-6 sm:p-7" style="border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.92), 0 12px 28px -14px rgba(20,26,36,0.14);">
+                <!-- Docket Header -->
+                <div class="flex items-start justify-between gap-4 pb-5 border-b border-[rgba(20,26,36,0.11)]">
+                  <div>
+                    <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-tailorBrass block">
+                      PRODUCTION SPEC DOCKET
+                    </span>
+                    <h3 id="docket-title" class="editorial-display text-2xl sm:text-3xl font-medium text-indigoInk mt-1">
+                      Corporate Polo Shirt
+                    </h3>
+                  </div>
+                  <span id="docket-moq-pill" class="px-2.5 py-1 rounded-[8px] bg-[#E7EFE9] text-[#1D5435] border border-[#1D5435]/20 font-mono text-[10px] font-medium whitespace-nowrap">
+                    MOQ VERIFIED
+                  </span>
+                </div>
+
+                <!-- Live Rate & Batch Total -->
+                <div class="py-5 border-b border-[rgba(20,26,36,0.11)] grid grid-cols-2 gap-4">
+                  <div>
+                    <span class="block font-mono text-[10px] uppercase tracking-[0.12em] text-specTone mb-1">
+                      INDICATIVE UNIT RATE
+                    </span>
+                    <div id="docket-unit-rate" class="font-mono text-xl sm:text-2xl font-medium text-indigoInk tabular-nums">
+                      ₹395 – ₹460
+                    </div>
+                    <span class="font-mono text-[10px] text-specTone">Excl. 5%–12% GST</span>
+                  </div>
+                  <div class="text-right">
+                    <span class="block font-mono text-[10px] uppercase tracking-[0.12em] text-specTone mb-1">
+                      ESTIMATED BATCH TOTAL
+                    </span>
+                    <div id="docket-total-range" class="font-mono text-xl sm:text-2xl font-medium text-uniformNavy tabular-nums">
+                      ₹98.8k – ₹1.15L
+                    </div>
+                    <span id="docket-savings-note" class="font-mono text-[10px] text-tailorBrass tabular-nums">Includes 10% bulk tier</span>
+                  </div>
+                </div>
+
+                <!-- Hairline Technical Ledger Rows -->
+                <div class="divide-y divide-[rgba(20,26,36,0.09)] font-mono text-[11px] tabular-nums my-2">
+                  <div class="py-3 flex justify-between gap-4">
+                    <span class="text-specTone">MILL FABRIC</span>
+                    <span id="docket-fabric" class="text-indigoInk font-medium text-right">220 GSM Combed Pique</span>
+                  </div>
+                  <div class="py-3 flex justify-between gap-4">
+                    <span class="text-specTone">BATCH QUANTITY</span>
+                    <span id="docket-qty" class="text-indigoInk font-medium text-right">250 Units (MOQ 50)</span>
+                  </div>
+                  <div class="py-3 flex justify-between gap-4">
+                    <span class="text-specTone">STITCHING SPEC</span>
+                    <span id="docket-stitch" class="text-indigoInk font-medium text-right">12 SPI Double-Needle</span>
+                  </div>
+                  <div class="py-3 flex justify-between gap-4">
+                    <span class="text-specTone">CUSTOMIZATION</span>
+                    <span id="docket-addons" class="text-indigoInk font-medium text-right max-w-[60%]">Multi-Head Embroidery</span>
+                  </div>
+                  <div class="py-3 flex justify-between gap-4">
+                    <span class="text-specTone">EST. DISPATCH</span>
+                    <span id="docket-dispatch" class="text-indigoInk font-medium text-right">14–21 Working Days</span>
+                  </div>
+                </div>
+
+                <!-- MOQ Advisory Banner (shown only if qty < SKU MOQ) -->
+                <div id="docket-moq-warning" class="hidden mt-3 p-3 rounded-[10px] bg-[#F7EEE4] border border-tailorBrass/30 text-xs text-[#744A1C]">
+                  Quantity is below standard batch MOQ (<span id="docket-min-moq" class="font-mono font-semibold">100</span> pcs). Small-run sampling is available—our production desk will confirm exact surcharge on WhatsApp.
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-6 space-y-2.5">
+                  <a
+                    id="docket-whatsapp-cta"
+                    href="https://wa.me/917013107335"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn-indigo-tactile w-full py-3.5 px-5 text-sm font-medium flex items-center justify-center gap-2.5"
+                  >
+                    <span>Send Spec Sheet on WhatsApp</span>
+                    <span aria-hidden="true">→</span>
+                  </a>
+
+                  <button
+                    id="docket-copy-btn"
+                    type="button"
+                    class="btn-linen-tactile w-full py-3 px-4 text-xs font-mono font-medium text-indigoInk flex items-center justify-center gap-2"
+                  >
+                    <span id="docket-copy-label">Copy Formatted Spec Summary</span>
+                  </button>
+                </div>
+
+                <p class="mt-4 text-[11px] leading-relaxed text-specTone">
+                  Indicative factory rates reflect direct Hyderabad manufacturing without broker
+                  margins. Final firm quotation issued within 4 business hours upon logo &amp; size-run review.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         9. LEADERSHIP & DIRECT OWNER ATELIER + ARCHITECTURAL FOOTER
+         =================================================================== -->
+    <section id="leadership" class="py-24 sm:py-32 px-5 sm:px-8 lg:px-12 bg-cotton border-t border-[rgba(20,26,36,0.11)]">
+      <div class="max-w-[1380px] mx-auto">
+        <!-- Header -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-14 border-b border-[rgba(20,26,36,0.11)] items-end reveal-item">
+          <div class="lg:col-span-7">
+            <p class="font-mono text-[11px] uppercase tracking-[0.16em] text-tailorBrass mb-4">
+              06 · DIRECT OWNER ACCOUNTABILITY
+            </p>
+            <h2 class="editorial-display text-[clamp(2.5rem,4.6vw,4.2rem)] leading-[1.02] font-normal text-indigoInk">
+              Speak Directly With <span class="italic text-uniformNavy">The Founders</span>
+            </h2>
+          </div>
+          <div class="lg:col-span-5 text-sm sm:text-[15px] leading-relaxed text-loomSlate">
+            Speak directly with the owners—no middlemen, no broker markups, verified GSTIN
+            manufacturing unit in Hyderabad. Every bulk contract carries personal oversight from
+            fabric procurement to final carton sign-off.
+          </div>
+        </div>
+
+        <!-- 3 Architectural Matted 4:5 Leadership Portraits -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-7 lg:gap-9 mt-14">
+          <!-- Managing Director -->
+          <article class="reveal-item">
+            <div class="atelier-tray p-2 mb-5" style="border-radius: 20px;">
+              <div class="relative aspect-[4/5] w-full rounded-[12px] overflow-hidden bg-plinth border border-[rgba(20,26,36,0.08)]">
+                <img
+                  src="https://venkateswaraenterprises.netlify.app/assets/md-nagaraju.jpg"
+                  alt="Vudatha Nagaraju — Managing Director, Venkateshwara Enterprises"
+                  class="w-full h-full object-cover object-top"
+                  loading="lazy"
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                />
+                <div class="hidden w-full h-full flex-col items-center justify-center p-6 text-center bg-plinth">
+                  <span class="editorial-display text-4xl text-uniformNavy">VN</span>
+                  <span class="font-mono text-[10px] uppercase tracking-widest text-specTone mt-2">Managing Director</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-baseline justify-between gap-3">
+              <h3 class="editorial-display text-2xl sm:text-[26px] font-medium text-indigoInk">
+                Vudatha Nagaraju
+              </h3>
+              <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-tailorBrass">FOUNDER · MD</span>
+            </div>
+            <p class="font-mono text-[11px] text-uniformNavy mt-0.5 mb-3">Managing Director</p>
+            <p class="text-sm leading-relaxed text-loomSlate">
+              Leads mill procurement, institutional tenders, and production floor quality across
+              Telangana's aviation, industrial, and educational accounts for over 15 years.
+            </p>
+          </article>
+
+          <!-- Proprietor -->
+          <article class="reveal-item">
+            <div class="atelier-tray p-2 mb-5" style="border-radius: 20px;">
+              <div class="relative aspect-[4/5] w-full rounded-[12px] overflow-hidden bg-plinth border border-[rgba(20,26,36,0.08)]">
+                <img
+                  src="https://venkateswaraenterprises.netlify.app/assets/proprietor-deepa.jpg"
+                  alt="Vudatha Deepa — Proprietor, Venkateshwara Enterprises"
+                  class="w-full h-full object-cover object-top"
+                  loading="lazy"
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                />
+                <div class="hidden w-full h-full flex-col items-center justify-center p-6 text-center bg-plinth">
+                  <span class="editorial-display text-4xl text-uniformNavy">VD</span>
+                  <span class="font-mono text-[10px] uppercase tracking-widest text-specTone mt-2">Proprietor</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-baseline justify-between gap-3">
+              <h3 class="editorial-display text-2xl sm:text-[26px] font-medium text-indigoInk">
+                Vudatha Deepa
+              </h3>
+              <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-tailorBrass">PROPRIETOR</span>
+            </div>
+            <p class="font-mono text-[11px] text-uniformNavy mt-0.5 mb-3">Proprietor &amp; Commercial Head</p>
+            <p class="text-sm leading-relaxed text-loomSlate">
+              Oversees client compliance, GSTIN commercial governance, long-term institutional
+              relationships, and precision finishing standards for repeat annual contracts.
+            </p>
+          </article>
+
+          <!-- Digital & Operations -->
+          <article class="reveal-item">
+            <div class="atelier-tray p-2 mb-5" style="border-radius: 20px;">
+              <div class="relative aspect-[4/5] w-full rounded-[12px] overflow-hidden bg-plinth border border-[rgba(20,26,36,0.08)]">
+                <img
+                  src="https://venkateswaraenterprises.netlify.app/assets/dhruva-sai.jpg"
+                  alt="Vudatha Dhruva Sai — Digital & Operations, Venkateshwara Enterprises"
+                  class="w-full h-full object-cover object-top"
+                  loading="lazy"
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                />
+                <div class="hidden w-full h-full flex-col items-center justify-center p-6 text-center bg-plinth">
+                  <span class="editorial-display text-4xl text-uniformNavy">VDS</span>
+                  <span class="font-mono text-[10px] uppercase tracking-widest text-specTone mt-2">Digital &amp; Operations</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-baseline justify-between gap-3">
+              <h3 class="editorial-display text-2xl sm:text-[26px] font-medium text-indigoInk">
+                Vudatha Dhruva Sai
+              </h3>
+              <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-tailorBrass">OPERATIONS</span>
+            </div>
+            <p class="font-mono text-[11px] text-uniformNavy mt-0.5 mb-3">Digital &amp; Operations</p>
+            <p class="text-sm leading-relaxed text-loomSlate">
+              Directs rapid digital procurement workflows, custom branding digitization, sample
+              turnarounds, and transparent client dispatch tracking.
+            </p>
+          </article>
+        </div>
+
+        <!-- Direct Contact & Verification Strip -->
+        <div class="mt-20 atelier-card p-6 sm:p-10 reveal-item">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div class="lg:col-span-7">
+              <p class="font-mono text-[10px] uppercase tracking-[0.16em] text-tailorBrass mb-2.5">
+                FACTORY DIRECT DESK · HYDERABAD
+              </p>
+              <h3 class="editorial-display text-3xl sm:text-4xl font-normal text-indigoInk leading-tight mb-3">
+                Ready for Fabric Swatches or an <span class="italic text-uniformNavy">Official GST Quotation?</span>
+              </h3>
+              <p class="text-sm text-loomSlate max-w-xl">
+                Request physical mill swatch cards delivered anywhere in Hyderabad, or send your
+                logo and size breakdown on WhatsApp for a firm same-day commercial quote.
+              </p>
+            </div>
+            <div class="lg:col-span-5 flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-3 lg:justify-end">
+              <a
+                href="https://wa.me/917013107335?text=Hello%20Venkateshwara%20Enterprises%2C%20I%20would%20like%20to%20request%20fabric%20swatches%20and%20a%20direct%20factory%20quote."
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-indigo-tactile px-6 py-3.5 text-sm font-medium text-center"
+              >
+                WhatsApp +91 70131 07335 →
+              </a>
+              <a
+                href="tel:+917013107335"
+                class="btn-linen-tactile px-5 py-3.5 text-sm font-medium text-center text-indigoInk"
+              >
+                Call Production Desk
+              </a>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-6 border-t border-[rgba(20,26,36,0.10)] grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono text-[11px] tabular-nums">
+            <div>
+              <span class="block text-[10px] uppercase tracking-[0.12em] text-specTone mb-1">DIRECT LINE / WHATSAPP</span>
+              <a href="tel:+917013107335" class="text-indigoInk font-medium hover:text-uniformNavy">+91 70131 07335</a>
+            </div>
+            <div>
+              <span class="block text-[10px] uppercase tracking-[0.12em] text-specTone mb-1">MANUFACTURING LOCATION</span>
+              <span class="text-indigoInk font-medium">Hyderabad, Telangana, India</span>
+            </div>
+            <div>
+              <span class="block text-[10px] uppercase tracking-[0.12em] text-specTone mb-1">REGISTERED GSTIN</span>
+              <span class="text-indigoInk font-medium">36AJGPV5047H1ZV</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Editorial Footer -->
+        <footer class="mt-14 pt-8 border-t border-[rgba(20,26,36,0.11)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-mono text-[11px] text-specTone">
+          <div class="flex items-center gap-3">
+            <span class="text-indigoInk font-medium">Venkateshwara Enterprises</span>
+            <span>·</span>
+            <span>Hyderabad, Telangana</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-5">
+            <a href="#fabric-lab" class="hover:text-indigoInk transition-colors">Fabric Lab</a>
+            <a href="#client-archive" class="hover:text-indigoInk transition-colors">Archive</a>
+            <a href="#catalogue" class="hover:text-indigoInk transition-colors">Catalogue</a>
+            <a href="#quote-builder" class="hover:text-indigoInk transition-colors">Quote</a>
+            <span class="tabular-nums">© 2026</span>
+          </div>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <!-- =====================================================================
+       GARMENT SPEC LIGHTBOX MODAL (Concentric Studio View)
+       ===================================================================== -->
+  <div
+    id="garment-modal"
+    class="atelier-overlay fixed inset-0 z-50 bg-indigoInk/55 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-garment-title"
+  >
+    <div id="garment-modal-backdrop" class="absolute inset-0"></div>
+    <div class="atelier-modal-panel relative z-10 w-full max-w-4xl bg-alabaster border border-[rgba(20,26,36,0.14)] p-2.5 sm:p-3 shadow-2xl max-h-[92vh] overflow-y-auto" style="border-radius: 22px;">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6 bg-alabaster" style="border-radius: 14px;">
+        <!-- Left Studio Plinth -->
+        <div class="md:col-span-6 studio-plinth min-h-[300px] sm:min-h-[420px] flex items-center justify-center p-8">
+          <div class="garment-contact-shadow" style="width: 62%; bottom: 9%;"></div>
+          <img
+            id="modal-garment-img"
+            src=""
+            alt=""
+            class="garment-specimen-img max-h-[320px] sm:max-h-[370px] w-auto object-contain"
+          />
+          <div id="modal-garment-fallback" class="hidden flex-col items-center justify-center text-center p-6">
+            <svg class="w-16 h-16 text-uniformNavy/45 mb-3" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.3">
+              <path d="M22 12 L32 18 L42 12 L54 22 L48 32 L44 29 L44 54 L20 54 L20 29 L16 32 L10 22 Z" stroke-dasharray="3 2"/>
+            </svg>
+            <span class="font-mono text-[10px] uppercase tracking-widest text-specTone">Tailoring Pattern Specimen</span>
+          </div>
+          <span id="modal-garment-index" class="absolute top-4 left-4 font-mono text-[10px] tracking-[0.14em] uppercase text-specTone bg-alabaster/85 px-2.5 py-1 rounded-[8px] border border-[rgba(20,26,36,0.08)] tabular-nums">
+            SPECIMEN 01
+          </span>
+        </div>
+
+        <!-- Right Editorial Spec Sheet -->
+        <div class="md:col-span-6 p-4 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <span id="modal-garment-sector" class="font-mono text-[10px] uppercase tracking-[0.14em] text-tailorBrass">
+                CORPORATE
+              </span>
+              <button id="modal-close-btn" type="button" class="btn-linen-tactile px-3 py-1.5 font-mono text-[11px] text-loomSlate">
+                Close ✕
+              </button>
+            </div>
+
+            <h3 id="modal-garment-title" class="editorial-display text-3xl sm:text-4xl font-medium text-indigoInk leading-tight mb-3">
+              Executive Tailored Blazer
+            </h3>
+            <p id="modal-garment-desc" class="text-sm leading-relaxed text-loomSlate mb-6">
+              Structured institutional tailoring engineered for durability, breathable comfort, and crisp brand identity across daily service.
+            </p>
+
+            <div class="divide-y divide-[rgba(20,26,36,0.10)] border-y border-[rgba(20,26,36,0.10)] font-mono text-[11px] tabular-nums mb-6">
+              <div class="py-3 flex justify-between gap-4">
+                <span class="text-specTone">FABRIC &amp; WEIGHT</span>
+                <span id="modal-garment-fabric" class="text-indigoInk font-medium text-right">Wool Blend, 300 GSM</span>
+              </div>
+              <div class="py-3 flex justify-between gap-4">
+                <span class="text-specTone">MINIMUM ORDER (MOQ)</span>
+                <span id="modal-garment-moq" class="text-indigoInk font-medium text-right">25 Units</span>
+              </div>
+              <div class="py-3 flex justify-between gap-4">
+                <span class="text-specTone">BRANDING METHOD</span>
+                <span id="modal-garment-branding" class="text-indigoInk font-medium text-right">Multi-Head Embroidery / Woven Label</span>
+              </div>
+              <div class="py-3 flex justify-between gap-4">
+                <span class="text-specTone">STITCH SPECIFICATION</span>
+                <span class="text-indigoInk font-medium text-right">12 SPI Industrial Lockstitch</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-2.5">
+            <button
+              id="modal-load-quote-btn"
+              type="button"
+              class="btn-indigo-tactile w-full py-3.5 text-sm font-medium"
+            >
+              Load Into Bulk Quote Builder →
+            </button>
+            <a
+              id="modal-whatsapp-btn"
+              href="https://wa.me/917013107335"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn-linen-tactile w-full py-3 text-xs font-mono font-medium text-indigoInk block text-center"
+            >
+              Inquire This Piece on WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       MODULE SCRIPT: THREE.JS v0.170.0 WOVEN CLOTH STUDIO + 12× LOUPE + APP
+       ===================================================================== -->
+  <script type="module">
+    import * as THREE from 'three';
+
+    const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const WHATSAPP_NUMBER = '917013107335';
+
+    /* ---------------------------------------------------------------------
+       0. MASTER DATA: 5 MILL FABRICS, 18 REAL CLIENT GARMENTS, CATALOGUE
+       --------------------------------------------------------------------- */
+    const FABRICS = [
+      {
+        id: 'twill-180',
+        name: '180 GSM Poly-Cotton Twill',
+        shortName: '180 GSM Twill',
+        gsm: '180 g/m² ±2%',
+        weave: '2/1 Diagonal Twill',
+        weaveType: 'twill',
+        sector: 'Schools & Institutional',
+        moq: '100 pcs',
+        density: '128 × 64 EPI/PPI',
+        wash: '120+ Cycles @ 60°C',
+        fastness: 'ISO Grade 4.5 / 5.0',
+        breath: '84 cfm · All-Day Climate',
+        stitch: '12 SPI Double-Needle',
+        tension: '4.2 N',
+        hex: '#1C314E',
+        yarnDark: '#122036',
+        yarnLight: '#2A4870',
+        selvedge: '#C89654',
+        roughness: 0.72,
+        sheen: 0.42,
+        sheenRoughness: 0.62,
+        sheenColor: '#4E6E9A',
+        clearcoat: 0.0,
+        waveAmp: 0.44,
+        waveSpeed: 1.05,
+        drapeWeight: 0.85,
+        priceMod: 1.0,
+      },
+      {
+        id: 'pique-220',
+        name: '220 GSM Combed Pique',
+        shortName: '220 GSM Pique',
+        gsm: '220 g/m² ±2%',
+        weave: 'Honeycomb Cellular Knit',
+        weaveType: 'pique',
+        sector: 'Corporate & IT',
+        moq: '50 pcs',
+        density: '34 × 42 Wales/Courses',
+        wash: '100+ Cycles · Anti-Pill',
+        fastness: 'ISO Grade 4.5 / 5.0',
+        breath: '92 cfm · High Airflow',
+        stitch: '12 SPI Twin-Needle Hem',
+        tension: '3.9 N',
+        hex: '#DDD4C4',
+        yarnDark: '#C2B7A3',
+        yarnLight: '#F0EAE0',
+        selvedge: '#1B365D',
+        roughness: 0.80,
+        sheen: 0.34,
+        sheenRoughness: 0.74,
+        sheenColor: '#FAF6EE',
+        clearcoat: 0.0,
+        waveAmp: 0.36,
+        waveSpeed: 0.90,
+        drapeWeight: 1.0,
+        priceMod: 1.06,
+      },
+      {
+        id: 'fr-280',
+        name: '280 GSM FR Industrial Twill',
+        shortName: '280 GSM FR Twill',
+        gsm: '280 g/m² ±2%',
+        weave: 'Cross-Hatched FR Ripstop',
+        weaveType: 'ripstop',
+        sector: 'Industrial & Airports',
+        moq: '100 pcs',
+        density: '144 × 76 Heavy Twill',
+        wash: '150+ Industrial Washes',
+        fastness: 'ISO Grade 4.8 / 5.0',
+        breath: '68 cfm · Flame-Retardant',
+        stitch: '10 SPI Triple-Stitched',
+        tension: '5.4 N',
+        hex: '#282E38',
+        yarnDark: '#1A1E26',
+        yarnLight: '#3C4554',
+        selvedge: '#C97B3A',
+        roughness: 0.78,
+        sheen: 0.30,
+        sheenRoughness: 0.70,
+        sheenColor: '#667285',
+        clearcoat: 0.04,
+        waveAmp: 0.27,
+        waveSpeed: 0.65,
+        drapeWeight: 1.35,
+        priceMod: 1.24,
+      },
+      {
+        id: 'poplin-200',
+        name: '200 GSM Anti-Microbial Poplin',
+        shortName: '200 GSM Poplin',
+        gsm: '200 g/m² ±1.5%',
+        weave: 'Tight Surgical Plain Weave',
+        weaveType: 'poplin',
+        sector: 'Healthcare & Labs',
+        moq: '50 pcs',
+        density: '136 × 96 Micro-Plain',
+        wash: '140+ Autoclave Safe',
+        fastness: 'ISO Grade 4.7 / 5.0',
+        breath: '88 cfm · Fluid-Repellent',
+        stitch: '12 SPI Clean-Finish Seam',
+        tension: '4.1 N',
+        hex: '#28565A',
+        yarnDark: '#1A3B3E',
+        yarnLight: '#3A7479',
+        selvedge: '#D4B483',
+        roughness: 0.56,
+        sheen: 0.55,
+        sheenRoughness: 0.48,
+        sheenColor: '#76B0B4',
+        clearcoat: 0.08,
+        waveAmp: 0.40,
+        waveSpeed: 0.98,
+        drapeWeight: 0.92,
+        priceMod: 1.12,
+      },
+      {
+        id: 'wool-300',
+        name: '300 GSM Super-110 Wool Blend',
+        shortName: '300 GSM Wool Blend',
+        gsm: '300 g/m² ±1.5%',
+        weave: 'Brushed Herringbone Serge',
+        weaveType: 'herringbone',
+        sector: 'Executive Tailoring',
+        moq: '25 pcs',
+        density: '152 × 112 Super-110',
+        wash: 'Dry-Clean · Crease Recovery',
+        fastness: 'ISO Grade 4.8 / 5.0',
+        breath: '76 cfm · Structured Drape',
+        stitch: '14 SPI Pick-Stitched Lapel',
+        tension: '4.8 N',
+        hex: '#1C1F26',
+        yarnDark: '#12141A',
+        yarnLight: '#303642',
+        selvedge: '#C89654',
+        roughness: 0.64,
+        sheen: 0.78,
+        sheenRoughness: 0.46,
+        sheenColor: '#565F73',
+        clearcoat: 0.05,
+        waveAmp: 0.24,
+        waveSpeed: 0.58,
+        drapeWeight: 1.48,
+        priceMod: 1.45,
+      },
+    ];
+
+    const ARCHIVE_WORKS = [
+      {
+        id: 1,
+        title: 'Executive Tailored Blazer',
+        sector: 'Corporate',
+        fabric: 'Wool Blend, 300 GSM',
+        moq: 25,
+        branding: 'Custom Woven Label & Lapel Crest',
+        quoteCategory: 'blazer',
+        featured: true,
+        img: 'https://venkateswaraenterprises.netlify.app/assets/works/blazer-nobg.png',
+        desc: 'Half-canvas structured executive blazer tailored in 300 GSM Super-110 wool blend with breathable satin lining and reinforced lapel pick-stitching.',
+      },
+      {
+        id: 2,
+        title: 'Corporate Embroidered Polo',
+        sector: 'Corporate',
+        fabric: 'Pique Cotton, 220 GSM',
+        moq: 50,
+        branding: 'High-Density Multi-Head Embroidery',
+        quoteCategory: 'polo',
+        featured: false,
+        img: 'https://venkateswaraenterprises.netlify.app/assets/works/corporate-polo-nobg.png',
+        desc: 'Bio-washed 220 GSM honeycomb combed pique engineered with anti-curl knitted collars and double-needle shoulder taping.',
+      },
+      {
+        id: 3,
+        title: 'Star Industrial Work Shirt',
+        sector: 'Industrial',
+        fabric: 'Flame-Retardant Twill, 280 GSM',
+        moq: 100,
+        branding: 'FR Reflective Trim & Chest Embroidery',
+        quoteCategory: 'coverall',
+        featured: false,
+        img: 'https://venkateswaraenterprises.netlify.app/assets/works/star-industrial-shirt-nobg.png',
+        desc: 'Heavy-duty 280 GSM industrial workwear shirt crafted for Star Industrial with bar-tacked utility pockets and high-visibility durability.',
+      },
+      {
+        id: 4,
+        title: 'Konnect Diagnostics Lab Coat',
+        sector: 'Healthcare',
+        fabric: 'Anti-Microbial Poly-Cotton, 200 GSM',
+        moq: 50,
+        branding: 'Autoclave-Safe Embroidered Emblem',
+        quoteCategory: 'scrub',
+        featured: false,
+        img: 'https://venkateswaraenterprises.netlify.app/assets/works/konnect-labcoat-nobg.png',
+        desc: 'Clinical-grade 200 GSM anti-microbial lab coat supplied to Konnect Diagnostics with deep tablet pockets and stain-release finish.',
+      },
+      {
+        id: 5,
+        title: 'Konnect Surgical Scrub Set',
+        sector: 'Healthcare',
+        fabric: 'Anti-Microbial Twill, 200 GSM',
+        moq: 50,
+        branding: 'Left-Chest Diagnostic Embroidery',
+        quoteCategory: 'scrub',
+        featured: true,
+        img: 'https://venkateswaraenterprises.netlify.app/assets/works/konnect-scrub-nobg.png',
+        desc: 'Ergonomic V-neck surgical scrub set designed for 12-hour clinical shifts with color-locked anti-microbial twill and reinforced side vents.',
+      },
+      {
+        id: 6,
+        title: 'Complete School Uniform Set',
+        sector: 'Schools',
+        fabric: 'Poly-Cotton Twill, 180 GSM',
+        moq: 100,
+        branding: 'Institutional Shield Embroidery',
+        quoteCategory: 'school',
+        featured: false,
+        img: 'https://venkateswaraenterprises.netlify.app/assets/works/uniform-set-nobg.png',
+        desc: 'Full academic uniform system engineered for year-round wash resilience, crisp collar retention, and consistent Pantone batch matching.',
+      },
+      {
+        id: 7,
+        title: 'Laurus Institutional Shirt',
+        sector: 'Schools',
+        fabric: 'Combed Poly-Cotton, 180 GSM',
+        moq: 100,
+        branding: 'Precision Pocket Crest',
+        quoteCategory: 'school',
+        featured: false,
+        img: 'https://venkateswaraenterprises.netlify.app/assets/works/laurus-shirt-nobg.png',
+        desc: 'Tailored institutional uniform shirt produced for Laurus with fused placket structure and soft combed interior finish.',
+      },
+      {
+        id: 8,
+        title: 'High School House Vest',
+        sector: 'Schools',
+        fabric: 'Breathable Mesh Knit, 160 GSM',
+        moq: 100,
+        branding: 'Sublimated House Identification',
+        quoteCategory: 'school',
+        featured: false,
+        img: 'https://venkateswaraenterprises.netlify.app/assets/works/high-school-vest-nobg.png',
+        desc: 'Lightweight athletic house vest in 160 GSM breathable mesh knit built for active inter-house sports and daily campus wear.',
+      },
+      {
+        id: 9,
+        title: 'Deloitte Branded Cap',
+        sector: 'Caps & Headwear',
+        fabric: 'Brushed Cotton Twill, 6-Panel',
+        moq: 100,
+        branding: 'High-Definition Corporate Embroidery',
+        quoteCategory: 'cap',
+        featured: false,
+        img: 'https://venkateswaraenterprises.netlify.app/assets/works/Deloitte%20cap-nobg.png',
+        desc: 'Structured 6-panel brushed cotton twill cap delivered for Deloitte with precision front embroidery and brass buckle adjuster.',
+      },
+      {
+        id: 10,
+        title: 'Buffalo Wild Wings Cap',
+        sector: 'Caps & Headwear',
+        fabric: 'Heavy Cotton Drill, 3D Embroidery',
+        moq: 100,
+        branding: 'Raised 3D Puff Embroidery',
+        quoteCategory: 'cap',
+        featured: false,
+        img: 'https://venkateswaraenterprises.netlify.app/assets/works/bdubs-cap-nobg.png',
+        desc: 'Heavy cotton drill hospitality headwear crafted for Buffalo Wild Wings featuring crisp raised 3D embroidery and sweat-wicking browband.',
+      },
+      {
+        id: 11,
+        title: 'TSRTC Official Headwear',
+        sector: 'Caps & Headwear',
+        fabric: 'Structured Twill, Institutional Crest',
+        moq: 200,
+        branding: 'Official Institutional Emblem',
+        quoteCategory: 'cap',
+        featured: false,
+        img: 'https://venkateswaraenterprises.netlify.app/assets/works/tsrtc-cap-nobg.png',
+        desc: 'High-volume public transit official cap manufactured for TSRTC with sun-resistant dye lot certification and rigid peak core.',
+      },
+      {
+        id: 12,
+        title: 'Techolution Corporate Backpack',
+        sector: 'Bags & Backpacks',
+        fabric: '600D Water-Resistant Polyester',
+        moq: 200,
+        branding: 'Custom Silicon / Embroidered Mark',
+        quoteCategory: 'bag',
+        featured: true,
+        img: 'https://venkateswaraenterprises.netlify.app/assets/works/techolution-bag-nobg.png',
+        desc: 'Padded 16-inch laptop onboarding backpack supplied to Techolution in water-resistant 600D polyester with reinforced bar-tacked harness straps.',
+      },
+      {
+        id: 13,
+        title: 'Smart India Hackathon Backpack',
+        sector: 'Bags & Backpacks',
+        fabric: '600D Reinforced Ballistic Nylon',
+        moq: 200,
+        branding: 'Event Crest & Custom Pullers',
+        quoteCategory: 'bag',
+        featured: false,
+        img: 'https://venkateswaraenterprises.netlify.app/assets/works/sih-bag-nobg.png',
+        desc: 'National-scale event backpack engineered in reinforced 600D ballistic nylon with breathable mesh back channeling and multi-compartment organization.',
+      },
+      {
+        id: 14,
+        title: 'Barbeque Pride Hospitality Shirt',
+        sector: 'Customization',
+        fabric: 'Breathable Hospitality Twill, 190 GSM',
+        moq: 50,
+        branding: 'Custom Contrast Trim & Logo',
+        quoteCategory: 'custom',
+        featured: false,
+        img: 'https://venkateswaraenterprises.netlify.app/assets/works/barbeque-pride-shirt-nobg.png',
+        desc: 'Custom-styled hospitality service shirt crafted for Barbeque Pride with soil-release 190 GSM twill and heat-dissipating back pleats.',
+      },
+      {
+        id: 15,
+        title: 'All-Weather Safety Rain Jacket',
+        sector: 'Jackets & Rainwear',
+        fabric: 'Seam-Sealed PU Coated Shell',
+        moq: 100,
+        branding: 'Hi-Vis Tape & Waterproof Chest Print',
+        quoteCategory: 'jacket',
+        featured: false,
+        img: 'https://venkateswaraenterprises.netlify.app/assets/works/rainjacket-nobg.png',
+        desc: 'Monsoon-engineered safety rainwear featuring heat-sealed internal seams, storm-flap zipper guard, and 360-degree night visibility trim.',
+      },
+      {
+        id: 16,
+        title: 'Emmadi Custom Utility Vest',
+        sector: 'Industrial',
+        fabric: 'Heavy Drill Cotton + Hi-Vis Trim',
+        moq: 100,
+        branding: 'Woven Badge & Reflective Bands',
+        quoteCategory: 'coverall',
+        featured: false,
+        img: 'https://venkateswaraenterprises.netlify.app/assets/works/emmadi-vest-nobg.png',
+        desc: 'Multi-pocket field supervisor vest manufactured for Emmadi combining abrasion-resistant cotton drill with reflective safety trim.',
+      },
+      {
+        id: 17,
+        title: 'BSR Corporate Custom Shirt',
+        sector: 'Customization',
+        fabric: 'Mercerized Cotton Blend',
+        moq: 50,
+        branding: 'Tone-on-Tone Corporate Embroidery',
+        quoteCategory: 'custom',
+        featured: false,
+        img: 'https://venkateswaraenterprises.netlify.app/assets/works/custom-bsr-shirt-nobg.png',
+        desc: 'Tailored corporate uniform shirt made for BSR in lustrous mercerized cotton blend with wrinkle-resistant finish and precision collar stays.',
+      },
+      {
+        id: 18,
+        title: 'Toofaan Event Apparel',
+        sector: 'Customization',
+        fabric: 'Bio-Washed Combed Cotton',
+        moq: 50,
+        branding: 'High-Opacity Screen Print & Neck Tape',
+        quoteCategory: 'custom',
+        featured: false,
+        img: 'https://venkateswaraenterprises.netlify.app/assets/works/custom-toofaan-shirt-nobg.png',
+        desc: 'Custom event apparel engineered in pre-shrunk bio-washed combed cotton built for high-volume institutional and campus festivals.',
+      },
+    ];
+
+    const CATALOGUE_SKUS = [
+      {
+        id: 'school',
+        name: 'School Uniform Set',
+        fabric: 'Poly-Cotton Twill · 180 GSM',
+        moq: 100,
+        finish: 'Fused collar, color-fast mill dye, XS–5XL graded runs',
+        defaultFabric: 'twill-180',
+      },
+      {
+        id: 'polo',
+        name: 'Corporate Polo Shirt',
+        fabric: 'Combed Pique Cotton · 220 GSM',
+        moq: 50,
+        finish: 'Anti-curl collar, bio-washed finish, multi-head embroidery',
+        defaultFabric: 'pique-220',
+      },
+      {
+        id: 'coverall',
+        name: 'Industrial Coverall / Workwear',
+        fabric: 'Flame-Retardant Twill · 280 GSM',
+        moq: 100,
+        finish: 'Triple-stitched seams, hi-vis reflective trim, bar-tacked pockets',
+        defaultFabric: 'fr-280',
+      },
+      {
+        id: 'scrub',
+        name: 'Healthcare Scrub Set & Lab Coat',
+        fabric: 'Anti-Microbial Poplin / Twill · 200 GSM',
+        moq: 50,
+        finish: 'Autoclave-safe dye, fluid-repellent finish, ergonomic vents',
+        defaultFabric: 'poplin-200',
+      },
+      {
+        id: 'bag',
+        name: 'Custom Branded Corporate Bag',
+        fabric: '600D Water-Resistant Polyester / Nylon',
+        moq: 200,
+        finish: 'Padded 16" laptop sleeve, bar-tacked straps, embroidered emblem',
+        defaultFabric: 'fr-280',
+      },
+      {
+        id: 'blazer',
+        name: 'Executive Tailored Blazer',
+        fabric: 'Super-110 Wool Blend · 300 GSM',
+        moq: 25,
+        finish: 'Half-canvas chest structure, satin lining, pick-stitched lapel',
+        defaultFabric: 'wool-300',
+      },
+    ];
+
+    const QUOTE_CATEGORIES = [
+      { id: 'school', label: 'School Uniform Set', unitMin: 520, unitMax: 740, moq: 100, defaultFabric: 'twill-180', stitch: '12 SPI Double-Needle' },
+      { id: 'polo', label: 'Corporate Polo Shirt', unitMin: 340, unitMax: 460, moq: 50, defaultFabric: 'pique-220', stitch: '12 SPI Twin-Needle Hem' },
+      { id: 'coverall', label: 'Industrial Workwear', unitMin: 890, unitMax: 1320, moq: 100, defaultFabric: 'fr-280', stitch: '10 SPI Triple-Stitched FR' },
+      { id: 'scrub', label: 'Healthcare Scrub / Coat', unitMin: 640, unitMax: 920, moq: 50, defaultFabric: 'poplin-200', stitch: '12 SPI Clean-Finish Seam' },
+      { id: 'bag', label: 'Branded Backpack', unitMin: 480, unitMax: 790, moq: 200, defaultFabric: 'fr-280', stitch: 'Heavy Bar-Tacked Harness' },
+      { id: 'blazer', label: 'Executive Blazer', unitMin: 1850, unitMax: 2650, moq: 25, defaultFabric: 'wool-300', stitch: '14 SPI Pick-Stitched Lapel' },
+      { id: 'cap', label: '6-Panel Branded Cap', unitMin: 145, unitMax: 230, moq: 100, defaultFabric: 'twill-180', stitch: 'Structured 6-Panel Crown' },
+      { id: 'jacket', label: 'Rain Jacket / Custom', unitMin: 680, unitMax: 1080, moq: 100, defaultFabric: 'fr-280', stitch: 'Heat-Sealed Storm Seam' },
+    ];
+
+    const QUOTE_ADDONS = [
+      { id: 'embroidery', label: 'Multi-Head Logo Embroidery', addMin: 35, addMax: 55, defaultOn: true },
+      { id: 'screen', label: 'Cured Screen Printing', addMin: 22, addMax: 38, defaultOn: false },
+      { id: 'necklabel', label: 'Custom Woven Neck Label', addMin: 16, addMax: 24, defaultOn: false },
+      { id: 'hivis', label: 'Hi-Vis Reflective Striping', addMin: 55, addMax: 85, defaultOn: false },
+      { id: 'polybag', label: 'Individual Size-Sorted Polybagging', addMin: 12, addMax: 18, defaultOn: true },
+    ];
+
+    const appState = {
+      heroFabricIdx: 0,
+      labFabricIdx: 0,
+      archiveFilter: 'All',
+      quoteCategory: 'polo',
+      quoteFabricId: 'pique-220',
+      quoteQty: 250,
+      quoteAddons: new Set(['embroidery', 'polybag']),
+      quoteSchedule: 'standard',
+      heroVisible: true,
+    };
+
+    /* ---------------------------------------------------------------------
+       1. PROCEDURAL 2.5% ARCHITECTURAL PAPER GRAIN (No Base64 Data URLs)
+       --------------------------------------------------------------------- */
+    function initPaperGrainCanvas() {
+      const canvas = document.getElementById('paper-grain-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const tileW = 240;
+      const tileH = 240;
+      const tile = document.createElement('canvas');
+      tile.width = tileW;
+      tile.height = tileH;
+      const tCtx = tile.getContext('2d');
+      const img = tCtx.createImageData(tileW, tileH);
+      for (let i = 0; i < img.data.length; i += 4) {
+        const v = 115 + Math.floor(Math.random() * 80);
+        img.data[i] = v;
+        img.data[i + 1] = v - 2;
+        img.data[i + 2] = v - 6;
+        img.data[i + 3] = 255;
+      }
+      tCtx.putImageData(img, 0, 0);
+
+      const paint = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const pat = ctx.createPattern(tile, 'repeat');
+        ctx.fillStyle = pat;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      };
+      paint();
+      window.addEventListener('resize', paint);
+    }
+
+    /* ---------------------------------------------------------------------
+       2. PROCEDURAL 2K WOVEN TEXTILE MAPS FOR THREE.JS HERO CLOTH
+       Generates genuine Albedo, Bump/Normal, and Roughness variation per weave
+       --------------------------------------------------------------------- */
+    function createWovenTextureSet(fabric) {
+      const size = 512;
+      const diffCanvas = document.createElement('canvas');
+      const bumpCanvas = document.createElement('canvas');
+      const roughCanvas = document.createElement('canvas');
+      diffCanvas.width = bumpCanvas.width = roughCanvas.width = size;
+      diffCanvas.height = bumpCanvas.height = roughCanvas.height = size;
+
+      const dCtx = diffCanvas.getContext('2d');
+      const bCtx = bumpCanvas.getContext('2d');
+      const rCtx = roughCanvas.getContext('2d');
+
+      const base = new THREE.Color(fabric.hex);
+      const dark = new THREE.Color(fabric.yarnDark);
+      const light = new THREE.Color(fabric.yarnLight);
+      const selv = new THREE.Color(fabric.selvedge);
+
+      const dImg = dCtx.createImageData(size, size);
+      const bImg = bCtx.createImageData(size, size);
+      const rImg = rCtx.createImageData(size, size);
+      const dData = dImg.data;
+      const bData = bImg.data;
+      const rData = rImg.data;
+
+      for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+          const idx = (y * size + x) * 4;
+          let h = 0.5;
+          let shade = 0.0;
+          let rough = 0.72;
+          let isSelvedge = false;
+
+          if (fabric.weaveType === 'twill') {
+            // Crisp 2/1 diagonal twill ridges
+            const diag = (x + y * 1.15) % 8;
+            const warp = Math.sin((x / 8) * Math.PI * 2) * 0.14;
+            const weft = Math.sin((y / 8) * Math.PI * 2) * 0.12;
+            const ridge = diag < 5 ? 0.76 : 0.24;
+            h = ridge * 0.65 + 0.2 + warp + weft;
+            shade = (h - 0.5) * 0.42;
+            rough = 0.68 + (1 - ridge) * 0.18;
+          } else if (fabric.weaveType === 'pique') {
+            // Authentic micro-honeycomb cellular pique knit
+            const cellX = (x % 12) / 12;
+            const shiftY = ((Math.floor(x / 12) % 2) * 6 + y) % 12;
+            const cellY = shiftY / 12;
+            const dist = Math.hypot(cellX - 0.5, cellY - 0.5);
+            const pit = Math.max(0, 1 - dist * 2.15);
+            const ridge = Math.sin(cellX * Math.PI) * Math.sin(cellY * Math.PI);
+            h = 0.78 - pit * 0.55 + ridge * 0.18;
+            shade = (h - 0.52) * 0.48;
+            rough = 0.74 + pit * 0.20;
+          } else if (fabric.weaveType === 'ripstop') {
+            // Heavy FR Twill + reinforcing ripstop cross-hatch grid
+            const diag = (x + y) % 8;
+            const baseTwill = diag < 4 ? 0.66 : 0.34;
+            const gridX = x % 32 < 3;
+            const gridY = y % 32 < 3;
+            const rib = gridX || gridY ? 0.28 : 0.0;
+            h = Math.min(1, baseTwill + rib);
+            shade = (h - 0.5) * 0.45;
+            rough = gridX || gridY ? 0.56 : 0.78;
+          } else if (fabric.weaveType === 'poplin') {
+            // Ultra-tight surgical plain weave
+            const px = Math.floor(x / 3) % 2;
+            const py = Math.floor(y / 3) % 2;
+            const over = (px ^ py) === 0;
+            const microX = Math.sin(((x % 3) / 3) * Math.PI);
+            const microY = Math.sin(((y % 3) / 3) * Math.PI);
+            h = over ? 0.62 + microX * 0.22 : 0.36 + microY * 0.18;
+            shade = (h - 0.5) * 0.32;
+            rough = over ? 0.50 : 0.62;
+          } else {
+            // Super-110 brushed herringbone / serge
+            const colBand = Math.floor(x / 24) % 2;
+            const diagCoord = colBand === 0 ? x + y : 512 - x + y;
+            const chevron = (diagCoord % 10) < 5 ? 0.76 : 0.28;
+            const brush = (Math.random() - 0.5) * 0.12;
+            h = chevron * 0.72 + 0.16 + brush;
+            shade = (h - 0.5) * 0.48;
+            rough = 0.58 + (1 - chevron) * 0.22;
+          }
+
+          // Fine yarn twist micro-noise
+          const microNoise = (Math.sin(x * 1.7 + y * 2.3) * 0.035 + (Math.random() - 0.5) * 0.04);
+          h = Math.max(0, Math.min(1, h + microNoise));
+
+          // Brass / Indigo tailor's selvedge stitch stripe along vertical margin
+          if (x >= 18 && x <= 23 && (y % 18) < 11) {
+            isSelvedge = true;
+            h = 0.96;
+            rough = 0.32;
+          }
+
+          let r, g, b;
+          if (isSelvedge) {
+            r = selv.r;
+            g = selv.g;
+            b = selv.b;
+          } else {
+            const c = shade >= 0
+              ? base.clone().lerp(light, Math.min(1, shade * 1.6))
+              : base.clone().lerp(dark, Math.min(1, -shade * 1.6));
+            r = c.r;
+            g = c.g;
+            b = c.b;
+          }
+
+          dData[idx] = Math.round(r * 255);
+          dData[idx + 1] = Math.round(g * 255);
+          dData[idx + 2] = Math.round(b * 255);
+          dData[idx + 3] = 255;
+
+          const bv = Math.round(h * 255);
+          bData[idx] = bData[idx + 1] = bData[idx + 2] = bv;
+          bData[idx + 3] = 255;
+
+          const rv = Math.round(Math.max(0, Math.min(1, rough)) * 255);
+          rData[idx] = rData[idx + 1] = rData[idx + 2] = rv;
+          rData[idx + 3] = 255;
+        }
+      }
+
+      dCtx.putImageData(dImg, 0, 0);
+      bCtx.putImageData(bImg, 0, 0);
+      rCtx.putImageData(rImg, 0, 0);
+
+      const map = new THREE.CanvasTexture(diffCanvas);
+      const bumpMap = new THREE.CanvasTexture(bumpCanvas);
+      const roughnessMap = new THREE.CanvasTexture(roughCanvas);
+      map.colorSpace = THREE.SRGBColorSpace;
+
+      [map, bumpMap, roughnessMap].forEach((t) => {
+        t.wrapS = t.wrapT = THREE.RepeatWrapping;
+        t.repeat.set(9, 7);
+        t.anisotropy = 8;
+      });
+
+      return { map, bumpMap, roughnessMap };
+    }
+
+    /* ---------------------------------------------------------------------
+       3. THREE.JS v0.170.0 HERO 3D SCULPTURAL DRAPING CLOTH STUDIO
+       AgX Tone Mapping + Virtual Photography Studio PMREM Softboxes
+       --------------------------------------------------------------------- */
+    let clothRenderer, clothScene, clothCamera, clothMesh, clothGeo, clothMat, selvedgeLine;
+    let basePosArr;
+    const textureCache = new Map();
+    const clothPhysics = {
+      pointerX: 0,
+      pointerY: 0,
+      smoothPX: 0,
+      smoothPY: 0,
+      scrollVel: 0,
+      lastScrollY: window.scrollY || 0,
+      waveAmp: FABRICS[0].waveAmp,
+      waveSpeed: FABRICS[0].waveSpeed,
+      drapeWeight: FABRICS[0].drapeWeight,
+      phase: 0,
+    };
+
+    function buildVirtualPhotoStudioPMREM(renderer) {
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      pmrem.compileEquirectangularShader();
+
+      const envScene = new THREE.Scene();
+      envScene.background = new THREE.Color(0x2e2c29);
+
+      const addSoftbox = (w, h, hex, mult, pos) => {
+        const col = new THREE.Color(hex).multiplyScalar(mult);
+        const mesh = new THREE.Mesh(
+          new THREE.PlaneGeometry(w, h),
+          new THREE.MeshBasicMaterial({ color: col, side: THREE.DoubleSide })
+        );
+        mesh.position.set(pos[0], pos[1], pos[2]);
+        mesh.lookAt(0, 0, 0);
+        envScene.add(mesh);
+      };
+
+      // Warm overhead studio softbox
+      addSoftbox(12, 10, 0xfff8ee, 2.8, [0.8, 8.5, 3.2]);
+      // Cool crisp vertical rim strip light (sculpts fabric fold peaks)
+      addSoftbox(2.8, 14, 0xdbe8f8, 3.3, [8.2, 1.5, -2.5]);
+      // Warm limestone cyclorama floor bounce
+      addSoftbox(20, 20, 0xe8e0d2, 1.1, [0, -7.2, 1.5]);
+      // Dark negative-fill cards (deepens natural fold valleys)
+      addSoftbox(6, 13, 0x0b0d12, 1.0, [-7.8, 0.5, 4.5]);
+      addSoftbox(6, 13, 0x0b0d12, 1.0, [0, 0.5, -8.5]);
+
+      const rt = pmrem.fromScene(envScene, 0.035);
+      pmrem.dispose();
+      return rt.texture;
+    }
+
+    function applyHeroFabricMaterial(idx) {
+      const fabric = FABRICS[idx];
+      if (!fabric || !clothMat) return;
+
+      if (!textureCache.has(fabric.id)) {
+        textureCache.set(fabric.id, createWovenTextureSet(fabric));
+      }
+      const tex = textureCache.get(fabric.id);
+
+      clothMat.map = tex.map;
+      clothMat.bumpMap = tex.bumpMap;
+      clothMat.roughnessMap = tex.roughnessMap;
+      clothMat.roughness = fabric.roughness;
+      clothMat.sheen = fabric.sheen;
+      clothMat.sheenRoughness = fabric.sheenRoughness;
+      clothMat.sheenColor.set(fabric.sheenColor);
+      clothMat.clearcoat = fabric.clearcoat;
+      clothMat.needsUpdate = true;
+
+      if (selvedgeLine) {
+        selvedgeLine.material.color.set(fabric.selvedge);
+      }
+    }
+
+    function initHeroClothStudio() {
+      const canvas = document.getElementById('hero-cloth-canvas');
+      const fallback = document.getElementById('hero-cloth-fallback');
+      const heroEl = document.getElementById('hero');
+      if (!canvas || !heroEl) return;
+
+      try {
+        clothRenderer = new THREE.WebGLRenderer({
+          canvas,
+          antialias: true,
+          alpha: true,
+          powerPreference: 'high-performance',
+        });
+        clothRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        clothRenderer.setSize(heroEl.clientWidth, heroEl.clientHeight, false);
+        clothRenderer.toneMapping = THREE.AgXToneMapping;
+        clothRenderer.toneMappingExposure = 1.12;
+        clothRenderer.outputColorSpace = THREE.SRGBColorSpace;
+
+        clothScene = new THREE.Scene();
+        clothScene.environment = buildVirtualPhotoStudioPMREM(clothRenderer);
+
+        clothCamera = new THREE.PerspectiveCamera(
+          34,
+          heroEl.clientWidth / Math.max(heroEl.clientHeight, 1),
+          0.1,
+          50
+        );
+        clothCamera.position.set(0.0, 0.2, 6.2);
+        clothCamera.lookAt(0.2, 0.0, 0.0);
+
+        // Studio 3-point lighting matching PMREM rig
+        const keyLight = new THREE.DirectionalLight(0xfff5e8, 2.3);
+        keyLight.position.set(3.8, 5.2, 4.6);
+        clothScene.add(keyLight);
+
+        const rimLight = new THREE.DirectionalLight(0xd6e4f7, 1.45);
+        rimLight.position.set(-5.2, 2.2, -2.5);
+        clothScene.add(rimLight);
+
+        const warmBounce = new THREE.HemisphereLight(0xfaf6ee, 0xd8cfc0, 0.65);
+        clothScene.add(warmBounce);
+
+        // High-subdivision sculptural bolt of cloth
+        const isMobile = window.innerWidth < 768;
+        const segs = isMobile ? 72 : 112;
+        clothGeo = new THREE.PlaneGeometry(7.6, 5.8, segs, segs);
+        basePosArr = new Float32Array(clothGeo.attributes.position.array);
+
+        const initFab = FABRICS[0];
+        const initTex = createWovenTextureSet(initFab);
+        textureCache.set(initFab.id, initTex);
+
+        clothMat = new THREE.MeshPhysicalMaterial({
+          color: 0xffffff,
+          map: initTex.map,
+          bumpMap: initTex.bumpMap,
+          bumpScale: 0.042,
+          roughnessMap: initTex.roughnessMap,
+          roughness: initFab.roughness,
+          metalness: 0.03,
+          sheen: initFab.sheen,
+          sheenRoughness: initFab.sheenRoughness,
+          sheenColor: new THREE.Color(initFab.sheenColor),
+          clearcoat: initFab.clearcoat,
+          side: THREE.DoubleSide,
+          envMapIntensity: 1.15,
+        });
+
+        clothMesh = new THREE.Mesh(clothGeo, clothMat);
+        // Sculptural diagonal drape sweeping across the right studio stage
+        clothMesh.position.set(isMobile ? 0.8 : 1.75, -0.05, 0.0);
+        clothMesh.rotation.set(-0.22, -0.44, 0.14);
+        clothScene.add(clothMesh);
+
+        // Subtle Animated Brass Tailor's Selvedge Stitch Line along front edge
+        const stitchPts = [];
+        for (let i = 0; i <= 70; i++) {
+          stitchPts.push(new THREE.Vector3(-3.62, -2.9 + (i / 70) * 5.8, 0.06));
+        }
+        const stitchGeo = new THREE.BufferGeometry().setFromPoints(stitchPts);
+        const stitchMat = new THREE.LineDashedMaterial({
+          color: new THREE.Color(initFab.selvedge),
+          dashSize: 0.14,
+          gapSize: 0.09,
+          transparent: true,
+          opacity: 0.85,
+        });
+        selvedgeLine = new THREE.Line(stitchGeo, stitchMat);
+        selvedgeLine.computeLineDistances();
+        clothMesh.add(selvedgeLine);
+
+        // Auto-pause WebGL rendering when Hero scrolls offscreen
+        if ('IntersectionObserver' in window) {
+          const io = new IntersectionObserver(
+            (entries) => {
+              appState.heroVisible = entries[0].isIntersecting;
+            },
+            { threshold: 0.02 }
+          );
+          io.observe(heroEl);
+        }
+
+        // Responsive resize
+        window.addEventListener('resize', () => {
+          if (!clothRenderer || !clothCamera || !heroEl) return;
+          const w = heroEl.clientWidth;
+          const h = Math.max(heroEl.clientHeight, 1);
+          clothCamera.aspect = w / h;
+          clothCamera.updateProjectionMatrix();
+          clothRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+          clothRenderer.setSize(w, h, false);
+          clothMesh.position.x = w < 768 ? 0.8 : 1.75;
+        });
+
+        // Pointer wind proximity
+        window.addEventListener('mousemove', (e) => {
+          clothPhysics.pointerX = (e.clientX / window.innerWidth) * 2 - 1;
+          clothPhysics.pointerY = (e.clientY / window.innerHeight) * 2 - 1;
+        });
+
+        // Single-clock animation loop
+        let lastTime = performance.now();
+        const animateCloth = (now) => {
+          requestAnimationFrame(animateCloth);
+          if (!appState.heroVisible) return;
+
+          const dt = Math.min((now - lastTime) * 0.001, 0.05);
+          lastTime = now;
+
+          const fabric = FABRICS[appState.heroFabricIdx];
+          clothPhysics.waveAmp += (fabric.waveAmp - clothPhysics.waveAmp) * 0.06;
+          clothPhysics.waveSpeed += (fabric.waveSpeed - clothPhysics.waveSpeed) * 0.06;
+          clothPhysics.drapeWeight += (fabric.drapeWeight - clothPhysics.drapeWeight) * 0.06;
+
+          const curScroll = window.scrollY || 0;
+          const rawVel = Math.max(-40, Math.min(40, curScroll - clothPhysics.lastScrollY));
+          clothPhysics.lastScrollY = curScroll;
+          clothPhysics.scrollVel += (rawVel * 0.028 - clothPhysics.scrollVel) * 0.1;
+
+          clothPhysics.smoothPX += (clothPhysics.pointerX - clothPhysics.smoothPX) * 0.05;
+          clothPhysics.smoothPY += (clothPhysics.pointerY - clothPhysics.smoothPY) * 0.05;
+
+          const speedMult = REDUCED_MOTION ? 0.12 : clothPhysics.waveSpeed;
+          clothPhysics.phase += dt * (0.95 * speedMult + Math.abs(clothPhysics.scrollVel) * 0.35);
+
+          const pos = clothGeo.attributes.position;
+          const arr = pos.array;
+          const p = clothPhysics.phase;
+          const amp = clothPhysics.waveAmp;
+          const weight = clothPhysics.drapeWeight;
+          const wx = clothPhysics.smoothPX * 2.2;
+          const wy = -clothPhysics.smoothPY * 1.8;
+
+          for (let i = 0; i < arr.length; i += 3) {
+            const x = basePosArr[i];
+            const y = basePosArr[i + 1];
+
+            // Diagonal sculptural tailoring folds + organic flowing breeze
+            const diag1 = Math.sin(x * 1.05 + y * 0.72 - p * 1.15) * amp;
+            const diag2 = Math.cos(x * 1.95 - y * 1.18 + p * 0.78) * (amp * 0.42);
+            const gravityFold = Math.sin(y * 1.45 + x * 0.35) * (0.26 * weight);
+            const ripple = Math.sin((x - y) * 2.8 + p * 1.65) * (amp * 0.14);
+
+            // Soft pointer wind indentation
+            const distSq = (x - wx) * (x - wx) + (y - wy) * (y - wy);
+            const windPush = Math.exp(-distSq * 0.24) * (0.34 / weight) * (1 + clothPhysics.scrollVel * 0.4);
+
+            arr[i + 2] = diag1 + diag2 + gravityFold + ripple + windPush;
+          }
+          pos.needsUpdate = true;
+          clothGeo.computeVertexNormals();
+
+          // Sync selvedge brass line z-depth cleanly to cloth fold
+          if (selvedgeLine) {
+            const sPos = selvedgeLine.geometry.attributes.position;
+            for (let j = 0; j < sPos.count; j++) {
+              const sx = sPos.getX(j);
+              const sy = sPos.getY(j);
+              const sz =
+                Math.sin(sx * 1.05 + sy * 0.72 - p * 1.15) * amp +
+                Math.cos(sx * 1.95 - sy * 1.18 + p * 0.78) * (amp * 0.42) +
+                Math.sin(sy * 1.45 + sx * 0.35) * (0.26 * weight) +
+                0.04;
+              sPos.setZ(j, sz);
+            }
+            sPos.needsUpdate = true;
+          }
+
+          clothMesh.rotation.y = -0.44 + clothPhysics.smoothPX * 0.08;
+          clothMesh.rotation.x = -0.22 - clothPhysics.smoothPY * 0.05;
+
+          clothRenderer.render(clothScene, clothCamera);
+        };
+
+        requestAnimationFrame(animateCloth);
+      } catch (err) {
+        console.warn('WebGL cloth fallback activated:', err);
+        canvas.classList.add('hidden');
+        if (fallback) {
+          fallback.classList.remove('hidden');
+          draw2DFallbackCloth(fallback);
+        }
+      }
+    }
+
+    function draw2DFallbackCloth(canvas) {
+      const ctx = canvas.getContext('2d');
+      const heroEl = document.getElementById('hero');
+      const paint = () => {
+        const w = heroEl.clientWidth;
+        const h = heroEl.clientHeight;
+        canvas.width = w;
+        canvas.height = h;
+        const fab = FABRICS[appState.heroFabricIdx];
+        const grad = ctx.createLinearGradient(w * 0.35, 0, w, h);
+        grad.addColorStop(0, '#F4F1EA');
+        grad.addColorStop(0.45, fab.yarnLight);
+        grad.addColorStop(0.72, fab.hex);
+        grad.addColorStop(1, fab.yarnDark);
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+      };
+      paint();
+      window.addEventListener('resize', paint);
+      window.addEventListener('hero-fabric-changed', paint);
+    }
+
+    /* ---------------------------------------------------------------------
+       4. HERO TEXTILE BAR & SYNC LOGIC
+       --------------------------------------------------------------------- */
+    const heroFabricBtns = document.querySelectorAll('.hero-fabric-btn');
+    const heroBadgeName = document.getElementById('hero-badge-name');
+    const heroBadgeMeta = document.getElementById('hero-badge-meta');
+    const dockWeave = document.getElementById('dock-weave');
+    const dockMoq = document.getElementById('dock-moq');
+
+    function setHeroFabric(idx) {
+      appState.heroFabricIdx = idx;
+      const fab = FABRICS[idx];
+      applyHeroFabricMaterial(idx);
+      window.dispatchEvent(new CustomEvent('hero-fabric-changed'));
+
+      if (heroBadgeName) heroBadgeName.textContent = fab.name;
+      if (heroBadgeMeta) heroBadgeMeta.textContent = `${fab.weave} · MOQ ${fab.moq} · ${fab.sector}`;
+      if (dockWeave) dockWeave.textContent = fab.weave;
+      if (dockMoq) dockMoq.textContent = `${fab.sector.split(' ')[0]} · ${fab.moq}`;
+
+      heroFabricBtns.forEach((btn) => {
+        const active = Number(btn.dataset.fabricIdx) === idx;
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-pressed', String(active));
+        const gsmEl = btn.querySelector('.font-mono');
+        if (gsmEl) {
+          gsmEl.classList.toggle('text-tailorBrass', active);
+          gsmEl.classList.toggle('text-specTone', !active);
+        }
+      });
+    }
+
+    heroFabricBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = Number(btn.dataset.fabricIdx);
+        setHeroFabric(idx);
+        setLabFabric(idx);
+      });
+    });
+
+    /* ---------------------------------------------------------------------
+       5. OPTICAL 12× GSM FABRIC MICROSCOPE & LIVE BRASS LOUPE (High-DPI 2D)
+       --------------------------------------------------------------------- */
+    const loupeStage = document.getElementById('loupe-stage');
+    const macroCanvas = document.getElementById('macro-fabric-canvas');
+    const macroCtx = macroCanvas ? macroCanvas.getContext('2d') : null;
+    const labFabricBtns = document.querySelectorAll('.lab-fabric-btn');
+
+    const loupeState = {
+      x: 0.54,
+      y: 0.48,
+      targetX: 0.54,
+      targetY: 0.48,
+      active: false,
+      baseBuffer: document.createElement('canvas'),
+      hiResBuffer: document.createElement('canvas'),
+    };
+
+    // Renders ultra-detailed woven threads, yarn fiber twists, and a physical double-needle seam
+    function renderWeaveSpecimenToCanvas(targetCanvas, fabric, scaleFactor) {
+      const w = targetCanvas.width;
+      const h = targetCanvas.height;
+      const ctx = targetCanvas.getContext('2d');
+
+      ctx.fillStyle = fabric.yarnDark;
+      ctx.fillRect(0, 0, w, h);
+
+      const pitch = Math.max(4, Math.round(7 * scaleFactor));
+      const baseCol = fabric.hex;
+      const lightCol = fabric.yarnLight;
+      const darkCol = fabric.yarnDark;
+
+      // Draw crisp interlaced warp & weft threads
+      if (fabric.weaveType === 'pique') {
+        // Honeycomb cellular pique knit
+        const cell = pitch * 1.45;
+        for (let y = 0; y < h + cell; y += cell) {
+          const rowIdx = Math.floor(y / cell);
+          const offX = (rowIdx % 2) * (cell * 0.5);
+          for (let x = -cell; x < w + cell; x += cell) {
+            const cx = x + offX;
+            // Raised yarn loop ring
+            const g = ctx.createRadialGradient(cx - cell * 0.15, y - cell * 0.15, cell * 0.12, cx, y, cell * 0.58);
+            g.addColorStop(0, lightCol);
+            g.addColorStop(0.55, baseCol);
+            g.addColorStop(1, darkCol);
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.arc(cx, y, cell * 0.52, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Cellular knit pore
+            ctx.fillStyle = 'rgba(10, 13, 18, 0.36)';
+            ctx.beginPath();
+            ctx.arc(cx, y, cell * 0.21, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      } else {
+        // Woven warp/weft architecture (twill, ripstop, poplin, herringbone)
+        const step = fabric.weaveType === 'poplin' ? Math.max(3, Math.round(pitch * 0.72)) : pitch;
+        const rows = Math.ceil(h / step);
+        const cols = Math.ceil(w / step);
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const x = c * step;
+            const y = r * step;
+            let isWarpTop = false;
+            let isRipRib = false;
+
+            if (fabric.weaveType === 'twill') {
+              isWarpTop = (c + r) % 3 !== 0;
+            } else if (fabric.weaveType === 'ripstop') {
+              isWarpTop = (c + r) % 3 !== 0;
+              isRipRib = c % 9 === 0 || r % 9 === 0;
+            } else if (fabric.weaveType === 'poplin') {
+              isWarpTop = (c + r) % 2 === 0;
+            } else {
+              // Herringbone chevron
+              const band = Math.floor(c / 8) % 2;
+              const d = band === 0 ? c + r : 1000 - c + r;
+              isWarpTop = d % 4 < 2;
+            }
+
+            if (isWarpTop) {
+              const g = ctx.createLinearGradient(x, y, x + step, y);
+              g.addColorStop(0, darkCol);
+              g.addColorStop(0.45, isRipRib ? '#626D7E' : lightCol);
+              g.addColorStop(1, darkCol);
+              ctx.fillStyle = g;
+              ctx.fillRect(x, y, step - 0.3, step);
+            } else {
+              const g = ctx.createLinearGradient(x, y, x, y + step);
+              g.addColorStop(0, darkCol);
+              g.addColorStop(0.5, isRipRib ? '#596373' : baseCol);
+              g.addColorStop(1, darkCol);
+              ctx.fillStyle = g;
+              ctx.fillRect(x, y, step, step - 0.3);
+            }
+
+            // Yarn ply twist micro-highlights at high magnification
+            if (scaleFactor > 1.8 && (c + r) % 2 === 0) {
+              ctx.strokeStyle = 'rgba(255, 250, 240, 0.11)';
+              ctx.lineWidth = Math.max(0.7, scaleFactor * 0.45);
+              ctx.beginPath();
+              ctx.moveTo(x + 1, y + step * 0.25);
+              ctx.lineTo(x + step - 1, y + step * 0.75);
+              ctx.stroke();
+            }
+          }
+        }
+      }
+
+      // Subtle overhead studio vignette across swatch
+      const vig = ctx.createRadialGradient(w * 0.5, h * 0.45, w * 0.12, w * 0.5, h * 0.5, w * 0.72);
+      vig.addColorStop(0, 'rgba(255,250,242,0.06)');
+      vig.addColorStop(1, 'rgba(7,10,16,0.36)');
+      ctx.fillStyle = vig;
+      ctx.fillRect(0, 0, w, h);
+
+      // Physical Double-Needle Flat-Felled Seam running cleanly across specimen
+      const seamY = h * 0.54;
+      // Folded fabric seam lap shadow
+      const seamShadow = ctx.createLinearGradient(0, seamY - 18 * scaleFactor, 0, seamY + 18 * scaleFactor);
+      seamShadow.addColorStop(0, 'rgba(0,0,0,0)');
+      seamShadow.addColorStop(0.45, 'rgba(0,0,0,0.42)');
+      seamShadow.addColorStop(0.52, 'rgba(255,248,236,0.16)');
+      seamShadow.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = seamShadow;
+      ctx.fillRect(0, seamY - 18 * scaleFactor, w, 36 * scaleFactor);
+
+      // Twin 12 SPI Lockstitch Thread Rows (Antique Brass + Tonal Contrast)
+      const stitchLen = 14 * scaleFactor;
+      const stitchGap = 6 * scaleFactor;
+      const rowOffsets = [-6.5 * scaleFactor, 6.5 * scaleFactor];
+
+      rowOffsets.forEach((off, rIdx) => {
+        const y = seamY + off;
+        for (let x = 8; x < w; x += stitchLen + stitchGap) {
+          // Needle puncture dimple
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.62)';
+          ctx.beginPath();
+          ctx.arc(x, y, 1.3 * scaleFactor, 0, Math.PI * 2);
+          ctx.arc(x + stitchLen, y, 1.3 * scaleFactor, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Twisted thread filament
+          ctx.strokeStyle = rIdx === 0 ? fabric.selvedge : '#E5DEC9';
+          ctx.lineWidth = 2.1 * scaleFactor;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(x + stitchLen, y);
+          ctx.stroke();
+
+          // Specular gloss on top of thread
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.32)';
+          ctx.lineWidth = 0.65 * scaleFactor;
+          ctx.beginPath();
+          ctx.moveTo(x + 1.2 * scaleFactor, y - 0.55 * scaleFactor);
+          ctx.lineTo(x + stitchLen - 1.2 * scaleFactor, y - 0.55 * scaleFactor);
+          ctx.stroke();
+        }
+      });
+    }
+
+    function rebuildLoupeBuffers() {
+      if (!macroCanvas || !loupeStage) return;
+      const rect = loupeStage.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = Math.max(300, Math.round(rect.width * dpr));
+      const h = Math.max(300, Math.round(rect.height * dpr));
+
+      macroCanvas.width = w;
+      macroCanvas.height = h;
+      loupeState.baseBuffer.width = w;
+      loupeState.baseBuffer.height = h;
+      loupeState.hiResBuffer.width = Math.round(w * 2.2);
+      loupeState.hiResBuffer.height = Math.round(h * 2.2);
+
+      const fab = FABRICS[appState.labFabricIdx];
+      renderWeaveSpecimenToCanvas(loupeState.baseBuffer, fab, dpr);
+      renderWeaveSpecimenToCanvas(loupeState.hiResBuffer, fab, dpr * 2.2);
+    }
+
+    function drawLoupeFrame() {
+      if (!macroCtx || !macroCanvas) return;
+      const w = macroCanvas.width;
+      const h = macroCanvas.height;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+      loupeState.x += (loupeState.targetX - loupeState.x) * 0.16;
+      loupeState.y += (loupeState.targetY - loupeState.y) * 0.16;
+
+      // 1. Draw base macro swatch
+      macroCtx.clearRect(0, 0, w, h);
+      macroCtx.drawImage(loupeState.baseBuffer, 0, 0, w, h);
+
+      // 2. Brass-Rimmed 12× Optical Magnifier Loupe
+      const lx = loupeState.x * w;
+      const ly = loupeState.y * h;
+      const radius = Math.min(w, h) * 0.24;
+
+      macroCtx.save();
+
+      // Drop shadow under brass loupe housing
+      macroCtx.shadowColor = 'rgba(0, 0, 0, 0.65)';
+      macroCtx.shadowBlur = 24 * dpr;
+      macroCtx.shadowOffsetY = 10 * dpr;
+      macroCtx.beginPath();
+      macroCtx.arc(lx, ly, radius, 0, Math.PI * 2);
+      macroCtx.fillStyle = '#0B0F17';
+      macroCtx.fill();
+      macroCtx.restore();
+
+      // Clip inside circular lens and sample from high-resolution magnified weave buffer
+      macroCtx.save();
+      macroCtx.beginPath();
+      macroCtx.arc(lx, ly, radius - 3 * dpr, 0, Math.PI * 2);
+      macroCtx.clip();
+
+      const hiW = loupeState.hiResBuffer.width;
+      const hiH = loupeState.hiResBuffer.height;
+      const zoom = 2.15;
+      const srcW = (radius * 2) / zoom * (hiW / w);
+      const srcH = (radius * 2) / zoom * (hiH / h);
+      const srcX = loupeState.x * hiW - srcW / 2;
+      const srcY = loupeState.y * hiH - srcH / 2;
+
+      macroCtx.drawImage(
+        loupeState.hiResBuffer,
+        srcX,
+        srcY,
+        srcW,
+        srcH,
+        lx - radius,
+        ly - radius,
+        radius * 2,
+        radius * 2
+      );
+
+      // Optical lens glass curvature specular sheen
+      const glassGrad = macroCtx.createRadialGradient(
+        lx - radius * 0.34,
+        ly - radius * 0.34,
+        radius * 0.08,
+        lx,
+        ly,
+        radius
+      );
+      glassGrad.addColorStop(0, 'rgba(255, 252, 245, 0.20)');
+      glassGrad.addColorStop(0.55, 'rgba(255, 252, 245, 0.0)');
+      glassGrad.addColorStop(0.88, 'rgba(8, 12, 20, 0.18)');
+      glassGrad.addColorStop(1, 'rgba(8, 12, 20, 0.45)');
+      macroCtx.fillStyle = glassGrad;
+      macroCtx.fillRect(lx - radius, ly - radius, radius * 2, radius * 2);
+
+      // Calibrated Millimeter Optical Reticle & 1mm Scale Bar inside Lens
+      macroCtx.strokeStyle = 'rgba(200, 150, 84, 0.55)';
+      macroCtx.lineWidth = 1 * dpr;
+      // Crosshair hairlines
+      macroCtx.beginPath();
+      macroCtx.moveTo(lx - radius * 0.72, ly);
+      macroCtx.lineTo(lx - radius * 0.18, ly);
+      macroCtx.moveTo(lx + radius * 0.18, ly);
+      macroCtx.lineTo(lx + radius * 0.72, ly);
+      macroCtx.moveTo(lx, ly - radius * 0.72);
+      macroCtx.lineTo(lx, ly - radius * 0.18);
+      macroCtx.moveTo(lx, ly + radius * 0.18);
+      macroCtx.lineTo(lx, ly + radius * 0.72);
+      macroCtx.stroke();
+
+      // Millimeter graduation ticks along horizontal reticle
+      const tickSpacing = radius * 0.14;
+      for (let t = -4; t <= 4; t++) {
+        if (t === 0) continue;
+        const tx = lx + t * tickSpacing;
+        const th = t % 2 === 0 ? 6 * dpr : 3.5 * dpr;
+        macroCtx.beginPath();
+        macroCtx.moveTo(tx, ly - th);
+        macroCtx.lineTo(tx, ly + th);
+        macroCtx.stroke();
+      }
+
+      // Bottom 1mm scale readout inside lens
+      const barW = radius * 0.42;
+      const barY = ly + radius * 0.58;
+      macroCtx.strokeStyle = '#F3EFE7';
+      macroCtx.lineWidth = 1.4 * dpr;
+      macroCtx.beginPath();
+      macroCtx.moveTo(lx - barW / 2, barY);
+      macroCtx.lineTo(lx + barW / 2, barY);
+      macroCtx.moveTo(lx - barW / 2, barY - 4 * dpr);
+      macroCtx.lineTo(lx - barW / 2, barY + 4 * dpr);
+      macroCtx.moveTo(lx + barW / 2, barY - 4 * dpr);
+      macroCtx.lineTo(lx + barW / 2, barY + 4 * dpr);
+      macroCtx.stroke();
+
+      macroCtx.fillStyle = '#F3EFE7';
+      macroCtx.font = `500 ${10 * dpr}px "JetBrains Mono", monospace`;
+      macroCtx.textAlign = 'center';
+      macroCtx.fillText('1.0 mm · 12×', lx, barY + 14 * dpr);
+
+      macroCtx.restore();
+
+      // Milled Brass Optical Rim Ring
+      const rimGrad = macroCtx.createLinearGradient(lx - radius, ly - radius, lx + radius, ly + radius);
+      rimGrad.addColorStop(0, '#E3C088');
+      rimGrad.addColorStop(0.35, '#B07D3F');
+      rimGrad.addColorStop(0.7, '#7D5424');
+      rimGrad.addColorStop(1, '#D4A86A');
+
+      macroCtx.strokeStyle = rimGrad;
+      macroCtx.lineWidth = 4.5 * dpr;
+      macroCtx.beginPath();
+      macroCtx.arc(lx, ly, radius, 0, Math.PI * 2);
+      macroCtx.stroke();
+
+      // Inner dark optical bevel ring
+      macroCtx.strokeStyle = 'rgba(12, 16, 24, 0.85)';
+      macroCtx.lineWidth = 1.5 * dpr;
+      macroCtx.beginPath();
+      macroCtx.arc(lx, ly, radius - 3 * dpr, 0, Math.PI * 2);
+      macroCtx.stroke();
+
+      requestAnimationFrame(drawLoupeFrame);
+    }
+
+    function setLabFabric(idx) {
+      appState.labFabricIdx = idx;
+      const fab = FABRICS[idx];
+      if (!fab) return;
+
+      document.getElementById('lab-gsm').textContent = fab.gsm;
+      document.getElementById('lab-density').textContent = fab.density;
+      document.getElementById('lab-wash').textContent = fab.wash;
+      document.getElementById('lab-fastness').textContent = fab.fastness;
+      document.getElementById('lab-breath').textContent = fab.breath;
+      document.getElementById('lab-stitch').textContent = fab.stitch;
+      document.getElementById('loupe-specimen-label').textContent = `SPECIMEN 0${idx + 1} // ${fab.name.toUpperCase()}`;
+      document.getElementById('loupe-telemetry').textContent = `MAG 12.0× · SEAM TENSION ${fab.tension} · 1.0 MM SCALE`;
+
+      labFabricBtns.forEach((btn) => {
+        const active = Number(btn.dataset.labIdx) === idx;
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-pressed', String(active));
+        const tag = btn.querySelector('.font-mono');
+        if (tag) {
+          tag.classList.toggle('text-chamberBrass', active);
+          tag.classList.toggle('text-[#9AA4B4]', !active);
+        }
+      });
+
+      rebuildLoupeBuffers();
+    }
+
+    labFabricBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = Number(btn.dataset.labIdx);
+        setLabFabric(idx);
+        setHeroFabric(idx);
+      });
+    });
+
+    if (loupeStage) {
+      const updateLoupePointer = (clientX, clientY) => {
+        const rect = loupeStage.getBoundingClientRect();
+        const nx = Math.max(0.14, Math.min(0.86, (clientX - rect.left) / rect.width));
+        const ny = Math.max(0.18, Math.min(0.82, (clientY - rect.top) / rect.height));
+        loupeState.targetX = nx;
+        loupeState.targetY = ny;
+
+        const nearSeam = Math.abs(ny - 0.54) < 0.11;
+        const coordsEl = document.getElementById('loupe-coords');
+        if (coordsEl) {
+          coordsEl.textContent = `X ${Math.round(nx * 100)}% · Y ${Math.round(ny * 100)}% · ${
+            nearSeam ? '12 SPI LOCKSTITCH SEAM' : 'WARP/WEFT FIELD'
+          }`;
+        }
+      };
+
+      loupeStage.addEventListener('mousemove', (e) => updateLoupePointer(e.clientX, e.clientY));
+      loupeStage.addEventListener('touchstart', (e) => {
+        if (e.touches[0]) updateLoupePointer(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+      loupeStage.addEventListener('touchmove', (e) => {
+        if (e.touches[0]) updateLoupePointer(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+    }
+
+    /* ---------------------------------------------------------------------
+       6. SCROLL-DRIVEN SVG DOUBLE-NEEDLE RUNNING STITCH SPINE
+       --------------------------------------------------------------------- */
+    function initScrollStitchSpine() {
+      const timeline = document.getElementById('stitch-timeline');
+      const pathBrass = document.getElementById('stitch-path-brass');
+      const pathIndigo = document.getElementById('stitch-path-indigo');
+      const steps = document.querySelectorAll('[data-stitch-step]');
+      if (!timeline || !pathBrass || !pathIndigo) return;
+
+      const totalLen = 1000;
+      let curProgress = 0;
+
+      // Use clip-path inset or masking so the dashed stitch pattern never slides awkwardly — it sews progressively!
+      const svgEl = document.getElementById('stitch-svg');
+
+      const updateStitch = () => {
+        const rect = timeline.getBoundingClientRect();
+        const vh = window.innerHeight || 800;
+        const raw = (vh * 0.62 - rect.top) / Math.max(rect.height, 1);
+        const target = Math.max(0, Math.min(1, raw));
+        curProgress += (target - curProgress) * (REDUCED_MOTION ? 0.35 : 0.14);
+
+        const bottomClip = ((1 - curProgress) * 100).toFixed(2);
+        pathBrass.style.clipPath = `inset(0 0 ${bottomClip}% 0)`;
+        pathIndigo.style.clipPath = `inset(0 0 ${bottomClip}% 0)`;
+
+        // Illuminate milestone pins as the stitch needle passes them
+        steps.forEach((stepEl, i) => {
+          const threshold = (i + 0.25) / steps.length;
+          const pins = stepEl.querySelectorAll('.stitch-pin');
+          pins.forEach((pin) => pin.classList.toggle('is-lit', curProgress >= threshold));
+        });
+
+        requestAnimationFrame(updateStitch);
+      };
+
+      requestAnimationFrame(updateStitch);
+    }
+
+    /* ---------------------------------------------------------------------
+       7. REAL CLIENT GARMENT ARCHIVE — ALL 18 STUDIO PLINTHS + LIGHTBOX
+       --------------------------------------------------------------------- */
+    const SECTORS = [
+      'All',
+      'Corporate',
+      'Industrial',
+      'Healthcare',
+      'Schools',
+      'Caps & Headwear',
+      'Bags & Backpacks',
+      'Jackets & Rainwear',
+      'Customization',
+    ];
+
+    const archiveFiltersEl = document.getElementById('archive-filters');
+    const archiveGridEl = document.getElementById('archive-grid');
+
+    function renderArchiveFilters() {
+      if (!archiveFiltersEl) return;
+      archiveFiltersEl.innerHTML = '';
+      SECTORS.forEach((sector) => {
+        const count = sector === 'All'
+          ? ARCHIVE_WORKS.length
+          : ARCHIVE_WORKS.filter((w) => w.sector === sector).length;
+        const active = appState.archiveFilter === sector;
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.setAttribute('role', 'tab');
+        btn.setAttribute('aria-selected', String(active));
+        btn.className = `btn-linen-tactile ${active ? 'is-active text-uniformNavy font-semibold' : 'text-loomSlate'} px-3.5 py-2 text-xs flex items-center gap-1.5`;
+        btn.style.borderRadius = '12px';
+        btn.innerHTML = `<span>${sector === 'All' ? 'All Works' : sector}</span><span class="font-mono text-[10px] text-specTone tabular-nums">${count}</span>`;
+
+        btn.addEventListener('click', () => {
+          appState.archiveFilter = sector;
+          renderArchiveFilters();
+          renderArchiveGrid();
+        });
+        archiveFiltersEl.appendChild(btn);
+      });
+    }
+
+    function renderArchiveGrid() {
+      if (!archiveGridEl) return;
+      const items = appState.archiveFilter === 'All'
+        ? ARCHIVE_WORKS
+        : ARCHIVE_WORKS.filter((w) => w.sector === appState.archiveFilter);
+
+      archiveGridEl.innerHTML = '';
+
+      items.forEach((item, index) => {
+        // Asymmetric editorial rhythm on desktop when viewing All Works
+        const spanClass =
+          appState.archiveFilter === 'All' && item.featured
+            ? 'lg:col-span-6'
+            : 'lg:col-span-4';
+
+        const card = document.createElement('article');
+        card.className = `plinth-card ${spanClass} atelier-card p-2.5 flex flex-col justify-between group cursor-pointer`;
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', `Inspect ${item.title} specifications`);
+
+        card.innerHTML = `
+          <div class="studio-plinth ${appState.archiveFilter === 'All' && item.featured ? 'h-[310px] sm:h-[340px]' : 'h-[270px] sm:h-[300px]'} flex items-center justify-center p-6 sm:p-8">
+            <span class="absolute top-3.5 left-3.5 font-mono text-[10px] uppercase tracking-[0.12em] text-specTone bg-alabaster/80 px-2 py-0.5 rounded-[7px] border border-[rgba(20,26,36,0.08)] tabular-nums">
+              NO. ${String(item.id).padStart(2, '0')}
+            </span>
+            <span class="absolute top-3.5 right-3.5 font-mono text-[10px] uppercase tracking-[0.1em] text-uniformNavy bg-alabaster/80 px-2 py-0.5 rounded-[7px] border border-[rgba(20,26,36,0.08)]">
+              ${item.sector}
+            </span>
+            <div class="garment-contact-shadow"></div>
+            <img
+              src="${item.img}"
+              alt="${item.title} manufactured by Venkateshwara Enterprises"
+              loading="lazy"
+              class="garment-specimen-img max-h-[82%] max-w-[82%] w-auto h-auto object-contain"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+            />
+            <div class="hidden flex-col items-center justify-center text-center p-4">
+              <svg class="w-12 h-12 text-uniformNavy/40 mb-2" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.4">
+                <path d="M22 12 L32 18 L42 12 L54 22 L48 32 L44 29 L44 54 L20 54 L20 29 L16 32 L10 22 Z" stroke-dasharray="3 2"/>
+              </svg>
+              <span class="font-mono text-[10px] uppercase tracking-widest text-specTone">${item.title}</span>
+            </div>
+          </div>
+
+          <div class="px-3 pt-4 pb-2 flex flex-col justify-between flex-1">
+            <div>
+              <div class="flex items-start justify-between gap-3">
+                <h3 class="editorial-display text-2xl font-medium text-indigoInk leading-snug group-hover:text-uniformNavy transition-colors">
+                  ${item.title}
+                </h3>
+                <span class="font-mono text-[10px] text-tailorBrass uppercase tracking-wider shrink-0 mt-1.5">
+                  SPEC →
+                </span>
+              </div>
+              <p class="font-mono text-[11px] text-loomSlate mt-1.5">${item.fabric}</p>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-[rgba(20,26,36,0.09)] flex items-center justify-between font-mono text-[10px] text-specTone tabular-nums">
+              <span>MOQ ${item.moq} UNITS</span>
+              <span>DIRECT MILL RUN</span>
+            </div>
+          </div>
+        `;
+
+        // Smooth ±5deg pointer tilt on studio plinth
+        const plinth = card.querySelector('.studio-plinth');
+        if (!REDUCED_MOTION && plinth) {
+          card.addEventListener('mousemove', (e) => {
+            const r = plinth.getBoundingClientRect();
+            const px = (e.clientX - r.left) / r.width - 0.5;
+            const py = (e.clientY - r.top) / r.height - 0.5;
+            plinth.style.transform = `perspective(900px) rotateX(${(-py * 8).toFixed(2)}deg) rotateY(${(px * 8).toFixed(2)}deg)`;
+          });
+          card.addEventListener('mouseleave', () => {
+            plinth.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg)';
+          });
+        }
+
+        const openHandler = () => openGarmentModal(item);
+        card.addEventListener('click', openHandler);
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openHandler();
+          }
+        });
+
+        archiveGridEl.appendChild(card);
+      });
+    }
+
+    // Garment Spec Lightbox Modal Logic
+    const garmentModal = document.getElementById('garment-modal');
+    const modalBackdrop = document.getElementById('garment-modal-backdrop');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+    const modalLoadQuoteBtn = document.getElementById('modal-load-quote-btn');
+    let activeModalItem = null;
+
+    function openGarmentModal(item) {
+      activeModalItem = item;
+      const imgEl = document.getElementById('modal-garment-img');
+      const fbEl = document.getElementById('modal-garment-fallback');
+
+      imgEl.style.display = 'block';
+      fbEl.style.display = 'none';
+      imgEl.src = item.img;
+      imgEl.alt = item.title;
+      imgEl.onerror = () => {
+        imgEl.style.display = 'none';
+        fbEl.style.display = 'flex';
+      };
+
+      document.getElementById('modal-garment-index').textContent = `SPECIMEN ${String(item.id).padStart(2, '0')} / 18`;
+      document.getElementById('modal-garment-sector').textContent = item.sector;
+      document.getElementById('modal-garment-title').textContent = item.title;
+      document.getElementById('modal-garment-desc').textContent = item.desc;
+      document.getElementById('modal-garment-fabric').textContent = item.fabric;
+      document.getElementById('modal-garment-moq').textContent = `${item.moq} Units`;
+      document.getElementById('modal-garment-branding').textContent = item.branding;
+
+      const waMsg = encodeURIComponent(
+        `Hello Venkateshwara Enterprises,\nI would like a factory quotation for: ${item.title}\n• Sector: ${item.sector}\n• Fabric Spec: ${item.fabric}\n• Reference MOQ: ${item.moq} units`
+      );
+      document.getElementById('modal-whatsapp-btn').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${waMsg}`;
+
+      garmentModal.classList.add('is-open');
+    }
+
+    function closeGarmentModal() {
+      garmentModal.classList.remove('is-open');
+    }
+
+    if (modalBackdrop) modalBackdrop.addEventListener('click', closeGarmentModal);
+    if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeGarmentModal);
+
+    if (modalLoadQuoteBtn) {
+      modalLoadQuoteBtn.addEventListener('click', () => {
+        if (activeModalItem) {
+          selectQuoteCategory(activeModalItem.quoteCategory, activeModalItem.moq);
+        }
+        closeGarmentModal();
+        document.getElementById('quote-builder')?.scrollIntoView({ behavior: 'smooth' });
+      });
+    }
+
+    /* ---------------------------------------------------------------------
+       8. CORE CATALOGUE LEDGER (6 Flagship SKUs)
+       --------------------------------------------------------------------- */
+    function renderCatalogueLedger() {
+      const container = document.getElementById('catalogue-ledger');
+      if (!container) return;
+      container.innerHTML = '';
+
+      CATALOGUE_SKUS.forEach((sku) => {
+        const waText = encodeURIComponent(
+          `Hello Venkateshwara Enterprises,\nI am interested in your flagship SKU: ${sku.name}\n• Spec: ${sku.fabric}\n• MOQ: ${sku.moq} units\nPlease share factory pricing and fabric swatches.`
+        );
+
+        const row = document.createElement('div');
+        row.className = 'py-5 sm:py-6 grid grid-cols-1 lg:grid-cols-12 gap-4 items-center hover:bg-alabaster/65 transition-colors px-2 -mx-2 rounded-[12px]';
+        row.innerHTML = `
+          <div class="lg:col-span-3">
+            <h3 class="editorial-display text-2xl font-medium text-indigoInk leading-snug">${sku.name}</h3>
+          </div>
+          <div class="lg:col-span-2 font-mono text-xs text-uniformNavy">${sku.fabric}</div>
+          <div class="lg:col-span-1 font-mono text-xs font-medium text-indigoInk tabular-nums">MOQ ${sku.moq}</div>
+          <div class="lg:col-span-3 text-sm text-loomSlate leading-relaxed">${sku.finish}</div>
+          <div class="lg:col-span-3 flex flex-wrap lg:justify-end gap-2">
+            <button type="button" data-sku-id="${sku.id}" data-sku-moq="${sku.moq}" class="cat-config-btn btn-indigo-tactile px-3.5 py-2 text-xs font-medium">
+              Configure Quote
+            </button>
+            <a
+              href="https://wa.me/${WHATSAPP_NUMBER}?text=${waText}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn-linen-tactile px-3.5 py-2 text-xs font-mono text-indigoInk"
+            >
+              WhatsApp ↗
+            </a>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+
+      container.querySelectorAll('.cat-config-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          selectQuoteCategory(btn.dataset.skuId, Number(btn.dataset.skuMoq));
+          document.getElementById('quote-builder')?.scrollIntoView({ behavior: 'smooth' });
+        });
+      });
+    }
+
+    /* ---------------------------------------------------------------------
+       9. INTERACTIVE BULK PROCUREMENT QUOTE & SPEC BUILDER
+       --------------------------------------------------------------------- */
+    const QTY_CHIPS = [25, 50, 100, 250, 500, 1000, 5000, 10000];
+    const qbCategoriesEl = document.getElementById('qb-categories');
+    const qbFabricsEl = document.getElementById('qb-fabrics');
+    const qbQtySlider = document.getElementById('qb-qty-slider');
+    const qbQtyChipsEl = document.getElementById('qb-qty-chips');
+    const qbAddonsEl = document.getElementById('qb-addons');
+    const qbScheduleBtns = document.querySelectorAll('.qb-schedule-btn');
+    const qbOrgName = document.getElementById('qb-org-name');
+    const qbOrgCity = document.getElementById('qb-org-city');
+
+    function sliderToQty(val) {
+      // Logarithmic curve from 25 to 10,000 units for fine control at both low and high volumes
+      const norm = Number(val) / 1000;
+      const raw = 25 * Math.pow(10000 / 25, norm);
+      if (raw < 100) return Math.max(25, Math.round(raw / 5) * 5);
+      if (raw < 1000) return Math.round(raw / 25) * 25;
+      return Math.round(raw / 100) * 100;
+    }
+
+    function qtyToSlider(qty) {
+      const clamped = Math.max(25, Math.min(10000, qty));
+      const norm = Math.log(clamped / 25) / Math.log(10000 / 25);
+      return Math.round(norm * 1000);
+    }
+
+    function getTierDiscount(qty) {
+      if (qty >= 5000) return 0.22;
+      if (qty >= 2000) return 0.18;
+      if (qty >= 1000) return 0.15;
+      if (qty >= 500) return 0.12;
+      if (qty >= 250) return 0.09;
+      if (qty >= 100) return 0.05;
+      return 0.0;
+    }
+
+    function formatINR(num) {
+      if (num >= 100000) {
+        return `₹${(num / 100000).toFixed(2)}L`;
+      }
+      if (num >= 10000) {
+        return `₹${(num / 1000).toFixed(1)}k`;
+      }
+      return `₹${Math.round(num).toLocaleString('en-IN')}`;
+    }
+
+    function selectQuoteCategory(catId, minQty = null) {
+      const cat = QUOTE_CATEGORIES.find((c) => c.id === catId) || QUOTE_CATEGORIES[1];
+      appState.quoteCategory = cat.id;
+      appState.quoteFabricId = cat.defaultFabric;
+      if (minQty && appState.quoteQty < minQty) {
+        appState.quoteQty = minQty;
+        if (qbQtySlider) qbQtySlider.value = qtyToSlider(minQty);
+      }
+      renderQuoteControls();
+      recalcQuoteDocket();
+    }
+
+    function renderQuoteControls() {
+      // Categories
+      if (qbCategoriesEl) {
+        qbCategoriesEl.innerHTML = '';
+        QUOTE_CATEGORIES.forEach((cat) => {
+          const active = appState.quoteCategory === cat.id;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = `btn-linen-tactile ${active ? 'is-active' : ''} px-3 py-3 text-left`;
+          btn.setAttribute('aria-pressed', String(active));
+          btn.innerHTML = `
+            <span class="block text-xs font-semibold ${active ? 'text-uniformNavy' : 'text-indigoInk'} leading-snug">${cat.label}</span>
+            <span class="block font-mono text-[10px] text-specTone mt-1 tabular-nums">MOQ ${cat.moq}</span>
+          `;
+          btn.addEventListener('click', () => selectQuoteCategory(cat.id));
+          qbCategoriesEl.appendChild(btn);
+        });
+      }
+
+      // Fabrics
+      if (qbFabricsEl) {
+        qbFabricsEl.innerHTML = '';
+        FABRICS.forEach((fab) => {
+          const active = appState.quoteFabricId === fab.id;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = `btn-linen-tactile ${active ? 'is-active' : ''} px-3 py-2.5 flex items-center justify-between text-left`;
+          btn.style.borderRadius = '12px';
+          btn.setAttribute('aria-pressed', String(active));
+          btn.innerHTML = `
+            <span class="flex items-center gap-2.5 min-w-0">
+              <span class="w-4 h-4 rounded-full shrink-0 border border-black/20" style="background: ${fab.hex};"></span>
+              <span class="text-xs font-medium text-indigoInk truncate">${fab.name}</span>
+            </span>
+            <span class="font-mono text-[10px] ${active ? 'text-tailorBrass' : 'text-specTone'} shrink-0 ml-2">${fab.weave.split(' ')[0]}</span>
+          `;
+          btn.addEventListener('click', () => {
+            appState.quoteFabricId = fab.id;
+            renderQuoteControls();
+            recalcQuoteDocket();
+          });
+          qbFabricsEl.appendChild(btn);
+        });
+      }
+
+      // Quantity Chips
+      if (qbQtyChipsEl) {
+        qbQtyChipsEl.innerHTML = '';
+        QTY_CHIPS.forEach((q) => {
+          const active = appState.quoteQty === q;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = `btn-linen-tactile ${active ? 'is-active text-uniformNavy font-semibold' : 'text-loomSlate'} px-3 py-1.5 font-mono text-[11px] tabular-nums`;
+          btn.textContent = q.toLocaleString('en-IN');
+          btn.addEventListener('click', () => {
+            appState.quoteQty = q;
+            if (qbQtySlider) qbQtySlider.value = qtyToSlider(q);
+            renderQuoteControls();
+            recalcQuoteDocket();
+          });
+          qbQtyChipsEl.appendChild(btn);
+        });
+      }
+
+      // Add-on Toggles
+      if (qbAddonsEl) {
+        qbAddonsEl.innerHTML = '';
+        QUOTE_ADDONS.forEach((addon) => {
+          const active = appState.quoteAddons.has(addon.id);
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = `btn-linen-tactile ${active ? 'is-active' : ''} px-3.5 py-2.5 flex items-center justify-between text-left gap-2`;
+          btn.setAttribute('aria-pressed', String(active));
+          btn.innerHTML = `
+            <span class="flex items-center gap-2.5">
+              <span class="w-4 h-4 rounded-[4px] border flex items-center justify-center text-[10px] ${
+                active ? 'bg-uniformNavy border-uniformNavy text-alabaster' : 'border-[rgba(20,26,36,0.25)] text-transparent'
+              }">✓</span>
+              <span class="text-xs font-medium text-indigoInk">${addon.label}</span>
+            </span>
+            <span class="font-mono text-[10px] text-specTone tabular-nums">+₹${addon.addMin}–${addon.addMax}</span>
+          `;
+          btn.addEventListener('click', () => {
+            if (appState.quoteAddons.has(addon.id)) appState.quoteAddons.delete(addon.id);
+            else appState.quoteAddons.add(addon.id);
+            renderQuoteControls();
+            recalcQuoteDocket();
+          });
+          qbAddonsEl.appendChild(btn);
+        });
+      }
+    }
+
+    let latestFormattedSpec = '';
+
+    function recalcQuoteDocket() {
+      const cat = QUOTE_CATEGORIES.find((c) => c.id === appState.quoteCategory) || QUOTE_CATEGORIES[1];
+      const fab = FABRICS.find((f) => f.id === appState.quoteFabricId) || FABRICS[1];
+      const qty = appState.quoteQty;
+      const discount = getTierDiscount(qty);
+      const priorityMult = appState.quoteSchedule === 'priority' ? 1.10 : 1.0;
+
+      // Sum branding add-ons
+      let addonMin = 0;
+      let addonMax = 0;
+      const selectedAddonNames = [];
+      QUOTE_ADDONS.forEach((a) => {
+        if (appState.quoteAddons.has(a.id)) {
+          addonMin += a.addMin;
+          addonMax += a.addMax;
+          selectedAddonNames.push(a.label);
+        }
+      });
+
+      // Fabric modifier relative to category default fabric
+      const defaultFab = FABRICS.find((f) => f.id === cat.defaultFabric) || FABRICS[0];
+      const relFabMod = Math.max(0.88, Math.min(1.38, fab.priceMod / defaultFab.priceMod));
+
+      const unitMin = Math.round(((cat.unitMin * relFabMod + addonMin) * (1 - discount) * priorityMult) / 5) * 5;
+      const unitMax = Math.round(((cat.unitMax * relFabMod + addonMax) * (1 - discount) * priorityMult) / 5) * 5;
+      const totalMin = unitMin * qty;
+      const totalMax = unitMax * qty;
+
+      const moqMet = qty >= cat.moq;
+      const dispatchStr = appState.quoteSchedule === 'priority' ? '7–10 Working Days (Priority)' : '14–21 Working Days (Standard)';
+      const orgName = qbOrgName?.value.trim() || 'Not specified';
+      const orgCity = qbOrgCity?.value.trim() || 'Hyderabad';
+
+      // Update workbench displays
+      document.getElementById('qb-category-base').textContent = `Indicative Base · ₹${cat.unitMin.toLocaleString('en-IN')} – ₹${cat.unitMax.toLocaleString('en-IN')} / unit`;
+      document.getElementById('qb-qty-display').innerHTML = `${qty.toLocaleString('en-IN')} <span class="font-mono text-xs font-normal text-specTone">units</span>`;
+      document.getElementById('qb-tier-badge').textContent = discount > 0
+        ? `TIER SAVINGS · ${Math.round(discount * 100)}% OFF`
+        : 'STANDARD BATCH RATE';
+
+      // Update live sticky docket
+      document.getElementById('docket-title').textContent = cat.label;
+      document.getElementById('docket-unit-rate').textContent = `₹${unitMin.toLocaleString('en-IN')} – ₹${unitMax.toLocaleString('en-IN')}`;
+      document.getElementById('docket-total-range').textContent = `${formatINR(totalMin)} – ${formatINR(totalMax)}`;
+      document.getElementById('docket-savings-note').textContent = discount > 0
+        ? `Includes ${Math.round(discount * 100)}% bulk volume tier`
+        : 'Direct factory baseline rate';
+      document.getElementById('docket-fabric').textContent = fab.name;
+      document.getElementById('docket-qty').textContent = `${qty.toLocaleString('en-IN')} Units (MOQ ${cat.moq})`;
+      document.getElementById('docket-stitch').textContent = cat.stitch;
+      document.getElementById('docket-addons').textContent = selectedAddonNames.length
+        ? selectedAddonNames.join(', ')
+        : 'Plain Unbranded Finish';
+      document.getElementById('docket-dispatch').textContent = dispatchStr;
+
+      const moqPill = document.getElementById('docket-moq-pill');
+      const moqWarn = document.getElementById('docket-moq-warning');
+      document.getElementById('docket-min-moq').textContent = cat.moq;
+
+      if (moqMet) {
+        moqPill.textContent = 'MOQ VERIFIED';
+        moqPill.className = 'px-2.5 py-1 rounded-[8px] bg-[#E7EFE9] text-[#1D5435] border border-[#1D5435]/20 font-mono text-[10px] font-medium whitespace-nowrap';
+        moqWarn.classList.add('hidden');
+      } else {
+        moqPill.textContent = 'SAMPLE / LOW RUN';
+        moqPill.className = 'px-2.5 py-1 rounded-[8px] bg-[#F7EEE4] text-[#8B531B] border border-[#A67236]/30 font-mono text-[10px] font-medium whitespace-nowrap';
+        moqWarn.classList.remove('hidden');
+      }
+
+      // Build formatted specification sheet for WhatsApp & Clipboard
+      latestFormattedSpec = [
+        `VENKATESHWARA ENTERPRISES — BULK PROCUREMENT SPEC`,
+        `--------------------------------------------------`,
+        `Organization: ${orgName} (${orgCity})`,
+        `Garment Category: ${cat.label}`,
+        `Mill Fabric & GSM: ${fab.name} (${fab.weave})`,
+        `Batch Quantity: ${qty.toLocaleString('en-IN')} Units (Standard MOQ: ${cat.moq})`,
+        `Stitching Spec: ${cat.stitch}`,
+        `Branding / Finishing: ${selectedAddonNames.length ? selectedAddonNames.join(', ') : 'Plain Unbranded'}`,
+        `Dispatch Schedule: ${dispatchStr}`,
+        `Indicative Factory Rate: ₹${unitMin.toLocaleString('en-IN')}–₹${unitMax.toLocaleString('en-IN')} / unit`,
+        `Estimated Batch Range: ${formatINR(totalMin)} – ${formatINR(totalMax)} (excl. GST)`,
+        `--------------------------------------------------`,
+        `Requesting firm GST quotation & fabric swatches.`,
+      ].join('\n');
+
+      const waLink = document.getElementById('docket-whatsapp-cta');
+      if (waLink) {
+        waLink.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(latestFormattedSpec)}`;
+      }
+    }
+
+    if (qbQtySlider) {
+      qbQtySlider.value = qtyToSlider(appState.quoteQty);
+      qbQtySlider.addEventListener('input', (e) => {
+        appState.quoteQty = sliderToQty(e.target.value);
+        renderQuoteControls();
+        recalcQuoteDocket();
+      });
+    }
+
+    qbScheduleBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        appState.quoteSchedule = btn.dataset.schedule;
+        qbScheduleBtns.forEach((b) => {
+          const active = b.dataset.schedule === appState.quoteSchedule;
+          b.classList.toggle('is-active', active);
+          b.setAttribute('aria-pressed', String(active));
+        });
+        recalcQuoteDocket();
+      });
+    });
+
+    [qbOrgName, qbOrgCity].forEach((input) => {
+      if (input) input.addEventListener('input', recalcQuoteDocket);
+    });
+
+    // Safe Iframe-Compatible Clipboard Copy (document.execCommand('copy'))
+    const copyBtn = document.getElementById('docket-copy-btn');
+    const copyLabel = document.getElementById('docket-copy-label');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => {
+        const ta = document.createElement('textarea');
+        ta.value = latestFormattedSpec;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        let ok = false;
+        try {
+          ok = document.execCommand('copy');
+        } catch (_) {}
+        document.body.removeChild(ta);
+
+        if (copyLabel) {
+          copyLabel.textContent = ok ? 'Specification Copied to Clipboard ✓' : 'Spec Ready — Use WhatsApp Button Above';
+          setTimeout(() => {
+            copyLabel.textContent = 'Copy Formatted Spec Summary';
+          }, 2400);
+        }
+      });
+    }
+
+    /* ---------------------------------------------------------------------
+       10. MOBILE NAVIGATION DRAWER & SCROLL REVEAL OBSERVER
+       --------------------------------------------------------------------- */
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const openMenuBtn = document.getElementById('mobile-menu-open');
+    const closeMenuBtn = document.getElementById('mobile-menu-close');
+    const drawerBackdrop = document.getElementById('mobile-drawer-backdrop');
+
+    const closeMobileMenu = () => mobileDrawer?.classList.remove('is-open');
+    if (openMenuBtn) openMenuBtn.addEventListener('click', () => mobileDrawer?.classList.add('is-open'));
+    if (closeMenuBtn) closeMenuBtn.addEventListener('click', closeMobileMenu);
+    if (drawerBackdrop) drawerBackdrop.addEventListener('click', closeMobileMenu);
+    document.querySelectorAll('.mobile-nav-link').forEach((link) => {
+      link.addEventListener('click', closeMobileMenu);
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeGarmentModal();
+        closeMobileMenu();
+      }
+    });
+
+    function initScrollReveals() {
+      const items = document.querySelectorAll('.reveal-item');
+      if (REDUCED_MOTION || !('IntersectionObserver' in window)) {
+        items.forEach((el) => el.classList.add('is-visible'));
+        return;
+      }
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              io.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12 }
+      );
+      items.forEach((el) => io.observe(el));
+    }
+
+    /* ---------------------------------------------------------------------
+       11. BOOTSTRAP ON WINDOW LOAD
+       --------------------------------------------------------------------- */
+    window.addEventListener('load', () => {
+      initPaperGrainCanvas();
+      initHeroClothStudio();
+      setLabFabric(0);
+      drawLoupeFrame();
+      initScrollStitchSpine();
+      renderArchiveFilters();
+      renderArchiveGrid();
+      renderCatalogueLedger();
+      renderQuoteControls();
+      recalcQuoteDocket();
+      initScrollReveals();
+
+      window.addEventListener('resize', () => {
+        rebuildLoupeBuffers();
+      });
+    });
+  </script>
+</body>
+</html>

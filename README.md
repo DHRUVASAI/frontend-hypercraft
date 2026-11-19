@@ -86,6 +86,35 @@ flowchart TD
 
 ---
 
+## 💎 Canonical Reference Implementations (The Living Flagships)
+
+HyperCraft is not a theoretical whitepaper—it is the exact engineering specification that produced three live, battle-tested flagship applications. These builds prove that AI-directed code can achieve zero-compromise craft, flawless interaction physics, and bulletproof security.
+
+| Flagship Build | Domain & Archetype | Key Verified Engineering Primitives | Live Source / Artifact |
+|---|---|---|---|
+| **KINETA Model 04** | **Studio Industrial Hardware & 3D Acoustics** | • 12-layer exploded 3D teardown in Three.js `r170+` with `AgXToneMapping`<br>• Dynamic 3D-to-2D projected callouts with behind-camera $z > 1$ culling<br>• W3C Web Audio 1.1 acoustic synthesis with non-zero gain ramp safety<br>• Concentric container radius continuity: $R_{\text{outer}} = R_{\text{inner}} + P_{\text{gap}}$<br>• Hardware tactile bevels with 4-layer box-shadow physics | [`examples/kineta-acoustic-monolith.html`](examples/kineta-acoustic-monolith.html) |
+| **Venkateshwara Enterprises (VE)** | **Architectural Textile Atelier & Procurement** | • OKLCH daylight cotton (`#F4F1EA`) & optical microscope chamber (`#111620`)<br>• Interactive 12× high-DPI GSM optical microscope with 3-step canvas loupe matrix<br>• Bringhurst narrative measure (`45ch–65ch`) with tabular OpenType numerals<br>• 6-SKU hairline tolerance ledger with verified GSMs, weaves, and MOQs<br>• Dynamic procurement quote builder with WhatsApp action bridge deep-link | [`examples/venkateshwara-textile-atelier.html`](examples/venkateshwara-textile-atelier.html) |
+| **GARUDA** | **Autonomous Cyber Safety & Cryptographic Transparency** | • Kernel telemetry privilege separation (unprivileged UI + root daemon)<br>• IEEE 802.3 MAC validation + IEEE 802c SLAP quadrant parsing (`ELI`, `SAI`, `AAI`)<br>• IPv6 NDP / MITM6 defense against rogue RAs (RFC 4861, RFC 6105 RA-Guard, RFC 8484 DoH)<br>• FoxIO JA4+ client fingerprinting with RFC 8701 GREASE stripping & RFC 9849 TLS ECH<br>• RFC 6962 append-only domain-separated Merkle ledger with EVM EIP-2929 gas modeling<br>• Streaming ML with Extended Isolation Forest hyperplanes, RRCF `CoDisp`, and Bayes FDR | [DHRUVASAI/GARUDA-](https://github.com/DHRUVASAI/GARUDA-) |
+
+### Live Showcase Walkthrough
+
+```text
+examples/
+├── kineta-acoustic-monolith.html
+│   └── Open in any browser:
+│       ├── Orbit & scrub through the 12 exploded internal hardware layers
+│       ├── Watch 3D world anchors project to 2D HUD callouts in real time
+│       └── Trigger the acoustic chamber to test W3C Web Audio non-zero gain ramps
+│
+└── venkateshwara-textile-atelier.html
+    └── Open in any browser:
+        ├── Drag the high-DPI 12× GSM optical loupe across raw weave textures
+        ├── Inspect the hairline tolerance ledger with tabular OpenType metrics
+        └── Configure wholesale orders with exact algebraic discount math
+```
+
+---
+
 ## 📦 Core Engineering Pillars
 
 ### 1. Perceptual Color Science & Optical Craft (`01-visual-and-optical-craft/`)
@@ -372,6 +401,9 @@ frontend-hypercraft/
 │   ├── RESULTS.json
 │   ├── run_benchmarks.py
 │   └── datasets/
+├── examples/                                            # Self-contained live flagship builds
+│   ├── kineta-acoustic-monolith.html                    # 12-Layer 3D exploded view + Web Audio synth
+│   └── venkateshwara-textile-atelier.html               # 12× Optical microscope loupe + quote engine
 ├── evidence/pricing/                                    # Verbatim raw pricing snapshots + SHA-256 MANIFEST
 ├── tests/                                               # Zero-dependency Python & Node unit test suites
 │   ├── test_domain_algorithms.py
