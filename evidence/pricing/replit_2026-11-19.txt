@@ -1,0 +1,4 @@
+SOURCE: https://replit.com/pricing
+CAPTURED_UTC: 2026-11-19T16:10:00Z
+Core: $20/mo ($18/mo annual) — up to 30 hrs Free Mode chat, 60 Free Mode projects, $20 credits.
+Pro: $100/mo ($90/mo annual; tiers up to $2,000/mo) — $100 credits, 15 collaborators, 28-day DB rollback.

@@ -1,0 +1,29 @@
+name: Capture Live Build Screenshots (Manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      kineta_lovable_url:
+        description: "Live Lovable URL for Kineta"
+        required: false
+        default: ""
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install --no-save playwright && npx playwright install chromium
+      - name: Capture Screenshots
+        env:
+          VE_V0_URL: "https://venkateshwara-brown.vercel.app"
+          KINETA_LOVABLE_URL: ${{ github.event.inputs.kineta_lovable_url }}
+        run: node scripts/capture-screenshots.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: reference-build-screenshots
+          path: docs/screenshots/*.png
+          if-no-files-found: ignore

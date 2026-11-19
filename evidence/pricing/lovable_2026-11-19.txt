@@ -1,0 +1,5 @@
+SOURCE: https://docs.lovable.dev/introduction/subscription-plans
+CAPTURED_UTC: 2026-11-19T16:10:00Z
+Free: 5 daily build credits (30/mo cap, resets 1st 00:00 UTC) + daily chat + 20 Cloud + 4 AI grants; Git sync included; edit/download code requires Pro.
+Pro: $25/mo ($250/yr = $21/mo) from 100 credits up to 10,000 ($2,250/mo); 5/day uncapped; paid monthly credits roll over.
+Student discount: 50% off Pro 100 credits/mo for 12 months via lovable.dev/students.

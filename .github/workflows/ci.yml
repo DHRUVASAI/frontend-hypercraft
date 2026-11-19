@@ -1,0 +1,33 @@
+name: Knowledge Base Verification CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  python-tests-and-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install numpy scikit-learn
+      - name: Run Python Unit Tests
+        run: python3 -m unittest discover -s tests -v
+      - name: Run Link, Reference & Evidence SHA-256 Validator
+        run: python3 scripts/validate_links_and_refs.py
+      - name: Smoke-Test Benchmark Harness
+        run: python3 benchmarks/run_benchmarks.py --quick
+
+  node-frontend-math-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run Node Frontend Math & MAC Tests
+        run: node --test tests/frontend_math.test.mjs

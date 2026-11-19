@@ -1,0 +1,41 @@
+{
+  "captured_at_utc": "2026-11-19T16:10:00Z",
+  "snapshots": [
+    {
+      "file": "evidence/pricing/lovable_2026-11-19.txt",
+      "source_url": "https://docs.lovable.dev/introduction/subscription-plans",
+      "bytes": 460,
+      "sha256": "371906799a3f93356b40a4ab4cad43847809a4f07bef1501a359041aa340decf"
+    },
+    {
+      "file": "evidence/pricing/v0_2026-11-19.txt",
+      "source_url": "https://v0.app/pricing",
+      "bytes": 399,
+      "sha256": "2b0a20fa7335d019086bebf750d7674f2d31205823d9cf8ab7be24a328d21423"
+    },
+    {
+      "file": "evidence/pricing/bolt_2026-11-19.txt",
+      "source_url": "https://bolt.new/pricing",
+      "bytes": 308,
+      "sha256": "a44299d86a7f06ab56f5297259169fe5bb64ce889691b90f59e8cce5fb96cf7f"
+    },
+    {
+      "file": "evidence/pricing/cursor_2026-11-19.txt",
+      "source_url": "https://cursor.com/pricing",
+      "bytes": 311,
+      "sha256": "2d967fe0c2dc3576ef0849dbe731f1e1eda2702996581d8b706f369363b2a481"
+    },
+    {
+      "file": "evidence/pricing/devin_2026-11-19.txt",
+      "source_url": "https://devin.ai/pricing",
+      "bytes": 328,
+      "sha256": "6ea9731bfd79d348a4fc47d4292c8f7a55fa6e08707a5b9d7d769dabcbcc0bae"
+    },
+    {
+      "file": "evidence/pricing/replit_2026-11-19.txt",
+      "source_url": "https://replit.com/pricing",
+      "bytes": 276,
+      "sha256": "35af50ed345833c4d8d10c7d80d962a8bff7e3399b926bc0ec745293434f3fa9"
+    }
+  ]
+}

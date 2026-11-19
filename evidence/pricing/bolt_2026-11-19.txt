@@ -1,0 +1,5 @@
+SOURCE: https://bolt.new/pricing
+CAPTURED_UTC: 2026-11-19T16:10:00Z
+Free: 300K tokens/day, 1M/mo (no rollover), 10MB upload, 333K requests.
+Pro: $25/mo (up to 28% off yearly) from 10M/mo, no daily cap, 2-month rollover, 100MB upload, 1M requests, custom domain.
+Teams: $30/member/mo (per-member token pool).

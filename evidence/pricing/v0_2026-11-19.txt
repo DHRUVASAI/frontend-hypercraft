@@ -1,0 +1,5 @@
+SOURCE: https://v0.app/pricing
+CAPTURED_UTC: 2026-11-19T16:10:00Z
+Free: $5 one-time credits + 7 msg/day + Design Mode + GitHub sync + Vercel deploy.
+Plus: $30/user/mo ($30/mo + $2 daily login credits). Business: $100/user/mo (+ training opt-out).
+Token rates/1M: Mini $0.10/$0.125/$0.01/$0.50 (>272K: $0.20/$0.25/$0.02/$0.75); Pro $2/$2.50/$0.10/$10; Max $4/$5/$0.20/$20; Max Fast $8/$10/$0.40/$40.

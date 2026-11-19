@@ -1,0 +1,112 @@
+{
+  "generated_at_utc": "2026-11-19T16:19:54.867084+00:00",
+  "mode": "full_20_seed",
+  "environment": {
+    "python": "3.10.16",
+    "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+    "cpu_count": 8
+  },
+  "merkle_rfc6962": [
+    {
+      "n_leaves": 100,
+      "build_ms": 0.374,
+      "inclusion_hashes": 7,
+      "inclusion_us": 330.5,
+      "consistency_hashes": 6,
+      "consistency_us": 329.24,
+      "all_verified": true
+    },
+    {
+      "n_leaves": 1000,
+      "build_ms": 2.988,
+      "inclusion_hashes": 10,
+      "inclusion_us": 3010.84,
+      "consistency_hashes": 8,
+      "consistency_us": 2959.62,
+      "all_verified": true
+    },
+    {
+      "n_leaves": 10000,
+      "build_ms": 29.605,
+      "inclusion_hashes": 14,
+      "inclusion_us": 29899.1,
+      "consistency_hashes": 11,
+      "consistency_us": 30276.27,
+      "all_verified": true
+    }
+  ],
+  "conformal_multiseed": {
+    "target_alpha": 0.05,
+    "exchangeable_fpr": {
+      "n_seeds": 20,
+      "mean": 0.0495,
+      "std": 0.009,
+      "ci95_low": 0.0453,
+      "ci95_high": 0.0536
+    },
+    "exchangeable_tpr": {
+      "n_seeds": 20,
+      "mean": 0.9395,
+      "std": 0.0181,
+      "ci95_low": 0.931,
+      "ci95_high": 0.948
+    },
+    "covariate_shift_1_2sigma_fpr": {
+      "n_seeds": 20,
+      "mean": 0.3286,
+      "std": 0.0286,
+      "ci95_low": 0.3152,
+      "ci95_high": 0.342
+    }
+  },
+  "realistic_lan_telemetry_iforest": {
+    "dataset": "benchmarks/datasets/lan_telemetry_sample.jsonl",
+    "rows_total": 500,
+    "hard_negatives_included": true,
+    "pr_auc": {
+      "n_seeds": 20,
+      "mean": 0.9907,
+      "std": 0.0095,
+      "ci95_low": 0.9863,
+      "ci95_high": 0.9952
+    },
+    "recall_at_1pct_fpr": {
+      "n_seeds": 20,
+      "mean": 0.923,
+      "std": 0.0939,
+      "ci95_low": 0.8791,
+      "ci95_high": 0.9669
+    },
+    "recall_at_5pct_fpr": {
+      "n_seeds": 20,
+      "mean": 1.0,
+      "std": 0.0,
+      "ci95_low": 1.0,
+      "ci95_high": 1.0
+    },
+    "fit_ms": {
+      "n_seeds": 20,
+      "mean": 152.402,
+      "std": 5.9825,
+      "ci95_low": 149.6022,
+      "ci95_high": 155.2019
+    },
+    "infer_ms": {
+      "n_seeds": 20,
+      "mean": 3.7127,
+      "std": 0.7455,
+      "ci95_low": 3.3638,
+      "ci95_high": 4.0616
+    }
+  },
+  "dga_hard_negatives": {
+    "dataset": "benchmarks/datasets/dga_domains_sample.csv",
+    "total_domains": 40,
+    "tp": 15,
+    "fp": 2,
+    "tn": 18,
+    "fn": 5,
+    "precision": 0.8824,
+    "recall": 0.75
+  }
+}

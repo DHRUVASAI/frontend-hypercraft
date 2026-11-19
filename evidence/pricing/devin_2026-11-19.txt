@@ -1,0 +1,5 @@
+SOURCE: https://devin.ai/pricing
+CAPTURED_UTC: 2026-11-19T16:10:00Z
+Free: $0 light agent quota + unlimited inline edits + unlimited Tab completions.
+Pro: $20/mo daily/weekly refreshing quotas, full frontier models, free SWE-2, Devin Cloud, API extra usage.
+Max: $200/mo (+ Devin Bots). Teams: $80/mo + $40/mo per full dev seat.

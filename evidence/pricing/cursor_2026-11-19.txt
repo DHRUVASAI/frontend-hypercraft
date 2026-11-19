@@ -1,0 +1,3 @@
+SOURCE: https://cursor.com/pricing
+CAPTURED_UTC: 2026-11-19T16:10:00Z
+Free: $0 limited agent/chat. Plus: $8/mo (Grok only). Premium: $30/mo (4x Plus, Cloud agents, Bugbot, 3rd-party at API list price billed separately). Super: $100/mo (15x). Ultra: $200/mo (50x). Teams: $30+/user/mo. Weekly allowance refresh.
