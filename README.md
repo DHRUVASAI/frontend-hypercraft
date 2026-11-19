@@ -90,28 +90,69 @@ flowchart TD
 
 HyperCraft is not a theoretical whitepaper—it is the exact engineering specification that produced three live, battle-tested flagship applications. These builds prove that AI-directed code can achieve zero-compromise craft, flawless interaction physics, and bulletproof security.
 
-| Flagship Build | Domain & Archetype | Key Verified Engineering Primitives | Live Source / Artifact |
-|---|---|---|---|
-| **KINETA Model 04** | **Studio Industrial Hardware & 3D Acoustics** | • 12-layer exploded 3D teardown in Three.js `r170+` with `AgXToneMapping`<br>• Dynamic 3D-to-2D projected callouts with behind-camera $z > 1$ culling<br>• W3C Web Audio 1.1 acoustic synthesis with non-zero gain ramp safety<br>• Concentric container radius continuity: $R_{\text{outer}} = R_{\text{inner}} + P_{\text{gap}}$<br>• Hardware tactile bevels with 4-layer box-shadow physics | [`examples/kineta-acoustic-monolith.html`](examples/kineta-acoustic-monolith.html) |
-| **Venkateshwara Enterprises (VE)** | **Architectural Textile Atelier & Procurement** | • OKLCH daylight cotton (`#F4F1EA`) & optical microscope chamber (`#111620`)<br>• Interactive 12× high-DPI GSM optical microscope with 3-step canvas loupe matrix<br>• Bringhurst narrative measure (`45ch–65ch`) with tabular OpenType numerals<br>• 6-SKU hairline tolerance ledger with verified GSMs, weaves, and MOQs<br>• Dynamic procurement quote builder with WhatsApp action bridge deep-link | [`examples/venkateshwara-textile-atelier.html`](examples/venkateshwara-textile-atelier.html) |
-| **GARUDA** | **Autonomous Cyber Safety & Cryptographic Transparency** | • Kernel telemetry privilege separation (unprivileged UI + root daemon)<br>• IEEE 802.3 MAC validation + IEEE 802c SLAP quadrant parsing (`ELI`, `SAI`, `AAI`)<br>• IPv6 NDP / MITM6 defense against rogue RAs (RFC 4861, RFC 6105 RA-Guard, RFC 8484 DoH)<br>• FoxIO JA4+ client fingerprinting with RFC 8701 GREASE stripping & RFC 9849 TLS ECH<br>• RFC 6962 append-only domain-separated Merkle ledger with EVM EIP-2929 gas modeling<br>• Streaming ML with Extended Isolation Forest hyperplanes, RRCF `CoDisp`, and Bayes FDR | [DHRUVASAI/GARUDA-](https://github.com/DHRUVASAI/GARUDA-) |
+---
 
-### Live Showcase Walkthrough
+### 1. KINETA Model 04 — Acoustic Monolith
+> **Studio Industrial Hardware & 3D Acoustics** · Artifact: [`examples/kineta-acoustic-monolith.html`](examples/kineta-acoustic-monolith.html)
 
-```text
-examples/
-├── kineta-acoustic-monolith.html
-│   └── Open in any browser:
-│       ├── Orbit & scrub through the 12 exploded internal hardware layers
-│       ├── Watch 3D world anchors project to 2D HUD callouts in real time
-│       └── Trigger the acoustic chamber to test W3C Web Audio non-zero gain ramps
-│
-└── venkateshwara-textile-atelier.html
-    └── Open in any browser:
-        ├── Drag the high-DPI 12× GSM optical loupe across raw weave textures
-        ├── Inspect the hairline tolerance ledger with tabular OpenType metrics
-        └── Configure wholesale orders with exact algebraic discount math
-```
+[![KINETA Model 04 Acoustic Monolith](docs/screenshots/kineta-desktop.png)](examples/kineta-acoustic-monolith.html)
+
+<details>
+<summary>📱 <b>View Mobile Viewport (390×844 Retina)</b></summary>
+<br>
+
+<p align="center">
+  <img src="docs/screenshots/kineta-mobile.png" alt="KINETA Mobile Viewport" width="390">
+</p>
+</details>
+
+- **Three.js `r170+` PBR Stage:** Photorealistic 12-layer exploded teardown using `AgXToneMapping` (eliminating highlight color shifts).
+- **3D-to-2D Callout Projection:** Clones world coordinate anchors and projects them directly to 2D SVG HUD reticles with strict behind-camera $z > 1$ culling.
+- **Acoustic Chamber & W3C Web Audio 1.1:** Synthesizes low-frequency resonance using non-zero gain ramps (`setValueAtTime(0.0001, t)`) to prevent browser `RangeError` exceptions.
+- **Concentric Radius Physics:** Nested trays strictly enforce $R_{\text{outer}} = R_{\text{inner}} + P_{\text{gap}}$.
+
+---
+
+### 2. Venkateshwara Enterprises (VE) — Architectural Textile Atelier
+> **Direct Uniform Manufacturer & Optical Fabric Microscope** · Artifact: [`examples/venkateshwara-textile-atelier.html`](examples/venkateshwara-textile-atelier.html) · Live Build: [`venkateshwara-brown.vercel.app`](https://venkateshwara-brown.vercel.app)
+
+[![Venkateshwara Enterprises Architectural Textile Atelier](docs/screenshots/venkateshwara-desktop.png)](examples/venkateshwara-textile-atelier.html)
+
+<details>
+<summary>📱 <b>View Mobile Viewport (390×844 Retina)</b></summary>
+<br>
+
+<p align="center">
+  <img src="docs/screenshots/venkateshwara-mobile.png" alt="Venkateshwara Enterprises Mobile Viewport" width="390">
+</p>
+</details>
+
+- **12× GSM Optical Microscope:** High-DPI Canvas 2D macro weave visualizer with exact 3-step loupe matrix transforms (`save -> clip -> translate -> scale -> translate -> draw`).
+- **Dual-Verified OKLCH System:** Warm daylight cotton (`#F4F1EA`) with dark optical chamber (`#111620`) meeting both WCAG 2.1 AA and APCA $L^c$ targets.
+- **6-SKU Hairline Tolerance Ledger:** Clean $1\,\text{px}$-divided monospace table featuring Bringhurst narrative measure and OpenType `tabular-nums lining-nums`.
+- **Dynamic Procurement Engine:** Live calculator with algebraic formula locks, instant WhatsApp quote dispatch (`https://wa.me/917013107335`), and zero fake preview totals.
+
+---
+
+### 3. GARUDA — Autonomous Urban Cyber Safety & Transparency Ledger
+> **Kernel Telemetry & Cryptographic Incident Transparency** · Repository: [DHRUVASAI/GARUDA-](https://github.com/DHRUVASAI/GARUDA-)
+
+[![GARUDA Autonomous Urban Cyber Safety](docs/screenshots/garuda-desktop.png)](https://github.com/DHRUVASAI/GARUDA-)
+
+<details>
+<summary>📱 <b>View Mobile Viewport (390×844 Retina)</b></summary>
+<br>
+
+<p align="center">
+  <img src="docs/screenshots/garuda-mobile.png" alt="GARUDA Mobile Viewport" width="390">
+</p>
+</details>
+
+- **Kernel Telemetry & Privilege Separation:** Zero-copy eBPF/XDP and Windows WFP packet inspection via an unprivileged UI coupled to an authenticated privileged daemon.
+- **IEEE 802.3 MAC & SLAP Classification:** Rejects malformed and mixed-delimiter MACs with regex backreferences; parses IEEE 802c-2017 SLAP quadrants (`ELI`, `SAI`, `AAI`, `Reserved`).
+- **FoxIO JA4+ & RFC 9849 TLS ECH:** Client fingerprinting with RFC 8701 GREASE stripping; full defense against IPv6 NDP/MITM6 attacks via RFC 6105 RA-Guard and RFC 8484 DoH.
+- **RFC 6962 Domain-Separated Cryptographic Ledger:** Prevents CVE-2012-2459 malleability with $H_0 = 0x00$ / $H_1 = 0x01$; computes exact EIP-2929 EVM gas economics ($42$ gas Keccak vs $184+$ gas SHA-256 precompile).
+- **Streaming ML Anomaly Detection:** Extended Isolation Forest (EIF) with random hyperplanes, RRCF `CoDisp`, ADWIN drift detection, and Bayes FDR calibration ($99.02\%$ alert noise at $0.01\%$ base rate).
 
 ---
 

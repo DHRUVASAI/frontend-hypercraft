@@ -18,7 +18,7 @@ def main():
     args = parser.parse_args()
 
     errors = []
-    md_files = sorted(ROOT.rglob("*.md"))
+    md_files = sorted(f for f in ROOT.rglob("*.md") if "node_modules" not in f.parts and ".git" not in f.parts)
     external_urls = set()
 
     for mf in md_files:

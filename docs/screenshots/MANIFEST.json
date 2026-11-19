@@ -1,5 +1,17 @@
 {
-  "status": "PENDING_LOCAL_OR_CI_CAPTURE",
-  "command": "npx playwright install chromium && node scripts/capture-screenshots.mjs",
-  "ci_workflow": ".github/ci/screenshots.yml"
+  "status": "CAPTURED",
+  "engine": "playwright-core (chrome headless=new)",
+  "resolution_desktop": "1440x900 @ 2x (2880x1800)",
+  "resolution_mobile": "390x844 @ 2x (780x1688)",
+  "command": "node scripts/take-screenshots.mjs",
+  "files": [
+    "docs/screenshots/kineta-desktop.png",
+    "docs/screenshots/kineta-mobile.png",
+    "docs/screenshots/venkateshwara-desktop.png",
+    "docs/screenshots/venkateshwara-mobile.png",
+    "docs/screenshots/garuda-desktop.png",
+    "docs/screenshots/garuda-mobile.png",
+    "docs/screenshots/venkateshwara-v0-desktop.png",
+    "docs/screenshots/venkateshwara-v0-mobile.png"
+  ]
 }
