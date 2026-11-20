@@ -1,13 +1,33 @@
 # ⚡ HyperCraft: The Spec-Verified Frontend, 3D WebGPU PBR, Streaming ML & AI Builder Knowledge Base
 
-[![CI Verification](https://img.shields.io/badge/CI-Python%203.12%20%2B%20Node%2022-0D9488?style=for-the-badge&logo=githubactions&logoColor=white)](.github/ci/ci.yml)
-[![Standards](https://img.shields.io/badge/Specs-WCAG%202.1%2FA%20%7C%20APCA%20%7C%20RFC%206962%20%7C%20RFC%209849-1E4FD6?style=for-the-badge)](REFERENCES.md)
-[![Tests](https://img.shields.io/badge/Tests-Zero--Dependency%20Unit%20%2B%20Adversarial%20Merkle-117750?style=for-the-badge)](tests/)
-[![Benchmarks](https://img.shields.io/badge/Benchmarks-20--Seed%20ML%20%2B%20Conformal%2095%25%20CI-8B5CF6?style=for-the-badge)](benchmarks/BENCHMARK_REPORT.md)
-[![Pricing Evidence](https://img.shields.io/badge/Evidence-SHA--256%20Archived%20(Nov%202026)-4F46E5?style=for-the-badge)](evidence/pricing/MANIFEST.json)
-[![License](https://img.shields.io/badge/License-MIT-gray?style=for-the-badge)](https://opensource.org/licenses/MIT)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DHRUVASAI/frontend-hypercraft/main/docs/screenshots/social-preview.png" alt="HyperCraft Social Preview Hero Banner" width="100%">
+</p>
 
-> **Zero throwaway demo apps. Zero generic AI slop.** Every file in this repository is pure transferable engineering craft, verified mathematical primitives, reproducible benchmarks, and primary official evidence.
+<p align="center">
+  <a href=".github/ci/ci.yml"><img src="https://img.shields.io/badge/CI-Python%203.12%20%2B%20Node%2022-0D9488?style=for-the-badge&logo=githubactions&logoColor=white" alt="CI Verification"></a>
+  <a href="REFERENCES.md"><img src="https://img.shields.io/badge/Specs-WCAG%202.1%2FA%20%7C%20APCA%20%7C%20RFC%206962%20%7C%20RFC%209849-1E4FD6?style=for-the-badge" alt="Standards"></a>
+  <a href="tests/"><img src="https://img.shields.io/badge/Tests-Zero--Dependency%20Unit%20%2B%20Adversarial%20Merkle-117750?style=for-the-badge" alt="Tests"></a>
+  <a href="benchmarks/BENCHMARK_REPORT.md"><img src="https://img.shields.io/badge/Benchmarks-20--Seed%20ML%20%2B%20Conformal%2095%25%20CI-8B5CF6?style=for-the-badge" alt="Benchmarks"></a>
+  <a href="evidence/pricing/MANIFEST.json"><img src="https://img.shields.io/badge/Evidence-SHA--256%20Archived%20(Nov%202026)-4F46E5?style=for-the-badge" alt="Pricing Evidence"></a>
+  <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/Contributions-Welcome-0284C7?style=for-the-badge" alt="Contributions Welcome"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-gray?style=for-the-badge" alt="License"></a>
+</p>
+
+> **The Problem:** 99% of AI-generated web interfaces look like generic "AI slop"—saturated neon glows, uncalibrated HSL palettes that fail dark-mode contrast, uncompressed 21 MB GPU textures that crash mobile tabs, and long blocking tasks that freeze Interaction to Next Paint (INP).  
+> **The Solution:** HyperCraft is a spec-verified, benchmarked engineering system across **12 disciplines** that forces AI app builders (v0, Lovable, Bolt.new, Cursor, Devin) to generate production-grade, tactile code on **pass one** while cutting multi-turn token costs by up to **55.7%**.
+
+---
+
+## ⚡ 30-Second Quickstart
+
+Try the live interactive demos or test the mathematical primitives locally in seconds:
+
+| Method | Description | Command / Destination |
+|---|---|---|
+| 🎮 **Live Interactive Demos** | Test 12-layer 3D exploded view, 12× microscope loupe & cyber radar | • 🎧 [KINETA 3D Teardown](#1-kineta-model-04--acoustic-monolith)<br>• 🔬 [VE Textile Atelier](#2-venkateshwara-enterprises-ve--architectural-textile-atelier)<br>• 🛡️ [GARUDA Cyber Defense](https://github.com/DHRUVASAI/GARUDA-) |
+| 🧪 **Run Verification Suite** | Zero-dependency Python unit tests, Node math tests & benchmarks | ```bash<br>git clone https://github.com/DHRUVASAI/frontend-hypercraft.git<br>cd frontend-hypercraft && python3 -m unittest discover -s tests -v<br>``` |
+| 📋 **Copy Master Prompt** | 6-Block Master Prompt for pass-one builds on v0 / Lovable | Jump to [Ready-to-Use Calibrated Prompt Wrappers](#6-budget-aware-ai-builder-economics-06-budget-and-tool-aware-prompting) |
 
 ---
 
